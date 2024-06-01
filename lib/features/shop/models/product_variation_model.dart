@@ -31,9 +31,9 @@ class ProductVariationModel {
       'AttributeValues':attributeValues
     };
   }
-  factory ProductVariationModel.fromJson(DocumentSnapshot<Map<String,dynamic>> document){
-    if(document.data()!=null){
-      final data =document.data()!;
+  factory ProductVariationModel.fromJson(Map<String,dynamic> document){
+      final data =document;
+      if(data.isEmpty) return ProductVariationModel.empty();
       return ProductVariationModel(
           id: data['Id']??" ",
           price: double.parse((data['Price'] ?? 0.0).toString()),
@@ -43,11 +43,5 @@ class ProductVariationModel {
           image: data['Image']??" ",
           attributeValues: Map<String,String>.from(data['AttributeValues']
           ));
-    }else{
-      return ProductVariationModel.empty();
-    }
-
-
-
   }
 }

@@ -14,17 +14,12 @@ class ProductAttributeModel{
 
 
   static ProductAttributeModel empty() => ProductAttributeModel();
-  factory ProductAttributeModel.fromJson(DocumentSnapshot<Map<String,dynamic>> document){
-    if(document.data()!=null){
-      final data = document.data()!;
+  factory ProductAttributeModel.fromJson(Map<String,dynamic> document){
+
+      final data = document;
+      if(data.isEmpty) return ProductAttributeModel.empty();
       return ProductAttributeModel(
           name: data.containsKey('Name')? data['Name']: '',
           values:  List<String>.from(data['Values']));
-    }else{
-      return ProductAttributeModel.empty();
-    }
-
-
-
   }
 }

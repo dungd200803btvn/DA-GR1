@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class BrandModel {
   String id;
   String name;
@@ -12,34 +10,41 @@ class BrandModel {
     required this.name,
     required this.image,
     this.isFeatured,
-    this.productsCount});
+    this.productsCount,
+  });
 
-  //empty constructor
+  // Empty constructor
   static BrandModel empty() => BrandModel(id: '', name: '', image: '');
 
-  //convert to json
+  // Convert to JSON
   Map<String, dynamic> toJson() {
     return {
       'Id': id,
       'Name': name,
       'Image': image,
       'ProductsCount': productsCount,
-      'IsFeatured': isFeatured
+      'IsFeatured': isFeatured,
     };
   }
 
-  factory BrandModel.fromJson(DocumentSnapshot<Map<String, dynamic>> document) {
-    if (document.data() != null) {
-      final data = document.data()!;
-      return BrandModel(
-        id: data['Id'] ?? '',
-        name: data['Name'] ?? '',
-        image: data['Image'] ?? '',
-        productsCount: data['ProductsCount'] ?? '',
-        isFeatured: data['IsFeatured'] ?? '',
-      );
-    } else {
-      return BrandModel.empty();
+  factory BrandModel.fromJson(Map<String, dynamic> data) {
+    if (data.isEmpty) return BrandModel.empty();
+
+    // Try parsing productsCount to an integer, handle potential errors
+    int? parsedProductsCount;
+    try {
+      parsedProductsCount = data['ProductsCount'] != null ? int.parse(data['ProductsCount'].toString()) : null;
+    } catch (e) {
+      // Handle parsing error (e.g., print a warning)
+      print('Lỗi khi chuyển đổi productsCount thành số nguyên (int). Giá trị mặc định 0 sẽ được sử dụng.');
     }
+
+    return BrandModel(
+      id: data['Id'] ?? '',
+      name: data['Name'] ?? '',
+      image: data['Image'] ?? '',
+      productsCount: parsedProductsCount ?? 0, // Use default 0 if parsing fails
+      isFeatured: data['IsFeatured'] ?? false,
+    );
   }
 }

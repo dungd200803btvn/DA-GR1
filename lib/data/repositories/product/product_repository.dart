@@ -24,49 +24,45 @@ class ProductRepository extends GetxController {
   }
 
   //upload to cloud
+  //upload to cloud
   Future<void> uploadDummyData(List<ProductModel> products) async {
-
-      final storage = Get.put(TFirebaseStorageService());
-      for (var product in products) {
-        final thumbnail =
-            await storage.getImageDataFromAssets(product.thumbnail);
-        final url = await storage.uploadImageData(
-            'Products/Images', thumbnail, product.thumbnail.toString());
-        product.thumbnail = url;
-        //product list of images
-        if (product.images != null && product.images!.isNotEmpty) {
-          List<String> imagesUrl = [];
-          for (var image in product.images!) {
-            //get image data link from local assets
-            final assetImage = await storage.getImageDataFromAssets(image);
-            //upload image and get its url
-            final url = await storage.uploadImageData(
-                'Products/Images', assetImage, image);
-            imagesUrl.add(url);
-          }
-          product.images!.clear();
-          product.images!.addAll(imagesUrl);
+    final storage = Get.put(TFirebaseStorageService());
+    for (var product in products) {
+      final thumbnail =
+      await storage.getImageDataFromAssets(product.thumbnail);
+      final url = await storage.uploadImageData(
+          'Products/Images', thumbnail, product.thumbnail.toString());
+      product.thumbnail = url;
+      //product list of images
+      if (product.images != null && product.images!.isNotEmpty) {
+        List<String> imagesUrl = [];
+        for (var image in product.images!) {
+          //get image data link from local assets
+          final assetImage = await storage.getImageDataFromAssets(image);
+          //upload image and get its url
+          final url = await storage.uploadImageData(
+              'Products/Images', assetImage, image);
+          imagesUrl.add(url);
         }
-        //upload variation images
-        if (product.productType == ProductType.variable.toString()) {
-          for (var variation in product.productVariations!) {
-            //get image data from local
-            final assetImage =
-                await storage.getImageDataFromAssets(variation.image);
-            //upload image
-            final url = await storage.uploadImageData(
-                'Products/Images', assetImage, variation.image);
-            variation.image = url;
-          }
-        }
-
-        // Lưu dữ liệu cập nhật
-        await _db.collection('Products').doc(product.id).set(product.toJson());
+        product.images!.clear();
+        product.images!.addAll(imagesUrl);
       }
-    // } on FirebaseException catch (e) {
-    //   throw e.message!;
-    // } catch (e) {
-    //   throw "An error occurred: ${e.toString()}";
-    // }
+      //upload variation images
+      if (product.productType == ProductType.variable.toString()) {
+        for (var variation in product.productVariations!) {
+          //get image data from local
+          final assetImage =
+          await storage.getImageDataFromAssets(variation.image);
+          //upload image
+          final url = await storage.uploadImageData(
+              'Products/Images', assetImage, variation.image);
+          variation.image = url;
+        }
+      }
+
+      // Lưu dữ liệu cập nhật
+      await _db.collection('Products').doc(product.id).set(product.toJson()); // Gọi phương thức toJson để chuyển đổi product thành JSON
+    }
   }
+
 }

@@ -34,6 +34,10 @@ class TImages {
   static const String hermanMillerLogo = "assets/icons/brands/herman-miller-logo.png";
   static const String ikeaLogo = "assets/icons/brands/ikea_logo.png";
   static const String acerlogo = "assets/icons/brands/acer_logo.png";
+  static const String casiologo = "assets/images/products/casio_logo.png";
+  static const String techGearLogo = "assets/images/products/techgear.png";
+  static const String kitChenProLogo = "assets/images/products/kitchen_pro.png";
+  static const String officeComfortLogo = "assets/images/products/OfficeComfort.png";
 
   // -- Animations
   static const String productsIllustration = "assets/images/animations/sammy-line-workout.gif";
@@ -69,6 +73,23 @@ class TImages {
   static const String onBoardingImage3 = "assets/images/on_boarding_images/sammy-line-delivery.gif";
 
   // -- Products
+
+  static const String productImage8D1 =  "assets/images/products/product8_i1.jpg";
+  static const String productImage8D2 =  "assets/images/products/product8_i2.jpg";
+  static const String productImage8D3 =  "assets/images/products/product8_i3.jpg";
+  static const String productImage10D1 =  "assets/images/products/product10_i1.jpg";
+  static const String productImage10D2 =  "assets/images/products/product10_i2.jpg";
+  static const String productImage10D3 =  "assets/images/products/product10_i3.jpg";
+  static const String productImage11D1 =  "assets/images/products/product11_i1.jpg";
+  static const String productImage11D2 =  "assets/images/products/product11_i2.jpg";
+  static const String productImage11D3 =  "assets/images/products/product11_i3.jpg";
+  static const String productImage12D1 =  "assets/images/products/product12_i1.jpg";
+  static const String productImage12D2 =  "assets/images/products/product12_i2.jpg";
+  static const String productImage12D3 =  "assets/images/products/product12_i3.jpg";
+  static const String productImage13D1 =  "assets/images/products/product13_i1.webp";
+  static const String productImage13D2 =  "assets/images/products/product13_i2.webp";
+  static const String productImage13D3 =  "assets/images/products/product13_i3.webp";
+
   static const String productImage1 = "assets/images/products/nike-shoes.png";
   static const String productImage2 = "assets/images/products/product-1.png";
   static const String productImage3 = "assets/images/products/product-jacket.png";

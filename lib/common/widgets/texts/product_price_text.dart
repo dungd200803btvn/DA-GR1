@@ -5,7 +5,7 @@ class TProductPriceText extends StatelessWidget {
     super.key,
     this.currencySign = '\$',
     required this.price,
-    this.maxLines = 1,
+    this.maxLines = 3,
     this.isLarge = false,
     this.lineThrough = false,
   });

@@ -54,7 +54,7 @@ static ProductModel empty()=> ProductModel(id: '', stock: 0, price: 0.0, title: 
     'SalePrice': salePrice,
     'IsFeatured':isFeatured,
     'CategoryId':categoryId,
-    'Brand':brand,
+    'Brand':brand?.toJson(),
     'Description':description,
     'ProductType':productType,
     'ProductAttributes':productAttributes!=null ? productAttributes!.map((e) => e.toJson()).toList():[],
@@ -63,9 +63,10 @@ static ProductModel empty()=> ProductModel(id: '', stock: 0, price: 0.0, title: 
 }
 
 factory ProductModel.fromSnapshot(DocumentSnapshot<Map<String,dynamic>> documentSnapshot ){
-  if(documentSnapshot.data()!=null){
+
     final data =documentSnapshot.data()!;
-    return ProductModel(id: documentSnapshot.id,
+    return ProductModel(
+      id: documentSnapshot.id,
       sku:  data['Title'],
       title: data['SKU'],
       stock: data['Stock'] ?? 0,
@@ -89,9 +90,7 @@ factory ProductModel.fromSnapshot(DocumentSnapshot<Map<String,dynamic>> document
           .toList()
           : [],
     );
-  }else{
-    return ProductModel.empty();
-  }
+
 
 }
 
