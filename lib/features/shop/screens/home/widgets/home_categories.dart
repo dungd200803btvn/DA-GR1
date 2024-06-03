@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:t_store/common/widgets/shimmer/category_shimmer.dart';
-import 'package:t_store/features/shop/controllers/category_controller.dart';
+import 'package:t_store/features/shop/controllers/product/category_controller.dart';
 import 'package:t_store/features/shop/screens/sub_category/sub_categories.dart';
 import '../../../../../common/widgets/image_text_widgets/vertical_image_text.dart';
 import '../../../../../utils/constants/image_strings.dart';

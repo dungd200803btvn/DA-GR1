@@ -1,9 +1,7 @@
 import 'package:get/get.dart';
-import 'package:t_store/data/dummy_data.dart';
 import 'package:t_store/data/repositories/product/product_repository.dart';
 import 'package:t_store/features/shop/models/product_model.dart';
 import 'package:t_store/utils/enum/enum.dart';
-
 import '../../../utils/popups/loader.dart';
 
 class ProductController extends GetxController {

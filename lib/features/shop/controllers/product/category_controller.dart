@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:t_store/data/repositories/categories/category_repository.dart';
 import 'package:t_store/utils/popups/loader.dart';
 
-import '../models/category_model.dart';
+import '../../models/category_model.dart';
 
 class CategoryController extends  GetxController{
   static CategoryController get instance => Get.find();
