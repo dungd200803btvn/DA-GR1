@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:t_store/common/widgets/products/product_cards/product_card_vertical.dart';
@@ -70,26 +71,43 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 children: [
                   //Slider
-                  const TPromoSlider(
-                  ),
+                  const TPromoSlider(),
 
                   const SizedBox(
                     height: DSize.spaceBtwSection,
                   ),
                   //Heading
-                   TSectionHeading(title: 'Popular Product',onPressed: ()=> Get.to(()=> const AllProducts()),),
+                  TSectionHeading(
+                      title: 'Popular Product',
+                      onPressed: () => Get.to(
+                            () => AllProducts(
+                              title: 'Popular Product',
+                              query: FirebaseFirestore.instance
+                                  .collection('Products')
+                                  .where('IsFeatured', isEqualTo: true)
+                                  .limit(20),
+                              futureMethod: controller.getAllFeaturedProducts(),
+                            ),
+                          )),
                   const SizedBox(height: DSize.spaceBtwItem),
                   //Popular Product
-                  Obx((){
-                    if(controller.isLoading.value){
+                  Obx(() {
+                    if (controller.isLoading.value) {
                       return const TVerticalProductShimmer();
                     }
-                    if(controller.featuredProducts.isEmpty){
-                      return Center(child: Text('No data found!',style: Theme.of(context).textTheme.bodyMedium,),);
+                    if (controller.featuredProducts.isEmpty) {
+                      return Center(
+                        child: Text(
+                          'No data found!',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      );
                     }
-                  return  TGridLayout(itemCount: controller.featuredProducts.length,
-                      itemBuilder: (_, index) =>  TProductCardVertical(product: controller.featuredProducts[index]));
-                  } ),
+                    return TGridLayout(
+                        itemCount: controller.featuredProducts.length,
+                        itemBuilder: (_, index) => TProductCardVertical(
+                            product: controller.featuredProducts[index]));
+                  }),
                 ],
               ),
             )
@@ -99,4 +117,3 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-

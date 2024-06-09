@@ -1,13 +1,13 @@
 import 'dart:core';
-import 'dart:math';
 import 'package:t_store/features/shop/models/banner_model.dart';
+import 'package:t_store/features/shop/models/brand_category_model.dart';
 import 'package:t_store/features/shop/models/brand_model.dart';
 import 'package:t_store/features/shop/models/product_attribute_model.dart';
+import 'package:t_store/features/shop/models/product_category_model.dart';
 import 'package:t_store/features/shop/models/product_model.dart';
 import 'package:t_store/features/shop/models/product_variation_model.dart';
 import 'package:t_store/routes/routes.dart';
 import 'package:t_store/utils/constants/image_strings.dart';
-import 'package:t_store/utils/enum/enum.dart';
 import '../features/shop/models/category_model.dart';
 import 'package:faker/faker.dart';
 
@@ -43,115 +43,36 @@ class TDummyData {
 // Assuming you add the faker package
 
   Faker faker = Faker();
-  List<String> imageUrls = [
-    TImages.productImage1,
-    TImages.productImage2,
-    TImages.productImage3,
-    TImages.productImage4,
-    TImages.productImage5,
-    TImages.productImage6,
-    TImages.productImage7,
-    TImages.productImage8,
-    TImages.productImage9,
-    TImages.productImage10,
-    TImages.productImage11,
-    TImages.productImage12,
-    TImages.productImage13,
-    TImages.productImage14,
-    TImages.productImage15,
-    TImages.productImage16,
-    TImages.productImage17,
-    TImages.productImage18,
-    TImages.productImage19,
-    TImages.productImage20,
-    TImages.productImage21,
-    TImages.productImage22,
-    TImages.productImage23,
-    TImages.productImage24,
-    TImages.productImage25,
-    TImages.productImage26,
-    TImages.productImage27,
-    TImages.productImage28,
-    TImages.productImage29,
-    TImages.productImage30,
-    TImages.productImage31,
-    TImages.productImage32,
-    TImages.productImage33,
-    TImages.productImage34,
-    TImages.productImage35,
-    TImages.productImage36,
-    TImages.productImage37,
-    TImages.productImage38,
-    TImages.productImage39,
-    TImages.productImage40,
-    TImages.productImage41,
-    TImages.productImage42,
-    TImages.productImage43,
-    TImages.productImage44,
-    TImages.productImage45,
-    TImages.productImage46,
-    TImages.productImage47,
-    TImages.productImage48,
-    TImages.productImage49,
-    TImages.productImage50,
-    TImages.productImage51,
-    TImages.productImage52,
-    TImages.productImage53,
-    TImages.productImage54,
-    TImages.productImage55,
-    TImages.productImage56,
-    TImages.productImage57,
-    TImages.productImage58,
-    TImages.productImage59,
-    TImages.productImage60,
-    TImages.productImage61,
-    TImages.productImage62,
-    TImages.productImage63,
-    TImages.productImage64,
-    TImages.productImage65,
-    TImages.productImage66,
-    TImages.productImage67,
-    TImages.productImage68,
-    TImages.productImage69,
-    TImages.productImage70,
-    TImages.productImage71,
-    TImages.productImage72,
-    TImages.productImage73,
-    TImages.productImage74,
-    TImages.productImage75,
-    TImages.productImage76,
-    TImages.productImage77,
-  ];
 
-  List<ProductModel> generateRandomProducts(int count) {
-    List<ProductModel> products = [];
-    int random = Random().nextInt(77) + 1;
-    int random1 = Random().nextInt(100) + 1;
-    for (int i = 0; i < count; i++) {
-      products.add(ProductModel(
-        id: "00" + random1.toString(),
-        // Generate random unique ID (using a library like uuid)
-        stock: Random().nextInt(100) + 1,
-        // Random stock between 1 and 100
-        price: Random().nextDouble() * 990 + 10,
-        // Random price between $10 and $1000
-        title: faker.sport.name(),
-        // Generate random product name
-        thumbnail: imageUrls[random - 1],
-        // Placeholder image URL
-        productType: ProductType.single.toString(),
-        isFeatured: true,
-        sku: "sku",
-        description: "description",
-        categoryId: "1",
-        images: [],
-      ));
-    }
-    return products;
-  }
+  // List<ProductModel> generateRandomProducts(int count) {
+  //   List<ProductModel> products = [];
+  //   int random = Random().nextInt(77) + 1;
+  //   int random1 = Random().nextInt(100) + 1;
+  //   for (int i = 0; i < count; i++) {
+  //     products.add(ProductModel(
+  //       id: "00" + random1.toString(),
+  //       // Generate random unique ID (using a library like uuid)
+  //       stock: Random().nextInt(100) + 1,
+  //       // Random stock between 1 and 100
+  //       price: Random().nextDouble() * 990 + 10,
+  //       // Random price between $10 and $1000
+  //       title: faker.sport.name(),
+  //       // Generate random product name
+  //      /// thumbnail: imageUrls[random - 1],
+  //       // Placeholder image URL
+  //       productType: ProductType.single.toString(),
+  //       isFeatured: true,
+  //       sku: "sku",
+  //       description: "description",
+  //       categoryId: "1",
+  //       images: [],
+  //     ));
+  //   }
+  //   return products;
+  // }
 
-  static final List<ProductModel> products1 =
-      TDummyData().generateRandomProducts(3);
+  // static final List<ProductModel> products1 =
+  //     TDummyData().generateRandomProducts(3);
   static final List<ProductModel> products = [
     // ProductModel(id: '001',
     //     stock: 15,
@@ -751,5 +672,126 @@ class TDummyData {
         image: TImages.clothIcon,
         isFeatured: false,
         parentId: '3'),
+  ];
+
+  static final List<BrandModel> brands = [
+    BrandModel(id: '1', name: 'Nike', image: TImages.nikeLogo,isFeatured: true,productsCount: 265),
+    BrandModel(id: '2', name: 'Adidas', image: TImages.adidasLogo, isFeatured: true, productsCount: 320),
+    BrandModel(id: '3', name: 'Apple', image: TImages.appleLogo, isFeatured: true, productsCount: 150),
+    BrandModel(id: '4', name: 'Jordan', image: TImages.jordanLogo, isFeatured: true, productsCount: 100),
+    BrandModel(id: '5', name: 'Puma', image: TImages.pumaLogo, isFeatured: true, productsCount: 180),
+    BrandModel(id: '6', name: 'Zara', image: TImages.zaraLogo, isFeatured: true, productsCount: 200),
+    BrandModel(id: '7', name: 'Kenwood', image: TImages.kenwoodLogo, isFeatured: true, productsCount: 75),
+    BrandModel(id: '8', name: 'Herman Miller', image: TImages.hermanMillerLogo, isFeatured: true, productsCount: 50),
+    BrandModel(id: '9', name: 'Ikea', image: TImages.ikeaLogo, isFeatured: true, productsCount: 220),
+    BrandModel(id: '10', name: 'Acer', image: TImages.acerlogo, isFeatured: true, productsCount: 90),
+    BrandModel(id: '11', name: 'Rolex', image: TImages.casiologo, isFeatured: true, productsCount: 130),
+    BrandModel(id: '12', name: 'JBL', image: TImages.techGearLogo, isFeatured: true, productsCount: 60),
+    BrandModel(id: '13', name: 'Sun House', image: TImages.kitChenProLogo, isFeatured: true, productsCount: 40),
+    BrandModel(id: '14', name: 'Hoa Phat', image: TImages.officeComfortLogo, isFeatured: true, productsCount: 110),
+  ];
+  static final List<BrandCategoryModel> brandCategorys = [
+    BrandCategoryModel(brandId: "1", categoryId: "1"),  // Nike - Sports
+    BrandCategoryModel(brandId: "1", categoryId: "8"),  // Nike - Sports Shoes
+    BrandCategoryModel(brandId: "1", categoryId: "9"),  // Nike - Tracksuits
+    BrandCategoryModel(brandId: "2", categoryId: "1"),  // Adidas - Sports
+    BrandCategoryModel(brandId: "2", categoryId: "8"),  // Adidas - Sports Shoes
+    BrandCategoryModel(brandId: "3", categoryId: "2"),  // Apple - Electronics
+    BrandCategoryModel(brandId: "3", categoryId: "14"), // Apple - Laptop
+    BrandCategoryModel(brandId: "4", categoryId: "1"),  // Jordan - Sports
+    BrandCategoryModel(brandId: "4", categoryId: "8"),  // Jordan - Sports Shoes
+    BrandCategoryModel(brandId: "5", categoryId: "1"),  // Puma - Sports
+    BrandCategoryModel(brandId: "5", categoryId: "8"),  // Puma - Sports Shoes
+    BrandCategoryModel(brandId: "6", categoryId: "3"),  // Zara - Clothes (assuming general clothing)
+    BrandCategoryModel(brandId: "6", categoryId: "16"),  // Zara - Shirts (if applicable)
+    BrandCategoryModel(brandId: "7", categoryId: "2"),  // Kenwood - Electronics
+    BrandCategoryModel(brandId: "8", categoryId: "5"),  // Herman Miller - Furniture
+    BrandCategoryModel(brandId: "8", categoryId: "11"), // Herman Miller - Bedroom furniture (if applicable)
+    BrandCategoryModel(brandId: "8", categoryId: "12"), // Herman Miller - Kitchen furniture (if applicable)
+    BrandCategoryModel(brandId: "8", categoryId: "13"), // Herman Miller - Office furniture (if applicable)
+    BrandCategoryModel(brandId: "9", categoryId: "5"),  // Ikea - Furniture
+    BrandCategoryModel(brandId: "9", categoryId: "11"), // Ikea - Bedroom furniture (if applicable)
+    BrandCategoryModel(brandId: "9", categoryId: "12"), // Ikea - Kitchen furniture (if applicable)
+    BrandCategoryModel(brandId: "10", categoryId: "2"),  // Acer - Electronics
+    BrandCategoryModel(brandId: "10", categoryId: "14"), // Acer - Laptop (if applicable)
+    BrandCategoryModel(brandId: "11", categoryId: "14"), // Rolex - Jewelry (assuming luxury watches)
+    BrandCategoryModel(brandId: "12", categoryId: "2"),  // JBL - Electronics
+    BrandCategoryModel(brandId: "13", categoryId: "5"),  // Sun House - Furniture (assuming home furniture)
+    BrandCategoryModel(brandId: "13", categoryId: "11"), // Sun House - Bedroom furniture (if applicable)
+    BrandCategoryModel(brandId: "13", categoryId: "12"), // Sun House - Kitchen furniture (if applicable)
+    BrandCategoryModel(brandId: "14", categoryId: "5"),  // Hoa Phat - Furniture (assuming office furniture)
+    BrandCategoryModel(brandId: "14", categoryId: "13"), // Hoa Phat - Office furniture
+  ];
+  static final List<ProductCategoryModel> productCategorys = [
+    // Sports
+    ProductCategoryModel(productId: "001", categoryId: "1"), // Green Nike sports shoe
+    ProductCategoryModel(productId: "002", categoryId: "3"), // Blue T-shirt for all ages
+    ProductCategoryModel(productId: "005", categoryId: "1"), // Nike Air Jordan Shoes
+    ProductCategoryModel(productId: "008", categoryId: "1"), // Adidas Running Shoes
+    ProductCategoryModel(productId: "009", categoryId: "1"), // Nike Air Jordon 19 Blue
+    ProductCategoryModel(productId: "010", categoryId: "14"), // Rolex Limited
+
+    // Furniture
+    ProductCategoryModel(productId: "011", categoryId: "5"), // Bluetooth Wireless Earphones
+    ProductCategoryModel(productId: "012", categoryId: "5"), // Electric Kettle 1.7L
+    ProductCategoryModel(productId: "013", categoryId: "5"), // Adjustable Office Chair
+
+    // Electronics
+    ProductCategoryModel(productId: "006", categoryId: "2"), // Samsung Galaxy S9
+    ProductCategoryModel(productId: "011", categoryId: "2"), // Bluetooth Wireless Earphones
+
+    // Clothes
+    ProductCategoryModel(productId: "002", categoryId: "3"), // Blue T-shirt for all ages
+    ProductCategoryModel(productId: "003", categoryId: "3"), // Leather brown Jacket
+    ProductCategoryModel(productId: "004", categoryId: "3"), // 4 Color collar t-shirt dry fit
+    ProductCategoryModel(productId: "016", categoryId: "3"), // Shirts
+
+    // Animals
+    ProductCategoryModel(productId: "007", categoryId: "4"), // Tomi Dog food
+
+    // Shoes
+    ProductCategoryModel(productId: "001", categoryId: "6"), // Green Nike sports shoe
+    ProductCategoryModel(productId: "005", categoryId: "6"), // Nike Air Jordan Shoes
+    ProductCategoryModel(productId: "008", categoryId: "6"), // Adidas Running Shoes
+    ProductCategoryModel(productId: "009", categoryId: "6"), // Nike Air Jordon 19 Blue
+
+    // Cosmetics
+    ProductCategoryModel(productId: "007", categoryId: "7"), // Tomi Dog food
+
+    // Jewelery
+    ProductCategoryModel(productId: "010", categoryId: "14"), // Rolex Limited
+    ProductCategoryModel(productId: "011", categoryId: "14"), // Bluetooth Wireless Earphones
+
+    // Sports Shoes
+    ProductCategoryModel(productId: "001", categoryId: "8"), // Green Nike sports shoe
+    ProductCategoryModel(productId: "008", categoryId: "8"), // Adidas Running Shoes
+    ProductCategoryModel(productId: "009", categoryId: "8"), // Nike Air Jordon 19 Blue
+
+    // Track suits
+    ProductCategoryModel(productId: "002", categoryId: "9"), // Blue T-shirt for all ages
+
+    // Sports Equipments
+    ProductCategoryModel(productId: "010", categoryId: "10"), // Rolex Limited
+
+    // Bedroom furniture
+    ProductCategoryModel(productId: "011", categoryId: "11"), // Bluetooth Wireless Earphones
+
+    // Kitchen furniture
+    ProductCategoryModel(productId: "012", categoryId: "12"), // Electric Kettle 1.7L
+
+    // Office furniture
+    ProductCategoryModel(productId: "013", categoryId: "13"), // Adjustable Office Chair
+
+    // Laptop
+    ProductCategoryModel(productId: "006", categoryId: "14"), // Samsung Galaxy S9
+
+    // Mobile
+    ProductCategoryModel(productId: "015", categoryId: "15"), // Mobile
+
+    // Cosmetics (again for Mobile)
+    ProductCategoryModel(productId: "015", categoryId: "7"), // Mobile
+
+    // Jewelery (again for Mobile)
+    ProductCategoryModel(productId: "015", categoryId: "14"), // Mobile
   ];
 }

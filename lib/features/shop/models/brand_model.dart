@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class BrandModel {
   String id;
   String name;
@@ -46,5 +48,26 @@ class BrandModel {
       productsCount: parsedProductsCount ?? 0, // Use default 0 if parsing fails
       isFeatured: data['IsFeatured'] ?? false,
     );
+  }
+  factory BrandModel.fromSnapshot(DocumentSnapshot<Map<String,dynamic>> document){
+    if(document.data()!=null){
+      final data = document.data()!;
+      int? parsedProductsCount;
+      try {
+        parsedProductsCount = data['ProductsCount'] != null ? int.parse(data['ProductsCount'].toString()) : null;
+      } catch (e) {
+        // Handle parsing error (e.g., print a warning)
+        print('Lỗi khi chuyển đổi productsCount thành số nguyên (int). Giá trị mặc định 0 sẽ được sử dụng.');
+      }
+      //map json to model
+      return BrandModel(
+          id: document.id,
+          name: data['Name'] ?? " ",
+          image: data['Image'] ?? " ",
+          isFeatured: data['IsFeatured'] ?? false,
+          productsCount:  parsedProductsCount ?? 0,);
+    }else{
+      return BrandModel.empty();
+    }
   }
 }

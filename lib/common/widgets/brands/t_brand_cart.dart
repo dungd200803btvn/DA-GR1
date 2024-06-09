@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/features/shop/models/brand_model.dart';
 import 'package:t_store/utils/helper/helper_function.dart';
 import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/enums.dart';
@@ -12,9 +13,9 @@ class TBrandCard extends StatelessWidget {
   const TBrandCard({
     super.key,
     required this.showBorder,
-    this.onTap,
+    this.onTap, required this.brand,
   });
-
+  final BrandModel brand;
   final bool showBorder;
   final void Function()? onTap;
 
@@ -32,8 +33,8 @@ class TBrandCard extends StatelessWidget {
             //Icon
             Flexible(
               child: TCircularImage(
-                  image: TImages.clothIcon,
-                  isNetworkImage: false,
+                  image: brand.image,
+                  isNetworkImage: true,
                   backgroundColor: Colors.transparent,
                   overlayColor: dark ? DColor.white : DColor.black),
             ),
@@ -43,9 +44,9 @@ class TBrandCard extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const TBrandTitleWithVerifiedIcon(
-                      title: 'Nike', branchTextSize: TTextSize.largre),
-                  Text('256 products',
+                  TBrandTitleWithVerifiedIcon(
+                      title: brand.name, branchTextSize: TTextSize.largre),
+                  Text('${brand.productsCount?? 0} products',
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.labelMedium)
                 ],

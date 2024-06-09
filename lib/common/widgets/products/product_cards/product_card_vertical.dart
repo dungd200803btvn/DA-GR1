@@ -16,6 +16,7 @@ import '../../icons/t_circular_icon.dart';
 import '../../texts/product_price_text.dart';
 import '../../texts/product_title_text.dart';
 import '../../texts/t_branc_title_text_with_verified_icon.dart';
+import '../favourite_icon/favourite_icon.dart';
 
 class TProductCardVertical extends StatelessWidget {
   const TProductCardVertical({super.key, required this.product});
@@ -50,6 +51,7 @@ class TProductCardVertical extends StatelessWidget {
                         imageUrl: product.thumbnail, applyImageRadius: true, isNetWorkImage: true,),
                    ),
                   //Sale Tag
+                  if(salePercentage!=null)
                   Positioned(
                     top: 12,
                     child: TRoundedContainer(
@@ -64,14 +66,12 @@ class TProductCardVertical extends StatelessWidget {
                               .apply(color: DColor.black)),
                     ),
                   ),
-                  //Favourite Button
-                  const Positioned(
+
+                  ///Favourite Button
+                   Positioned(
                       top: 0,
                       right: 0,
-                      child: TCircularIcon(
-                        icon: Iconsax.heart5,
-                        color: Colors.red,
-                      )),
+                      child: TFavouriteIcon(productId: product.id,)),
                 ],
               ),
             ),
@@ -136,5 +136,7 @@ class TProductCardVertical extends StatelessWidget {
     );
   }
 }
+
+
 
 

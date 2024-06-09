@@ -5,7 +5,6 @@ import 'package:t_store/features/personalization/screens/setting/setting.dart';
 import 'package:t_store/features/shop/screens/home/home.dart';
 import 'package:t_store/features/shop/screens/wishlist/wishlist.dart';
 import 'package:t_store/utils/helper/helper_function.dart';
-
 import 'features/shop/screens/store/store.dart';
 class NavigationMenu extends StatelessWidget {
   const NavigationMenu({super.key});
@@ -42,4 +41,7 @@ class NavigationController extends GetxController{
     const StoreScreen(),
     const FavouriteScreen(),
     const SettingScreen()];
+  void goToHome() {
+    selectedIndex.value = 0;  // Set index for Home screen
+  }
 }

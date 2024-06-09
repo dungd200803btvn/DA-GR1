@@ -14,6 +14,7 @@ import 'package:t_store/features/personalization/controllers/user_controller.dar
 import 'package:t_store/navigation_menu.dart';
 import 'package:t_store/utils/exceptions/format_exceptions.dart';
 import 'package:t_store/utils/exceptions/platform_exceptions.dart';
+import 'package:t_store/utils/local_storage/storage_utility.dart';
 
 import '../../../utils/exceptions/firebase_auth_exceptions.dart';
 import '../../../utils/exceptions/firebase_exceptions.dart';
@@ -37,14 +38,15 @@ class AuthenticationRepository extends GetxController {
     final user = _auth.currentUser;
     if(user!=null){
       if(user.emailVerified){
-        Get.offAll(()=> const LoginScreen());
+        await DLocalStorage.init(user.uid);
+        Get.offAll(()=> const NavigationMenu());
       }else{
-        Get.offAll(()=> const LoginScreen());
+        Get.offAll(()=>  VerifyEmailScreen(email: _auth.currentUser?.email,));
       }
     }else{
       deviceStorage.writeIfNull('isFirstTime', true);
       deviceStorage.read('isFirstTime') != true
-          ? Get.offAll(() => const OnBoardingScreen())
+          ? Get.offAll(() => const LoginScreen())
           : Get.offAll(() => const OnBoardingScreen());
     }
 

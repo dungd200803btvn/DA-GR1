@@ -4,6 +4,7 @@ import 'package:t_store/common/widgets/custom_shapes/containers/search_container
 import 'package:t_store/common/widgets/layouts/grid_layout.dart';
 import 'package:t_store/common/widgets/products/cart/cart_menu_icon.dart';
 import 'package:t_store/common/widgets/texts/section_heading.dart';
+import 'package:t_store/features/shop/controllers/brand_controller.dart';
 import 'package:t_store/features/shop/controllers/product/category_controller.dart';
 import 'package:t_store/features/shop/screens/brand/all_brands.dart';
 import 'package:t_store/features/shop/screens/store/widgets/category_tab.dart';
@@ -13,6 +14,8 @@ import 'package:t_store/utils/helper/helper_function.dart';
 
 import '../../../../common/widgets/appbar/appbar.dart';
 import '../../../../common/widgets/brands/t_brand_cart.dart';
+import '../../../../common/widgets/shimmer/brands_shimmer.dart';
+import '../brand/brand_products.dart';
 
 class StoreScreen extends StatelessWidget {
   const StoreScreen({super.key});
@@ -21,6 +24,7 @@ class StoreScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = DHelperFunctions.isDarkMode(context);
     final categories = CategoryController.instance.featuredCategories;
+    final controller = Get.put(BrandController());
     return DefaultTabController(
       length: categories.length,
       child: Scaffold(
@@ -60,12 +64,20 @@ class StoreScreen extends StatelessWidget {
                           showActionButton: true,
                           onPressed: ()=> Get.to(()=> const AllBrandsScreen())),
                       const SizedBox(height: DSize.spaceBtwItem / 1.5),
-                      TGridLayout(
-                          itemCount: 6,
-                          mainAxisExtent: 80,
-                          itemBuilder: (_, index) {
-                            return const TBrandCard(showBorder: true);
-                          })
+                      Obx(
+                          (){
+                            if(controller.isLoading.value) return const TBrandsShimmer();
+                            if(controller.featuredBrands.isEmpty) return Center(child: Text("No Data Found!",style: Theme.of(context).textTheme.bodyMedium!.apply(color: Colors.white),),);
+
+                            return TGridLayout(
+                                itemCount: controller.featuredBrands.length,
+                                mainAxisExtent: 80,
+                                itemBuilder: (_, index) {
+                                  final brand = controller.featuredBrands[index];
+                                  return  TBrandCard(showBorder: true, brand: brand,onTap: ()=> Get.to(()=>BrandProducts(brand:brand,)),);
+                                });
+                          } ,
+                      )
                     ],
                   ),
                 ),

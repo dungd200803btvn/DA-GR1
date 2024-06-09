@@ -34,10 +34,10 @@ class TImages {
   static const String hermanMillerLogo = "assets/icons/brands/herman-miller-logo.png";
   static const String ikeaLogo = "assets/icons/brands/ikea_logo.png";
   static const String acerlogo = "assets/icons/brands/acer_logo.png";
-  static const String casiologo = "assets/images/products/casio_logo.png";
-  static const String techGearLogo = "assets/images/products/techgear.png";
-  static const String kitChenProLogo = "assets/images/products/kitchen_pro.png";
-  static const String officeComfortLogo = "assets/images/products/OfficeComfort.png";
+  static const String casiologo = "assets/icons/brands/donghorolex.png";
+  static const String techGearLogo = "assets/icons/brands/tainghe.png";
+  static const String kitChenProLogo = "assets/icons/brands/kitchenpro.png";
+  static const String officeComfortLogo = "assets/icons/brands/officechair.png";
 
   // -- Animations
   static const String productsIllustration = "assets/images/animations/sammy-line-workout.gif";
