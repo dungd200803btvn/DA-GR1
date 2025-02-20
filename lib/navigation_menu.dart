@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:t_store/features/notification/screen/notification_screen.dart';
 import 'package:t_store/features/personalization/screens/setting/setting.dart';
 import 'package:t_store/features/shop/screens/home/home.dart';
 import 'package:t_store/features/shop/screens/wishlist/wishlist.dart';
 import 'package:t_store/utils/helper/helper_function.dart';
+import 'features/notification/widget/notification_icon.dart';
 import 'features/shop/screens/store/store.dart';
+
 class NavigationMenu extends StatelessWidget {
   const NavigationMenu({super.key});
   @override
@@ -25,6 +28,10 @@ class NavigationMenu extends StatelessWidget {
             NavigationDestination(icon: Icon(Iconsax.home), label: 'Home'),
             NavigationDestination(icon: Icon(Iconsax.shop), label: 'Store'),
             NavigationDestination(icon: Icon(Iconsax.heart), label: 'Wishlist'),
+            // Mục Notification với badge
+            NavigationDestination(
+                icon: NotificationIcon(),
+                label: 'Notification'),
             NavigationDestination(icon: Icon(Iconsax.user), label: 'Profile'),
           ],
         ),
@@ -40,6 +47,7 @@ class NavigationController extends GetxController{
     const HomeScreen(),
     const StoreScreen(),
     const FavouriteScreen(),
+    const NotificationScreen(showBackArrow: false,),
     const SettingScreen()];
   void goToHome() {
     selectedIndex.value = 0;  // Set index for Home screen

@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -140,6 +141,49 @@ Future<String> uploadImage(String path,XFile image) async{
       throw TPlatformException(e.code).message;
     } catch (e) {
       throw 'Something went wrong. Please try again';
+    }
+  }
+
+  Future<void> updateUserPointsAndFcmToken(String userId) async {
+    try {
+      if (kDebugMode) {
+        print("Userid: $userId");
+      }
+      DocumentReference userRef = _db.collection('User').doc(userId);
+
+      // Lấy thông tin user từ Firestore
+      DocumentSnapshot userDoc = await userRef.get();
+      if (!userDoc.exists) {
+        if (kDebugMode) {
+          print("User không tồn tại");
+        }
+        return;
+      }
+
+      Map<String, dynamic> data = userDoc.data() as Map<String, dynamic>;
+
+      // Lấy FCM Token
+      String? fcmToken = await FirebaseMessaging.instance.getToken();
+      if (fcmToken == null) {
+        if (kDebugMode) {
+          print("Không thể lấy FCM Token");
+        }
+        return;
+      }
+
+      // Cập nhật Points (nếu chưa có) và FCM Token
+      await userRef.update({
+        if (!data.containsKey('FcmToken'))
+        'FcmToken': fcmToken, // 🔥 Cập nhật FCM Token
+      });
+
+      if (kDebugMode) {
+        print("Cập nhật thành công FCM Token cho userId: $userId");
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Lỗi khi cập nhật FCM Token: $e');
+      }
     }
   }
 

@@ -17,6 +17,7 @@ import 'package:t_store/utils/constants/sizes.dart';
 import '../../../../api/ShippingService.dart';
 import '../../../../common/widgets/list_tiles/user_profile_tile.dart';
 import '../../../../data/repositories/vouchers/VoucherRepository.dart';
+import '../../../notification/screen/notification_screen.dart';
 import '../../../voucher/screens/voucher.dart';
 
 class SettingScreen extends StatelessWidget {
@@ -81,10 +82,11 @@ class SettingScreen extends StatelessWidget {
                   onTap: ()=> Get.to(()=>VoucherScreen( userId: AuthenticationRepository.instance.authUser!.uid,)) ,
                 ),
 
-                const TSettingMenuTile(
+                TSettingMenuTile(
                     icon: Iconsax.notification,
                     title: 'Notifications',
-                    subTitle: 'Set any kind of notification messages'),
+                    subTitle: 'Set any kind of notification messages',
+                  onTap: ()=> Get.to(()=>const NotificationScreen( )) ,),
                 const TSettingMenuTile(
                     icon: Iconsax.security_card,
                     title: 'Account Privacy',

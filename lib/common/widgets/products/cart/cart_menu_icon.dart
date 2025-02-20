@@ -21,17 +21,20 @@ class TCartCounterIcon extends StatelessWidget {
         IconButton(
           onPressed: ()=> Get.to(()=> const CartScreen()),
             icon: Icon(
-              Iconsax.shopping_bag,
+              Iconsax.shopping_cart,
               color: iconColor?? (dark? DColor.white: DColor.black),
             )),
         Positioned(
           right: 0,
           child: Container(
-            width: 18,
-            height: 18,
+            padding: const EdgeInsets.all(2),
             decoration: BoxDecoration(
-              color: counterBgColor?? (dark? DColor.black: DColor.white),
-              borderRadius: BorderRadius.circular(100),
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            constraints: const BoxConstraints(
+              minWidth: 16,
+              minHeight: 16,
             ),
             child: Center(
               child: Obx(

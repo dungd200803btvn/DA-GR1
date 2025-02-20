@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:t_store/common/widgets/success_screen/success_screen.dart';
 import 'package:t_store/data/repositories/order/order_repository.dart';
 import 'package:t_store/features/personalization/controllers/address_controller.dart';
@@ -18,6 +19,7 @@ import '../../../../api/ApiService.dart';
 import '../../../../data/model/OrderDetailResponseModel.dart';
 import '../../../../data/model/OrderResponseModel.dart';
 import '../../../../data/repositories/authentication/authentication_repository.dart';
+import '../../../notification/controller/notification_service.dart';
 import '../../../personalization/models/address_model.dart';
 import '../../../suggestion/suggestion_repository.dart';
 import '../../models/order_model.dart';
@@ -164,6 +166,16 @@ class OrderController extends GetxController {
             subTitle: 'Your item will be shipped soon!',
             onPressed: () => Get.offAll(() => const NavigationMenu()),
           ));
+          // Tạo thông báo "Đặt hàng thành công"
+          final now = DateTime.now();
+          final formattedTime = DateFormat('HH:mm dd/MM/yyyy').format(now);
+          final NotificationService notificationService = NotificationService(userId: userId);
+          await notificationService.createAndSendNotification(
+            title: "Đặt hàng thành công",
+            message: "Đơn hàng của bạn đã được đặt thành công vào $formattedTime",
+            type: "order",
+            orderId: order.id, // nếu có
+          );
         }
       } catch (e) {
         if (kDebugMode) {

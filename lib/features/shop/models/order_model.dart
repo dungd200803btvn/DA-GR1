@@ -18,6 +18,7 @@ class OrderModel {
   final DateTime? deliveryDate;
   final List<CartItemModel> items;
   final OrderDetailModel? orderDetail;
+  final bool notificationSent;
 
   OrderModel(
         {required this.id,
@@ -29,7 +30,8 @@ class OrderModel {
         this.address,
         this.deliveryDate,
         required this.items,
-        this.orderDetail,});
+        this.orderDetail,
+        this.notificationSent = false});
 
   String get formattedOrderDate => DFormatter.formatDate(orderDate);
 
@@ -54,6 +56,7 @@ class OrderModel {
       "deliveryDate": deliveryDate,
       'items': items.map((item) => item.toJson()).toList(),
       'orderDetail': orderDetail?.toJson(),
+      "notificationSent": notificationSent
     };
   }
 
@@ -76,6 +79,7 @@ class OrderModel {
             .toList(),
         orderDetail: data['orderDetail'] != null
           ? OrderDetailModel.fromSnapshot(data['orderDetail'] as Map<String, dynamic>)
-          : null, );
+          : null,
+      notificationSent: data['notificationSent'] as bool);
   }
 }

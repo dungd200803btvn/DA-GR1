@@ -6,9 +6,10 @@ import 'package:t_store/routes/app_routes.dart';
 import 'package:t_store/utils/constants/colors.dart';
 import 'package:t_store/utils/theme/theme.dart';
 
+import 'main.dart';
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
       theme: DAppTheme.light_theme,
       initialBinding: GeneralBindings(),
       getPages: AppRoutes.pages,
+      navigatorKey: navigatorKey,
       home: const Scaffold(backgroundColor: DColor.primary,body: Center(child: CircularProgressIndicator(color: DColor.white,),),),
     );
   }

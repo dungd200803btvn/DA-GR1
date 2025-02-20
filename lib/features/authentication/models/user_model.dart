@@ -10,11 +10,12 @@ class UserModel {
   String phoneNumber;
   String profilePicture;
   int points;
+  String fcmToken;
 
   UserModel(
        this.id, this.firstName, this.lastName, this.userName, this.email,
       this.phoneNumber, this.profilePicture,{
-        this.points = 100,
+        this.points = 100,this.fcmToken =""
       });
   String get fullname => '$firstName $lastName';
   String get formattedPhoneNo => DFormatter.formatPhoneNumber(phoneNumber);
@@ -35,7 +36,9 @@ class UserModel {
       'UserName':userName,
       'Email':email,
       'PhoneNumber':phoneNumber,
-      'ProfilePicture':profilePicture
+      'ProfilePicture':profilePicture,
+      'Points': points,
+      'FcmToken': fcmToken,
     };
   }
 
@@ -49,7 +52,9 @@ class UserModel {
           data['Email']?? " ",
           data['PhoneNumber']?? " ",
           data['ProfilePicture']?? " ",
-          points: data['Points'] ?? 100, );
+          points: data['Points'] ?? 100,
+          fcmToken: data['FcmToken'] ?? ""
+      );
     }else{
       return UserModel.empty();
     }
