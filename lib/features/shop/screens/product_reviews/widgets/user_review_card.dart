@@ -1,85 +1,121 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:readmore/readmore.dart';
 import 'package:t_store/common/widgets/custom_shapes/containers/rounded_container.dart';
 import 'package:t_store/common/widgets/products/ratings/rating_indicator.dart';
+import 'package:t_store/features/review/model/review_model.dart';
+import 'package:t_store/features/shop/screens/product_reviews/widgets/user_profile.dart';
+import 'package:t_store/features/shop/screens/product_reviews/widgets/video_player.dart';
+import 'package:t_store/features/shop/screens/product_reviews/widgets/video_thumbnail.dart';
+import 'package:t_store/l10n/app_localizations.dart';
 import 'package:t_store/utils/constants/colors.dart';
 import 'package:t_store/utils/constants/image_strings.dart';
 import 'package:t_store/utils/constants/sizes.dart';
 import 'package:t_store/utils/helper/helper_function.dart';
-class UserReviewCard extends StatelessWidget {
-  const UserReviewCard({super.key});
 
+import '../../../../../common/widgets/products/ratings/user_rating_indicator.dart';
+import '../../../../review/widget/full_screen_image.dart';
+class UserReviewCard extends StatelessWidget {
+  const UserReviewCard({super.key, required this.review});
+final ReviewModel review;
   @override
   Widget build(BuildContext context) {
-    final dark = DHelperFunctions.isDarkMode(context);
+    final lang = AppLocalizations.of(context);
+    String locale = Localizations.localeOf(context).languageCode;
+    String formattedDate = DateFormat("dd/MM/yyyy HH:mm",locale).format(review.createdAt);
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                const CircleAvatar(backgroundImage: AssetImage(TImages.userProfileImage1),),
-                const SizedBox(width: DSize.spaceBtwItem,),
-                Text('John Doe',style: Theme.of(context).textTheme.titleLarge,)
-              ],
-            ),
-            IconButton(onPressed: (){}, icon: const Icon(Icons.more_vert))
-          ],
-        ),
+        //Thong tin nguoi dang
+        UserProfileInfo(review: review),
         const SizedBox(height: DSize.spaceBtwItem,),
-        //Review
+        //So sao va tg review
         Row(
           children: [
-            const TRatingBarIndicator(rating: 4.0),
+             UserRatingBarIndicator(rating: review.rating),
             const SizedBox(width: DSize.spaceBtwItem,),
-            Text('01 August 2024',style: Theme.of(context).textTheme.bodyMedium,)
+            Text(formattedDate,style: Theme.of(context).textTheme.bodyMedium,)
           ],
         ),
         const SizedBox(height: DSize.spaceBtwItem,),
-        const ReadMoreText("The user interface of the app  is quite intuitive."
-            "I was able to navigate and make purchases seamlessly.Great job.",
+         //Noi dung review
+         ReadMoreText(review.comment,
         trimLines: 2,
-        trimExpandedText: 'show less',
-        trimCollapsedText: 'show more',
+        trimExpandedText: lang.translate('less'),
+        trimCollapsedText: lang.translate('show_more'),
         trimMode: TrimMode.Line,
-        moreStyle: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: DColor.primary),
-        lessStyle: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: DColor.primary),
-
+        moreStyle: const TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: DColor.primary),
+        lessStyle: const TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: DColor.primary),
         ),
         const SizedBox(height: DSize.spaceBtwItem),
-
-        //Company Review
-        TRoundedContainer(
-          backgroundColor: dark? DColor.darkerGrey:DColor.grey,
-          child: Padding(
-            padding: const EdgeInsets.all(DSize.md),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("DStore",style: Theme.of(context).textTheme.bodyLarge),
-                    Text('02 Nov 2023',style: Theme.of(context).textTheme.bodyMedium)
-                  ],
+        //Danh sach anh va video
+        if (review.imageUrls.isNotEmpty || review.videoUrls.isNotEmpty)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Hiển thị danh sách ảnh
+              if (review.imageUrls.isNotEmpty)
+                SizedBox(
+                  height: 100,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: review.imageUrls.length,
+                    itemBuilder: (context, index) {
+                      final imageUrl = review.imageUrls[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FullScreenImageScreen(imageUrl: imageUrl),
+                              ),
+                            );
+                          },
+                          child: Image.network(imageUrl, width: 100, height: 100, fit: BoxFit.cover),
+                        ),
+                      );
+                    },
+                  ),
                 ),
-                const SizedBox(height: DSize.spaceBtwItem,),
-                const ReadMoreText("The user interface of the app  is quite intuitive."
-                    "I was able to navigate and make purchases seamlessly.Great job.",
-                  trimLines: 2,
-                  trimExpandedText: 'show less',
-                  trimCollapsedText: 'show more',
-                  trimMode: TrimMode.Line,
-                  moreStyle: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: DColor.primary),
-                  lessStyle: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: DColor.primary),
-
+              const SizedBox(height: 8),
+              // Hiển thị danh sách video (ví dụ chỉ hiện thumbnail với icon play)
+              if (review.videoUrls.isNotEmpty)
+                SizedBox(
+                  height: 100,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: review.videoUrls.length,
+                    itemBuilder: (context, index) {
+                      final videoUrl = review.videoUrls[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: VideoThumbnailWidget(
+                          videoUrl: videoUrl,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => VideoPlayerScreen(videoUrl: videoUrl),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
                 ),
-
-              ],
-            ),
+            ],
           ),
+        // Đường kẻ phân cách giữa các bình luận
+        const SizedBox(height: DSize.spaceBtwItem),
+        // Đường kẻ phân cách giữa các bình luận
+        const Divider(
+          color: Colors.grey, // Màu xám
+          thickness: 0.5, // Độ dày
+          height: 20, // Khoảng cách trên dưới
         ),
-        const SizedBox(height: DSize.spaceBtwItem,),
       ],
     );
   }

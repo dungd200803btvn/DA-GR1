@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -13,18 +15,41 @@ class NotificationController extends GetxController {
 static NotificationController get instance => Get.find();
 final notificationRepository = NotificationRepository.instance;
 final RxInt notificationCount = 0.obs;
-  @override
-  void onInit() async{
-    super.onInit();
-    FirebaseFirestore.instance
+StreamSubscription? _notificationSubscription;
+void _listenForNotifications() {
+  // Hủy listener cũ nếu có
+  _notificationSubscription?.cancel();
+
+  String? userId = AuthenticationRepository.instance.authUser?.uid;
+  if (userId == null) return;
+
+  _notificationSubscription = FirebaseFirestore.instance
       .collection('User')
-      .doc(AuthenticationRepository.instance.authUser!.uid)
+      .doc(userId)
       .collection('notifications')
       .where('read', isEqualTo: false)
       .snapshots()
       .listen((snapshot) {
-         notificationCount.value = snapshot.docs.length;
-      });
+    notificationCount.value = snapshot.docs.length;
+  });
+}
+void resetNotificationCount() {
+  notificationCount.value = 0;
+}
+// Gọi lại hàm này khi user thay đổi
+void updateUserNotifications() {
+  _listenForNotifications();
+}
+@override
+  void onClose() {
+    // TODO: implement onClose
+  _notificationSubscription?.cancel();
+  super.onClose();
+  }
+  @override
+  void onInit() async{
+    super.onInit();
+    _listenForNotifications();
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     NotificationSettings settings = await messaging.requestPermission(
       alert: true,

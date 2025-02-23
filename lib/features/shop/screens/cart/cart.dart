@@ -8,7 +8,6 @@ import 'package:t_store/features/shop/screens/checkout/checkout.dart';
 import 'package:t_store/navigation_menu.dart';
 import 'package:t_store/utils/constants/image_strings.dart';
 import 'package:t_store/utils/constants/sizes.dart';
-import 'package:t_store/utils/helper/helper_function.dart';
 import '../../controllers/product/order_controller.dart';
 
 class CartScreen extends StatelessWidget {

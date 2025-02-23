@@ -9,9 +9,11 @@ import 'package:t_store/features/shop/controllers/product/variation_controller.d
 import 'package:t_store/features/voucher/controllers/voucher_controller.dart';
 import 'package:t_store/utils/helper/network_manager.dart';
 import '../data/repositories/notification/notification_repository.dart';
+import '../data/repositories/review/review_repository.dart';
 import '../data/repositories/vouchers/VoucherRepository.dart';
 import '../features/notification/controller/notification_controller.dart';
 import '../features/personalization/controllers/update_name_controller.dart';
+import '../features/review/controller/review_controller.dart';
 
 class GeneralBindings extends Bindings{
   @override
@@ -29,5 +31,8 @@ class GeneralBindings extends Bindings{
     Get.put(ClaimedVoucherRepository());
     Get.put(NotificationRepository());
     Get.put(NotificationController());
+    NotificationController.instance.updateUserNotifications();
+    Get.put(ReviewRepository());
+    Get.put(WriteReviewScreenController());
   }
 }

@@ -3,6 +3,7 @@ import 'package:get/get_rx/get_rx.dart';
 import 'package:t_store/features/shop/controllers/product/variation_controller.dart';
 import 'package:t_store/features/shop/models/cart_item_model.dart';
 import 'package:t_store/features/shop/models/product_model.dart';
+import 'package:t_store/l10n/app_localizations.dart';
 import 'package:t_store/utils/enum/enum.dart';
 import 'package:t_store/utils/local_storage/storage_utility.dart';
 import 'package:t_store/utils/popups/loader.dart';
@@ -15,7 +16,6 @@ class CartController extends GetxController {
   RxInt productQuantityInCart = 0.obs;
   RxList<CartItemModel> cartItems = <CartItemModel>[].obs;
   final variationController = VariationController.instance;
-
   CartController(){
     loadCartItems();
   }
@@ -56,7 +56,7 @@ class CartController extends GetxController {
       cartItems.add(selectedCartItem);
     }
     updateCart();
-    TLoader.customToast(message: 'Your Product has been added to the Cart');
+    TLoader.customToast(message: 'Your product has been added to the cart');
   }
 void  addOneToCart(CartItemModel item){
     int index = cartItems.indexWhere((cartItem) => cartItem.productId == item.productId && cartItem.variationId == item.variationId);
@@ -66,6 +66,7 @@ void  addOneToCart(CartItemModel item){
       cartItems.add(item);
     }
     updateCart();
+
 }
 
 void removeOneFromCart(CartItemModel item){

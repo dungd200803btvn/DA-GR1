@@ -1,8 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:t_store/features/notification/controller/notification_controller.dart';
 import 'package:t_store/features/notification/model/notification_model.dart';
-
-import '../authentication/authentication_repository.dart';
 
 class NotificationRepository {
   static NotificationRepository get instance => NotificationRepository();

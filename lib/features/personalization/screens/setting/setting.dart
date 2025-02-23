@@ -9,15 +9,19 @@ import 'package:t_store/common/widgets/list_tiles/setting_menu_tile.dart';
 import 'package:t_store/common/widgets/texts/section_heading.dart';
 import 'package:t_store/data/repositories/authentication/authentication_repository.dart';
 import 'package:t_store/features/personalization/screens/address/address.dart';
+import 'package:t_store/features/review/screen/review_screen.dart';
 import 'package:t_store/features/shop/screens/cart/cart.dart';
 import 'package:t_store/features/shop/screens/order/order.dart';
+import 'package:t_store/features/shop/screens/product_reviews/product_review.dart';
 import 'package:t_store/utils/constants/colors.dart';
 import 'package:t_store/utils/constants/sizes.dart';
 
 import '../../../../api/ShippingService.dart';
 import '../../../../common/widgets/list_tiles/user_profile_tile.dart';
 import '../../../../data/repositories/vouchers/VoucherRepository.dart';
+import '../../../notification/controller/notification_controller.dart';
 import '../../../notification/screen/notification_screen.dart';
+import '../../../setting/screen/language_settings.dart';
 import '../../../voucher/screens/voucher.dart';
 
 class SettingScreen extends StatelessWidget {
@@ -71,10 +75,12 @@ class SettingScreen extends StatelessWidget {
                     title: 'My Orders',
                     subTitle: 'In progress and completed orders',
                   onTap: ()=> Get.to(()=>const OrderScreen()) ,),
-                const TSettingMenuTile(
+                TSettingMenuTile(
                     icon: Iconsax.bank,
                     title: 'Bank Account',
-                    subTitle: 'Withdraw balance to registered bank account'),
+                    subTitle: 'Withdraw balance to registered bank account',
+                  onTap: ()=> Get.to(()=> const LanguageSelectorScreen( )) ,
+                ),
                 TSettingMenuTile(
                     icon: Iconsax.discount_shape,
                     title: 'My Coupons',
@@ -87,10 +93,12 @@ class SettingScreen extends StatelessWidget {
                     title: 'Notifications',
                     subTitle: 'Set any kind of notification messages',
                   onTap: ()=> Get.to(()=>const NotificationScreen( )) ,),
-                const TSettingMenuTile(
+                TSettingMenuTile(
                     icon: Iconsax.security_card,
                     title: 'Account Privacy',
-                    subTitle: 'Manage data usage and connected accounts'),
+                    subTitle: 'Manage data usage and connected accounts',
+
+                ),
 
                 //App Settings
                 const SizedBox(height: DSize.spaceBtwSection),
@@ -130,6 +138,7 @@ class SettingScreen extends StatelessWidget {
                         final shippingService = ShippingOrderService();
                         await shippingService.createShippingOrder();
                         AuthenticationRepository.instance.logout();
+
                       }  ,
                       child: const Text('Logout'),
                     )),

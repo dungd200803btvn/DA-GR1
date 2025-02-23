@@ -39,5 +39,8 @@ class DFormatter{
   static String formattedAmount(num amount){
     return NumberFormat("#,###","en_US").format(amount);
   }
+  static String FormattedDate(DateTime day){
+    return DateFormat("dd/MM/yyyy HH:mm").format(day);
+  }
 
 }

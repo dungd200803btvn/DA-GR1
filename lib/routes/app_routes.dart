@@ -22,7 +22,6 @@ class AppRoutes{
     GetPage(name: TRoutes.store, page: ()=> const StoreScreen()),
     GetPage(name: TRoutes.favourites, page: ()=>const FavouriteScreen()),
     GetPage(name: TRoutes.settings, page: ()=> const SettingScreen()),
-    GetPage(name: TRoutes.productReviews, page: ()=> const ProductReviewScreen()),
     GetPage(name: TRoutes.order, page: ()=> const OrderScreen()),
     GetPage(name: TRoutes.checkout, page: ()=> const CheckoutScreen()),
     GetPage(name: TRoutes.cart, page: ()=> const CartScreen()),
