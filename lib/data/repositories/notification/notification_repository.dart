@@ -7,7 +7,7 @@ class NotificationRepository {
   // Fetch all notifications
   Future<List<NotificationModel>> fetchAllNotifications(String userId) async {
     try {
-      final result = await _db.collection('User').doc(userId).collection('notifications').get();
+      final result = await _db.collection('User').doc(userId).collection('notifications').orderBy('timestamp', descending: true).get();
       return result.docs.map((doc) => NotificationModel.fromMap(doc)).toList();
     } catch (e) {
       throw 'Error fetching notifications: $e';

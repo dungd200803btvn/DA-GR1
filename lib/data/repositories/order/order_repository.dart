@@ -13,8 +13,8 @@ Future<List<OrderModel>> fetchUserOrders()async{
   try{
     final userId = AuthenticationRepository.instance.authUser!.uid;
     if(userId.isEmpty) throw 'Unable to find user information. Try again in few minute';
-    final result = await _db.collection('User').doc(userId).collection('Orders').get();
-    // return result.docs.map((doc) => OrderModel.fromSnapshot(doc)).toList();
+    final result = await _db.collection('User').doc(userId).collection('Orders')
+        .get();
     return result.docs.map((doc) {
       try {
         return OrderModel.fromSnapshot(doc);

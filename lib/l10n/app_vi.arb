@@ -36,5 +36,9 @@
   "total_order_value": "Tổng giá trị đơn hàng",
   "order": "Đơn hàng",
   "one_product": "1 Sản phẩm",
-  "add_to_cart": "Sản phẩm của bạn đã được thêm vào giỏ hàng"
+  "add_to_cart": "Sản phẩm của bạn đã được thêm vào giỏ hàng",
+  "process_order": "Đang xử lý đơn đặt hàng của bạn",
+  "payment_success": "Thanh toán thành công",
+  "ship_soon": "Mặt hàng của bạn sẽ được vận chuyển sớm!",
+  "warning_payment_cancel": "Thanh toán bị hủy bỏ hoặc chưa hoàn thành. Vui lòng nhập đầy đủ thông tin và thử lại."
 }

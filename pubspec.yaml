@@ -66,6 +66,7 @@ dependencies:
   flutter_gen: ^5.9.0
   video_player: ^2.9.3
   video_thumbnail: ^0.5.3
+  flutter_stripe: ^11.4.0
 
 
 

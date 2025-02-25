@@ -8,6 +8,7 @@ import 'package:t_store/common/widgets/custom_shapes/containers/primary_header_c
 import 'package:t_store/common/widgets/list_tiles/setting_menu_tile.dart';
 import 'package:t_store/common/widgets/texts/section_heading.dart';
 import 'package:t_store/data/repositories/authentication/authentication_repository.dart';
+import 'package:t_store/features/payment/screens/payment_test.dart';
 import 'package:t_store/features/personalization/screens/address/address.dart';
 import 'package:t_store/features/review/screen/review_screen.dart';
 import 'package:t_store/features/shop/screens/cart/cart.dart';
@@ -97,7 +98,7 @@ class SettingScreen extends StatelessWidget {
                     icon: Iconsax.security_card,
                     title: 'Account Privacy',
                     subTitle: 'Manage data usage and connected accounts',
-
+                    onTap: ()=> Get.to(()=>const PaymentTest())
                 ),
 
                 //App Settings

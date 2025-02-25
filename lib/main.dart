@@ -4,11 +4,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:t_store/data/repositories/user/user_repository.dart';
 import 'package:t_store/routes/routes.dart';
+import 'package:t_store/utils/constants/api_constants.dart';
 import 'package:t_store/utils/local_storage/storage_utility.dart';
 import 'app.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -82,8 +84,6 @@ FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
   );
   // Khởi tạo plugin
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  // Gọi các hàm cập nhật dữ liệu lên Firebase
-  // await VoucherRepository.instance.updateCategoryAndFlatPriceVouchers();
-  // await UserRepository.instance.updateUserPointsAndFcmToken(AuthenticationRepository.instance.authUser!.uid);
+  Stripe.publishableKey = stripePublicKey;
   runApp(const MyApp());
 }

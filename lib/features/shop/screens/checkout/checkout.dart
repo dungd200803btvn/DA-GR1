@@ -86,7 +86,7 @@ class CheckoutScreen extends StatelessWidget {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(DSize.defaultspace),
         child: ElevatedButton (
-          onPressed: subTotal> 0 ? ()=> orderController.processOrder(subTotal)
+          onPressed: subTotal> 0 ? ()=> orderController.processOrder(subTotal,context)
           : () => TLoader.warningSnackbar(title: 'Empty Cart',message: 'Add items in the cart in order to proceed'),
           child: Obx(() => Text('Checkout: ${DFormatter.formattedAmount(orderController.netAmount.value*24500)} VND')),
         ),

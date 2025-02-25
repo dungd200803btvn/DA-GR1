@@ -9,6 +9,7 @@ import 'package:t_store/features/personalization/controllers/user_controller.dar
 import 'package:t_store/features/shop/controllers/product/cart_controller.dart';
 import 'package:t_store/features/shop/controllers/product/checkout_controller.dart';
 import 'package:t_store/features/voucher/models/VoucherAppliedInfo.dart';
+import 'package:t_store/l10n/app_localizations.dart';
 import 'package:t_store/navigation_menu.dart';
 import 'package:t_store/utils/constants/enums.dart';
 import 'package:t_store/utils/constants/image_strings.dart';
@@ -20,6 +21,7 @@ import '../../../../data/model/OrderDetailResponseModel.dart';
 import '../../../../data/model/OrderResponseModel.dart';
 import '../../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../notification/controller/notification_service.dart';
+import '../../../payment/services/stripe_service.dart';
 import '../../../personalization/models/address_model.dart';
 import '../../../suggestion/suggestion_repository.dart';
 import '../../models/order_model.dart';
@@ -113,13 +115,6 @@ class OrderController extends GetxController {
       final shippingService = ShippingOrderService();
       final response = await shippingService.createShippingOrder(shippingData);
       shippingOrder = ShippingOrderModel.fromJson(response);
-      if (kDebugMode) {
-        print('Order Code: ${shippingOrder?.orderCode}');
-        print('Total Fee: ${shippingOrder?.totalFee}');
-        print('Main Service Fee: ${shippingOrder?.fee.mainService}');
-        print('Expected Delivery Time: ${shippingOrder?.expectedDeliveryTime}');
-        print('Message: ${shippingOrder?.messageDisplay}');
-      }
       if(shippingOrder!=null){
         fee.value = shippingOrder!.totalFee.toDouble()/24500.0;//doi sang USD
       }
@@ -131,17 +126,17 @@ class OrderController extends GetxController {
   }
 
   //add methods for order processing
-  void processOrder(double subTotal) async {
+  void processOrder(double subTotal,BuildContext context) async {
     try {
       //start loader
+      final lang = AppLocalizations.of(context);
       TFullScreenLoader.openLoadingDialog(
-          'Processing your order', TImages.pencilAnimation);
+          lang.translate('process_order'), TImages.pencilAnimation);
       ShippingOrderService shippingService  =  ShippingOrderService();
       try {
         if (kDebugMode) {
           final detailOrder = await shippingService.getOrderDetail(shippingOrder!.orderCode);
           final shippingDetailOrder = OrderDetailModel.fromJson(detailOrder);
-          print('shippingDetailOrder: ${shippingDetailOrder.toJson()}');
           DateTime deliveryTime = DateTime.parse(shippingOrder!.expectedDeliveryTime).toLocal();
           final userId = AuthenticationRepository.instance.authUser!.uid;
           final order = OrderModel(
@@ -160,22 +155,7 @@ class OrderController extends GetxController {
           final userOrders = await orderRepository.fetchUserOrders();
           await suggestionRepository.generateAndSaveSuggestions(userOrders);
           cartController.clearCart();
-          Get.off(() => SuccessScreen(
-            image: TImages.orderCompletedAnimation,
-            title: 'Payment Success',
-            subTitle: 'Your item will be shipped soon!',
-            onPressed: () => Get.offAll(() => const NavigationMenu()),
-          ));
-          // Tạo thông báo "Đặt hàng thành công"
-          final now = DateTime.now();
-          final formattedTime = DateFormat('HH:mm dd/MM/yyyy').format(now);
-          final NotificationService notificationService = NotificationService(userId: userId);
-          await notificationService.createAndSendNotification(
-            title: "Đặt hàng thành công",
-            message: "Đơn hàng của bạn đã được đặt thành công vào $formattedTime",
-            type: "order",
-            orderId: order.id, // nếu có
-          );
+          StripeService.instance.makePayment(netAmount.value,"usd",userId,order.id,context);
         }
       } catch (e) {
         if (kDebugMode) {

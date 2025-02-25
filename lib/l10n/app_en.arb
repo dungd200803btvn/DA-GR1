@@ -36,5 +36,9 @@
   "total_order_value": "Total order value",
   "order": "Order",
   "one_product": "1 product",
-  "add_to_cart": "Your product has been added to the cart"
+  "add_to_cart": "Your product has been added to the cart",
+  "process_order": "Processing your Order",
+  "payment_success": "Payment Success",
+  "ship_soon": "Your item will be shipped soon!",
+  "warning_payment_cancel": "Payment is canceled or incomplete. Please enter complete information and try again."
 }
