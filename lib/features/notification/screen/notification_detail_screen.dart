@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
+import 'package:t_store/l10n/app_localizations.dart';
 import '../../../common/widgets/appbar/appbar.dart';
 import '../../../utils/constants/colors.dart';
 import '../../../utils/helper/helper_function.dart';
@@ -9,19 +9,18 @@ import '../model/notification_model.dart';
 
 class NotificationDetailScreen extends StatelessWidget {
   final NotificationModel notification;
-
   const NotificationDetailScreen({super.key, required this.notification});
 
   @override
   Widget build(BuildContext context) {
     final dark = DHelperFunctions.isDarkMode(context);
-    final formattedDate =
-    DateFormat('dd/MM/yyyy HH:mm').format(notification.timestamp);
+    final formattedDate =  DateFormat('dd/MM/yyyy HH:mm').format(notification.timestamp);
+    final lang = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: TAppBar(
         title: Text(
-          'Chi tiết thông báo',
+          lang.translate('notification_detail'),
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         showBackArrow: true,
@@ -94,7 +93,7 @@ class NotificationDetailScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      notification.read ? "Đã đọc" : "Chưa đọc",
+                      notification.read ? lang.translate('have_read') : lang.translate('un_read'),
                       style: TextStyle(
                         fontSize: 14,
                         color: notification.read
@@ -106,7 +105,6 @@ class NotificationDetailScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 24),
-
             ],
           ),
         ),

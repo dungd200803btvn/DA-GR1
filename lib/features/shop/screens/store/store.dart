@@ -18,6 +18,7 @@ import 'package:t_store/utils/helper/helper_function.dart';
 import '../../../../common/widgets/appbar/appbar.dart';
 import '../../../../common/widgets/brands/t_brand_cart.dart';
 import '../../../../common/widgets/shimmer/brands_shimmer.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../models/category_model.dart';
 import '../brand/brand_products.dart';
 
@@ -30,11 +31,11 @@ class StoreScreen extends StatelessWidget {
     final categories = CategoryController.instance.allCategories;
     final controller = Get.put(BrandController());
     final brandController = BrandController.instance;
-
+    final lang = AppLocalizations.of(context);
     // Tạo danh sách các Future<CategoryModel?>
     List<Future<CategoryModel?>> futures = categories.map((category) async {
       final brands = await brandController.getBrandsForCategory(category.id);
-      if (brands != null && brands.isNotEmpty) {
+      if (brands.isNotEmpty) {
         return category;
       }
       return null;
@@ -48,20 +49,19 @@ class StoreScreen extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           print('Error: ${snapshot.error}');
-          return Center(child: Text('Error: ${snapshot.error}'));
+          return Center(child: Text('${lang.translate('error')}: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data == null) {
-          return const Center(child: Text('No data available'));
+          return Center(child: Text(lang.translate('error')));
         } else {
           // Lọc bỏ các giá trị null khỏi kết quả
           final validCategories = snapshot.data!.where((category) => category != null).toList();
-
           // Chuyển đổi các giá trị CategoryModel? sang CategoryModel
           final nonNullCategories = validCategories.map((category) => category!).toList();
           return  DefaultTabController(
             length: nonNullCategories.length,
             child: Scaffold(
               appBar: TAppBar(
-                title: Text('Store', style: Theme.of(context).textTheme.headlineMedium),
+                title: Text(lang.translate('store'), style: Theme.of(context).textTheme.headlineMedium),
                 actions: const [
                   TCartCounterIcon(),
                 ],
@@ -69,7 +69,6 @@ class StoreScreen extends StatelessWidget {
                 leadingOnPressed: () async {
                   await Get.to(() => const NavigationMenu());
                 },
-
               ),
               body: NestedScrollView(
                 headerSliverBuilder: (_, innerBoxIsScrolled) {
@@ -88,7 +87,7 @@ class StoreScreen extends StatelessWidget {
                           children: [
                             // Feature Brands
                             TSectionHeading(
-                                title: 'Feature Brands',
+                                title: lang.translate('feature_brands'),
                                 showActionButton: true,
                                 onPressed: ()=> Get.to(()=> const AllBrandsScreen())),
                             const SizedBox(height: DSize.spaceBtwItem / 1.5),
@@ -96,7 +95,6 @@ class StoreScreen extends StatelessWidget {
                                   (){
                                 if(controller.isLoading.value) return const TBrandsShimmer();
                                 if(controller.featuredBrands.isEmpty) return Center(child: Text("",style: Theme.of(context).textTheme.bodyMedium!.apply(color: Colors.white),),);
-
                                 return TGridLayout(
                                     itemCount: controller.allBrands.length,
                                     mainAxisExtent: 80,
@@ -115,16 +113,16 @@ class StoreScreen extends StatelessWidget {
                           return FutureBuilder<List<CategoryModel?>>(
                             future: Future.wait(categories.map((category) async {
                               final brands = await brandController.getBrandsForCategory(category.id);
-                              if (brands != null && brands.isNotEmpty) {
+                              if (brands.isNotEmpty) {
                                 return category;
                               }
                               return null;
                             }).toList()),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.waiting) {
-                                return Center(child: CircularProgressIndicator());
+                                return const Center(child: CircularProgressIndicator());
                               } else if (snapshot.hasError) {
-                                return Center(child: Text('Error: ${snapshot.error}'));
+                                return Center(child: Text('${lang.translate('error')}: ${snapshot.error}'));
                               } else {
                                 final validCategories = snapshot.data?.where((category) => category != null).toList() ?? [];
                                 return TabBar(
@@ -141,7 +139,6 @@ class StoreScreen extends StatelessWidget {
                           );
                         }),
                       ),
-
                     )
                   ];
                 },
@@ -150,7 +147,7 @@ class StoreScreen extends StatelessWidget {
                   return FutureBuilder<List<CategoryModel?>>(
                     future: Future.wait(categories.map((category) async {
                       final brands = await brandController.getBrandsForCategory(category.id);
-                      if (brands != null && brands.isNotEmpty) {
+                      if (brands.isNotEmpty) {
                         return category;
                       }
                       return null;
@@ -159,7 +156,7 @@ class StoreScreen extends StatelessWidget {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
                       } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
+                        return Center(child: Text('${lang.translate('error')}: ${snapshot.error}'));
                       } else {
                         final validCategories = snapshot.data?.where((category) => category != null).toList() ?? [];
                         return TabBarView(
@@ -169,8 +166,6 @@ class StoreScreen extends StatelessWidget {
                     },
                   );
                 }),
-
-
               ),
             ),
           );
@@ -178,8 +173,4 @@ class StoreScreen extends StatelessWidget {
       },
     );
   }
-
-
 }
-
-

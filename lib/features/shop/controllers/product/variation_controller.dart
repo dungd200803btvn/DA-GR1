@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:t_store/features/shop/controllers/product/cart_controller.dart';
 import 'package:t_store/features/shop/controllers/product/images_controller.dart';
 import 'package:t_store/features/shop/models/product_model.dart';
 import 'package:t_store/features/shop/models/product_variation_model.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class VariationController extends GetxController {
   static VariationController get instance => Get.find();
@@ -12,7 +14,15 @@ class VariationController extends GetxController {
   RxString variationStockStatus = "".obs;
   Rx<ProductVariationModel> selectedVariation =
       ProductVariationModel.empty().obs;
-
+  late AppLocalizations lang;
+  @override
+  void onReady() {
+    super.onReady();
+    // Bây giờ Get.context đã có giá trị hợp lệ, ta mới khởi tạo lang
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      lang = AppLocalizations.of(Get.context!);
+    });
+  }
   ///select attributes and variations
   void onAttributeSelected(
       ProductModel product, attributeName, attributeValue) {
@@ -34,7 +44,6 @@ class VariationController extends GetxController {
       final cartController = CartController.instance;
       cartController.productQuantityInCart.value = cartController.getVariationQuantityInCart(product.id, selectedVariation.id);
     }
-
     //assign selected variation
     this.selectedVariation.value = selectedVariation;
   }
@@ -68,7 +77,7 @@ class VariationController extends GetxController {
   //check status
   void getProductVariationStockStatus() {
     variationStockStatus.value =
-        selectedVariation.value.stock > 0 ? "In Stock" : "Out of stock";
+        selectedVariation.value.stock > 0 ? lang.translate('in_stock') : lang.translate('out_stock');
   }
 
   //reset

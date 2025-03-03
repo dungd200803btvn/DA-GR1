@@ -49,7 +49,7 @@ Future<void> saveUserRecord(UserModel user) async{
     } on PlatformException catch (e) {
       throw TPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again';
+      throw 'Lỗi: ${e.toString()} ';
     }
   }
   //update user

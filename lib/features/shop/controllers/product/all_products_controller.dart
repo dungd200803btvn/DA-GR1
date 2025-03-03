@@ -1,57 +1,70 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:t_store/data/repositories/product/product_repository.dart';
 import 'package:t_store/features/shop/models/product_model.dart';
 import 'package:t_store/utils/popups/loader.dart';
+import '../../../../common/widgets/products/sortable/sort_option.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class AllProductsController extends GetxController{
   static AllProductsController get instance => Get.find();
   final repository = ProductRepository.instance;
-  final RxString selectedSortOption = 'Name'.obs;
+  final Rx<SortOption> selectedSortOption = SortOption.name.obs;
   final RxList<ProductModel> products = <ProductModel>[].obs;
-
+  late AppLocalizations lang;
+  @override
+  void onReady() {
+    super.onReady();
+    // Bây giờ Get.context đã có giá trị hợp lệ, ta mới khởi tạo lang
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      lang = AppLocalizations.of(Get.context!);
+    });
+  }
   Future<List<ProductModel>> fetchProductsByQuery(Query? query) async{
     try{
       if(query==null) return [];
       final products =await repository.fetchProductsByQuery(query);
       return products;
     }catch(e){
-      TLoader.errorSnackbar(title: 'Oh Snap!',message: e.toString());
+      TLoader.errorSnackbar(title: lang.translate('snap'),message: e.toString());
       return [];
     }
   }
-  void sortProducts(String option){
+  void sortProducts(SortOption option, BuildContext context) {
     selectedSortOption.value = option;
-    switch(option){
-      case 'Name':
-        products.sort((a,b)=> a.title.compareTo(b.title));
+    switch (option) {
+      case SortOption.name:
+        products.sort((a, b) => a.title.compareTo(b.title));
         break;
-      case 'Higher Price':
-        products.sort((a,b)=> b.price.compareTo(a.price));
+      case SortOption.higherPrice:
+        products.sort((a, b) => b.price.compareTo(a.price));
         break;
-      case 'Lower Price':
-        products.sort((a,b)=> a.price.compareTo(b.price));
+      case SortOption.lowerPrice:
+        products.sort((a, b) => a.price.compareTo(b.price));
         break;
-      case 'Newest':
-        products.sort((a,b)=> a.date!.compareTo(b.date!));
+      case SortOption.newest:
+        products.sort((a, b) => a.date!.compareTo(b.date!));
         break;
-      case 'Sale':
-        products.sort((a,b){
-          if(b.salePrice>0){
+      case SortOption.sale:
+        products.sort((a, b) {
+          if (b.salePrice > 0) {
             return b.salePrice.compareTo(a.salePrice);
-          }else if( a.salePrice>0){
+          } else if (a.salePrice > 0) {
             return -1;
-          }else{
+          } else {
             return 1;
           }
         });
         break;
-      default:  products.sort((a,b)=> a.title.compareTo(b.title));
+      case SortOption.popularity:
+        products.sort((a, b) => a.title.compareTo(b.title));
+        break;
     }
   }
-  void assignProducts(List<ProductModel> products){
+  void assignProducts(List<ProductModel> products,BuildContext context){
     this.products.assignAll(products);
-    sortProducts('Name');
+    sortProducts(SortOption.name,context);
   }
 
 }

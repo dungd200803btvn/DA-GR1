@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import '../utils/helper/logger.dart';
@@ -24,7 +23,6 @@ class ShippingOrderService {
     const url =
         'https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/create';
     try {
-
       final response = await _dio.post(
         url,
         data: jsonEncode(data),
@@ -37,7 +35,6 @@ class ShippingOrderService {
         ),
       );
       // Debug thông tin response
-      DLoggerHelper.debug('Response: ${response.data}');
       return response.data;
     } catch (e) {
       DLoggerHelper.error('Error in createShippingOrder: $e');
@@ -63,7 +60,6 @@ class ShippingOrderService {
         ),
       );
       // Debug thông tin response
-      DLoggerHelper.debug('Response: ${response.data}');
       return response.data;
     } catch (e) {
       DLoggerHelper.error('Error in getOrderDetail: $e');

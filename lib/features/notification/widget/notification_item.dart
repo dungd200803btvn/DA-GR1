@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
+import '../../../l10n/app_localizations.dart';
 import '../model/notification_model.dart';
 
 class NotificationItem extends StatelessWidget {
@@ -19,7 +19,7 @@ class NotificationItem extends StatelessWidget {
     // Định dạng ngày giờ thông báo
     final formattedDate =
     DateFormat('dd/MM/yyyy HH:mm').format(notification.timestamp);
-
+    final lang = AppLocalizations.of(context);
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       elevation: 3,
@@ -55,7 +55,6 @@ class NotificationItem extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  // Nếu chưa đọc, text nên rõ nét hơn
                   color: notification.read ? Colors.black54 : Colors.black87,
                 ),
               ),
@@ -68,9 +67,9 @@ class NotificationItem extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   if (notification.read)
-                    const Text(
-                      "Đã đọc",
-                      style: TextStyle(fontSize: 12, color: Colors.green),
+                     Text(
+                      lang.translate('have_read'),
+                      style: const TextStyle(fontSize: 12, color: Colors.green),
                     ),
                 ],
               ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/l10n/app_localizations.dart';
 class TSectionHeading extends StatelessWidget {
   const TSectionHeading({
     super.key,
@@ -6,7 +7,7 @@ class TSectionHeading extends StatelessWidget {
     this.showActionButton = true,
     this.title = "",
     this.titleWidget, // Thêm titleWidget để hiển thị dữ liệu động
-    this.buttonTitle = "View all",
+    this.buttonTitle = "View all" ,
     this.onPressed,
   });
 
@@ -19,18 +20,21 @@ class TSectionHeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final lang = AppLocalizations.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         // Nếu có titleWidget thì dùng, nếu không thì dùng title mặc định
-        titleWidget ??
-            Text(
-              title,
-              style: Theme.of(context).textTheme.headlineSmall!.apply(color: textColor),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-        if (showActionButton) TextButton(onPressed: onPressed, child: Text(buttonTitle)),
+        Expanded(
+          child: titleWidget ??
+              Text(
+                title,
+                style: Theme.of(context).textTheme.headlineSmall!.apply(color: textColor),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+        ),
+        if (showActionButton) TextButton(onPressed: onPressed, child: Text(lang.translate('view_all'))),
       ],
     );
   }

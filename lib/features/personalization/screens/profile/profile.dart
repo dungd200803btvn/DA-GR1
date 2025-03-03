@@ -4,11 +4,14 @@ import 'package:t_store/common/widgets/appbar/appbar.dart';
 import 'package:t_store/common/widgets/images/t_circular_image.dart';
 import 'package:t_store/common/widgets/shimmer/shimmer.dart';
 import 'package:t_store/common/widgets/texts/section_heading.dart';
+import 'package:t_store/features/personalization/screens/profile/widgets/change_field.dart';
 import 'package:t_store/features/personalization/screens/profile/widgets/change_name.dart';
 import 'package:t_store/features/personalization/screens/profile/widgets/profile_menu.dart';
 import 'package:t_store/utils/constants/image_strings.dart';
 import 'package:t_store/utils/constants/sizes.dart';
+import 'package:t_store/utils/formatter/formatter.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../controllers/user_controller.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -17,8 +20,9 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = UserController.instance;
+    final lang = AppLocalizations.of(context);
     return Scaffold(
-      appBar: const TAppBar(showBackArrow: true, title: Text('Profile')),
+      appBar:  TAppBar(showBackArrow: true, title: Text(lang.translate('profile'),style: Theme.of(context).textTheme.headlineSmall)),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(DSize.defaultspace),
@@ -38,7 +42,7 @@ class ProfileScreen extends StatelessWidget {
                     }),
                     TextButton(
                         onPressed: () => controller.uploadUserProfilePicture(),
-                        child: const Text('Change Profile Picture')),
+                        child:  Text(lang.translate('change_pro5_picture'))),
                   ],
                 ),
               ),
@@ -48,48 +52,129 @@ class ProfileScreen extends StatelessWidget {
               const Divider(),
               const SizedBox(height: DSize.spaceBtwItem),
               //Heading Profile Info
-              const TSectionHeading(
-                  title: 'Profile Information', showActionButton: false),
+               TSectionHeading(
+                  title: lang.translate('profile_in4'), showActionButton: false),
               const SizedBox(height: DSize.spaceBtwItem),
               Obx(() => TProfileMenu(
                   onPressed: () => Get.to(() => const ChangeName()),
-                  title: 'Name',
+                  title: lang.translate('name'),
                   value: controller.user.value.fullname)),
               Obx(() => TProfileMenu(
-                  onPressed: () {},
-                  title: 'Username',
+                  onPressed: () {
+                    Get.to(()=> ChangeProfileField(
+                      title: lang.translate('change_user'),
+                      successMessage: lang.translate('change_user_msg'),
+                      fields: [
+                        FieldConfig(
+                          label: 'username',
+                          fieldName: 'UserName',
+                          fieldType: FieldType.text,
+                          textController: TextEditingController(text: ""),
+                        ),
+                      ],
+                      onUpdate: (data) async {
+                        await controller.updateSingleField(data);
+                      },
+                    ));
+                  },
+                  title: lang.translate('username'),
                   value: controller.user.value.userName)),
               const SizedBox(height: DSize.spaceBtwItem),
               const Divider(),
               const SizedBox(height: DSize.spaceBtwItem),
               //Heading Personal Info
-              const TSectionHeading(
-                  title: 'Personal Information', showActionButton: false),
+               TSectionHeading(
+                  title: lang.translate('personal_in4'), showActionButton: false),
               const SizedBox(height: DSize.spaceBtwItem),
               Obx(() => TProfileMenu(
-                  onPressed: () {},
-                  title: 'User ID',
-                  value: controller.user.value.id)),
-              Obx(() => TProfileMenu(
-                  onPressed: () {},
-                  title: 'E-mail',
+                  onPressed: () {
+                    Get.to(()=> ChangeProfileField(
+                      title: lang.translate('change_email'),
+                      successMessage: lang.translate('change_email_msg'),
+                      fields: [
+                        FieldConfig(
+                          label: 'email',
+                          fieldName: 'Email',
+                          fieldType: FieldType.text,
+                          textController: TextEditingController(text: ""),
+                        ),
+                      ],
+                      onUpdate: (data) async {
+                        await controller.updateSingleField(data);
+                      },
+                    ));
+                  },
+                  title: lang.translate('email'),
                   value: controller.user.value.email)),
               Obx(() => TProfileMenu(
-                  onPressed: () {},
-                  title: 'Phone number',
+                  onPressed: () {
+                    Get.to(()=> ChangeProfileField(
+                      title: lang.translate('change_phone'),
+                      successMessage: lang.translate('change_phone_msg'),
+                      fields: [
+                        FieldConfig(
+                          label: 'phoneNumner',
+                          fieldName: 'PhoneNumber',
+                          fieldType: FieldType.text,
+                          textController: TextEditingController(text: ""),
+                        ),
+                      ],
+                      onUpdate: (data) async {
+                        await controller.updateSingleField(data);
+                      },
+                    ));
+                  },
+                  title: lang.translate('phoneNo'),
                   value: controller.user.value.phoneNumber)),
-              TProfileMenu(onPressed: () {}, title: 'Gender', value: 'Male'),
-              TProfileMenu(
-                  onPressed: () {},
-                  title: 'Date of Birth',
-                  value: '20 August, 2003'),
+              Obx(
+                    () =>  TProfileMenu(onPressed: () {
+                  Get.to(()=> ChangeProfileField(
+                    title: lang.translate('change_gender'),
+                    successMessage: lang.translate('change_gender_msg'),
+                    fields: [
+                      FieldConfig(
+                        label: 'gender',
+                        fieldName: 'Gender',
+                        fieldType: FieldType.text,
+                        textController: TextEditingController(text: ""),
+                      ),
+                    ],
+                    onUpdate: (data) async {
+                      await controller.updateSingleField(data);
+                    },
+                  ));
+                },
+                    title: lang.translate('gender'),
+                    value: controller.user.value.gender),
+              ),
+              Obx(
+                    () => TProfileMenu(
+                    onPressed: () {
+                      Get.to(()=> ChangeProfileField(
+                        title: lang.translate('change_dob'),
+                        successMessage: lang.translate('change_dob_msg'),
+                        fields: [
+                          FieldConfig(
+                            label: 'dateOfBirth',
+                            fieldName: 'DateOfBirth',
+                            fieldType: FieldType.date,
+                          ),
+                        ],
+                        onUpdate: (data) async {
+                          await controller.updateSingleField(data);
+                        },
+                      ));
+                    },
+                    title: lang.translate('date_of_birth'),
+                    value: DFormatter.FormattedDate1(controller.user.value.dateOfBirth)),
+              ),
               const Divider(),
               const SizedBox(height: DSize.spaceBtwItem),
               Center(
                   child: TextButton(
                 onPressed: () => controller.deleteAccountWarningPopup(),
-                child: const Text(
-                  'Close Account',
+                child:  Text(
+                  lang.translate('delete_account'),
                   style: TextStyle(color: Colors.red),
                 ),
               ))

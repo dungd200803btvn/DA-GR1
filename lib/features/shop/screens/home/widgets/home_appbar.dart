@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:t_store/common/widgets/shimmer/shimmer.dart';
 import 'package:t_store/features/personalization/controllers/user_controller.dart';
 import 'package:t_store/features/shop/screens/cart/cart.dart';
+import 'package:t_store/l10n/app_localizations.dart';
 import '../../../../../common/widgets/appbar/appbar.dart';
 import '../../../../../common/widgets/products/cart/cart_menu_icon.dart';
 import '../../../../../utils/constants/colors.dart';
@@ -14,12 +15,13 @@ class THomeAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = UserController.instance;
+    final lang =  AppLocalizations.of(context);
     return TAppBar(
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            DText.homeAppbarTitle,
+            lang.translate('homeAppbarTitle'),
             style: Theme.of(context)
                 .textTheme
                 .labelMedium!

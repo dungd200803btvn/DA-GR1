@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:t_store/features/shop/controllers/product/variation_controller.dart';
@@ -16,33 +17,42 @@ class CartController extends GetxController {
   RxInt productQuantityInCart = 0.obs;
   RxList<CartItemModel> cartItems = <CartItemModel>[].obs;
   final variationController = VariationController.instance;
+  late AppLocalizations lang;
   CartController(){
     loadCartItems();
+  }
+  @override
+  void onReady() {
+    super.onReady();
+    // Bây giờ Get.context đã có giá trị hợp lệ, ta mới khởi tạo lang
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      lang = AppLocalizations.of(Get.context!);
+    });
   }
   ///add items in the cart
   void addToCart(ProductModel product,[double? salePercentage]) {
     //quantity check
     if (productQuantityInCart.value < 1) {
-      TLoader.customToast(message: 'Select Quantity');
+      TLoader.customToast(message: lang.translate('select_quantity'));
       return;
     }
     //variation selected
     if (product.productType == ProductType.variable.toString() &&
         variationController.selectedVariation.value.id.isEmpty) {
-      TLoader.customToast(message: 'Select Variation');
+      TLoader.customToast(message: lang.translate('select_variation'));
       return;
     }
     //Out of Stock Status
     if (product.productType == ProductType.variable.toString()) {
       if (variationController.selectedVariation.value.stock < 1) {
         TLoader.warningSnackbar(
-            title: 'Oh Snap!', message: 'Selected variation is out of stock');
+            title: lang.translate('snap'), message: lang.translate('select_variation_err'));
         return;
       }
     } else {
       if (product.stock < 1) {
         TLoader.warningSnackbar(
-            title: 'Oh Snap!', message: 'Selected product is out of stock');
+            title: lang.translate('snap'), message: lang.translate('select_product_err'));
         return;
       }
     }
@@ -56,8 +66,9 @@ class CartController extends GetxController {
       cartItems.add(selectedCartItem);
     }
     updateCart();
-    TLoader.customToast(message: 'Your product has been added to the cart');
+    TLoader.customToast(message: lang.translate('add_to_cart'));
   }
+
 void  addOneToCart(CartItemModel item){
     int index = cartItems.indexWhere((cartItem) => cartItem.productId == item.productId && cartItem.variationId == item.variationId);
     if(index>=0){
@@ -66,7 +77,6 @@ void  addOneToCart(CartItemModel item){
       cartItems.add(item);
     }
     updateCart();
-
 }
 
 void removeOneFromCart(CartItemModel item){
@@ -83,12 +93,12 @@ void removeOneFromCart(CartItemModel item){
 
 void removeFromCartDialog(int index){
     Get.defaultDialog(
-      title: 'Remove Product',
-      middleText: 'Are you sure you want to remove this product?',
+      title: lang.translate('remove_product'),
+      middleText: lang.translate('remove_product_msg'),
       onConfirm: (){
         cartItems.removeAt(index);
         updateCart();
-        TLoader.customToast(message: 'Product removed from the Cart');
+        TLoader.customToast(message: lang.translate('remove_product_success'));
         Get.back();
       },
       onCancel: ()=>  ()=> Get.back(),

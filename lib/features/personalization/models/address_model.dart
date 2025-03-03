@@ -31,7 +31,7 @@ class AddressModel {
   static AddressModel empty() => AddressModel(
     id: "",
     name: "",
-    phoneNumber: "",
+    phoneNumber: "0335620803",
     street: "",
     city: "",
     district: "",

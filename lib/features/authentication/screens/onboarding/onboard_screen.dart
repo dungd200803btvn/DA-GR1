@@ -8,13 +8,15 @@ import 'package:t_store/features/authentication/screens/onboarding/widgets/onboa
 import 'package:t_store/utils/constants/image_strings.dart';
 import 'package:t_store/utils/constants/text_string.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 class OnBoardingScreen extends StatelessWidget {
   const OnBoardingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(OnBoardingController());
-
+    var lang = AppLocalizations.of(context);
     return  Scaffold(
       body: Stack(
         children: [
@@ -22,21 +24,21 @@ class OnBoardingScreen extends StatelessWidget {
           PageView(
             controller: controller.pageController,
             onPageChanged: controller.updatePageIndicator,
-            children: const [
+            children: [
               OnboardingWidget(
                 image: TImages.onBoardingImage1,
-                title: DText.onBoardingTitle1,
-                subTitle: DText.onBoardingSubTitle1,
+                title: lang.translate('onBoardingTitle1'),
+                subTitle: lang.translate('onBoardingSubTitle1'),
               ),
               OnboardingWidget(
                 image: TImages.onBoardingImage2,
-                title: DText.onBoardingTitle2,
-                subTitle: DText.onBoardingSubTitle2,
+                title: lang.translate('onBoardingTitle2'),
+                subTitle: lang.translate('onBoardingSubTitle2'),
               ),
               OnboardingWidget(
                 image: TImages.onBoardingImage3,
-                title: DText.onBoardingTitle3,
-                subTitle: DText.onBoardingSubTitle3,
+                title: lang.translate('onBoardingTitle3'),
+                subTitle: lang.translate('onBoardingSubTitle3'),
               ),
             ],
           ),

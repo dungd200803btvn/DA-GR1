@@ -13,6 +13,7 @@ import 'package:t_store/utils/helper/helper_function.dart';
 import 'package:t_store/utils/popups/loader.dart';
 import '../../../../common/widgets/products/cart/coupon_widget.dart';
 import '../../../../data/repositories/authentication/authentication_repository.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/formatter/formatter.dart';
 import '../cart/widgets/cart_items.dart';
 
@@ -24,6 +25,7 @@ class CheckoutScreen extends StatelessWidget {
     final cartController = CartController.instance;
     final orderController = OrderController.instance;
     final subTotal = cartController.totalCartPrice.value;
+    final lang = AppLocalizations.of(context);
     // Gọi hàm processOrder ngay khi màn hình được build
     Future.delayed(Duration.zero, () {
     if (subTotal > 0) {
@@ -34,7 +36,7 @@ class CheckoutScreen extends StatelessWidget {
       appBar: TAppBar(
         showBackArrow: true,
         title: Text(
-          'Order Review',
+          lang.translate('order_review'),
           style: Theme.of(context).textTheme.headlineSmall,
         ),
       ),
@@ -87,8 +89,8 @@ class CheckoutScreen extends StatelessWidget {
         padding: const EdgeInsets.all(DSize.defaultspace),
         child: ElevatedButton (
           onPressed: subTotal> 0 ? ()=> orderController.processOrder(subTotal,context)
-          : () => TLoader.warningSnackbar(title: 'Empty Cart',message: 'Add items in the cart in order to proceed'),
-          child: Obx(() => Text('Checkout: ${DFormatter.formattedAmount(orderController.netAmount.value*24500)} VND')),
+          : () => TLoader.warningSnackbar(title: lang.translate('empty_cart'),message: lang.translate('add_cart_warning')),
+          child: Obx(() => Text('${lang.translate('checkout')}: ${DFormatter.formattedAmount(orderController.netAmount.value*24500)} VND')),
         ),
       ),
 

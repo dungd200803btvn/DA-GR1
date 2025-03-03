@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
     final LanguageController languageController = Get.put(LanguageController());
     return Obx(()=>GetMaterialApp(
       title: 'Ecommerce App',
-      themeMode: ThemeMode.system,
+      themeMode: Get.isDarkMode ? ThemeMode.dark : ThemeMode.light,
       darkTheme: DAppTheme.dark_theme,
       theme: DAppTheme.light_theme,
       initialBinding: GeneralBindings(),

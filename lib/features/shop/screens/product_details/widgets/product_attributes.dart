@@ -5,6 +5,7 @@ import 'package:t_store/common/widgets/texts/product_price_text.dart';
 import 'package:t_store/common/widgets/texts/product_title_text.dart';
 import 'package:t_store/common/widgets/texts/section_heading.dart';
 import 'package:t_store/features/shop/controllers/product/variation_controller.dart';
+import 'package:t_store/l10n/app_localizations.dart';
 import 'package:t_store/utils/constants/colors.dart';
 import 'package:t_store/utils/constants/sizes.dart';
 import 'package:t_store/utils/helper/helper_function.dart';
@@ -21,6 +22,7 @@ class ProductAttributes extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(VariationController());
     final dark = DHelperFunctions.isDarkMode(context);
+    final lang = AppLocalizations.of(context);
     return Obx(
         ()=> Column(
         children: [
@@ -36,8 +38,8 @@ class ProductAttributes extends StatelessWidget {
                   Row(
                     children: [
                       //Title
-                      const TSectionHeading(
-                          title: 'Variation', showActionButton: false),
+                      TSectionHeading(
+                          title: lang.translate('variation'), showActionButton: false),
                       const SizedBox(width: DSize.spaceBtwItem),
                       //Price
                       Column(
@@ -46,8 +48,8 @@ class ProductAttributes extends StatelessWidget {
                           //Price
                           Row(
                             children: [
-                              const TProductTitleText(
-                                  title: 'Price', smallSize: true),
+                               TProductTitleText(
+                                  title: lang.translate('price'), smallSize: true),
                               //Actual price
                               if(salePercentage!=null)
                               Text('\$${controller.selectedVariation.value.price}',
@@ -65,8 +67,8 @@ class ProductAttributes extends StatelessWidget {
                           //Stock
                           Row(
                             children: [
-                              const TProductTitleText(
-                                  title: 'Stock:', smallSize: true),
+                               TProductTitleText(
+                                  title: lang.translate('stock'), smallSize: true),
                               const SizedBox(width: DSize.spaceBtwItem / 2),
                               Text(controller.selectedVariation.value.stock.toString(),
                                   style: Theme.of(context).textTheme.titleMedium),
@@ -80,7 +82,7 @@ class ProductAttributes extends StatelessWidget {
                   //Variation Description
                    TProductTitleText(
                       title:
-                        controller.selectedVariation.value.description ?? " The product has good quality and reasonable price, it is worth trying once" ,
+                        controller.selectedVariation.value.description ?? lang.translate('variation_mes') ,
                       smallSize: true,
                       maxLines: 4),
                 ],

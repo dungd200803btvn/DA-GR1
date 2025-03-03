@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import '../../../data/repositories/product/product_repository.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/popups/loader.dart';
 import '../models/product_model.dart';
 
@@ -15,6 +16,15 @@ class HomeController extends GetxController {
     query.addListener(_searchProducts);
     loadAllProducts();
   }
+  late AppLocalizations lang;
+  @override
+  void onReady() {
+    super.onReady();
+    // Bây giờ Get.context đã có giá trị hợp lệ, ta mới khởi tạo lang
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      lang = AppLocalizations.of(Get.context!);
+    });
+  }
 
   final productRepository = Get.put(ProductRepository());
   final RxList<ProductModel> _allProducts = <ProductModel>[].obs;
@@ -27,7 +37,7 @@ class HomeController extends GetxController {
       // Khởi tạo danh sách lọc bằng tất cả sản phẩm
       filteredProducts.value = _allProducts.value;
     } catch (e) {
-      TLoader.errorSnackbar(title: 'Oh Snap!', message: e.toString());
+      TLoader.errorSnackbar(title: lang.translate('snap'), message: e.toString());
     }
   }
 
@@ -44,24 +54,3 @@ class HomeController extends GetxController {
     super.onClose();
   }
 }
-
-
-// List<ProductModel> getProductsBySearchQuery(String query) {
-//   try {
-//     String lowerCaseQuery = query.toLowerCase();
-//     return _allProducts.value.where((product) =>
-//         product.title.toLowerCase().contains(lowerCaseQuery)).toList();
-//   } catch (e) {
-//     TLoader.errorSnackbar(title: 'Oh Snap!', message: e.toString());
-//     return [];
-//   }
-// }
-//
-// Future<List<ProductModel>> getProductsBySearchQuery1(String query) async {
-//   try {
-//     return await productRepository.getProductsBySearchQuery(query);
-//   } catch (e) {
-//     TLoader.errorSnackbar(title: 'Oh Snap!', message: e.toString());
-//     return [];
-//   }
-// }

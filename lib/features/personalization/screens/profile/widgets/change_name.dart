@@ -5,21 +5,24 @@ import 'package:t_store/features/personalization/controllers/update_name_control
 import 'package:t_store/utils/constants/sizes.dart';
 import 'package:t_store/utils/constants/text_string.dart';
 import 'package:t_store/utils/validators/validation.dart';
+
+import '../../../../../l10n/app_localizations.dart';
 class ChangeName extends StatelessWidget {
   const ChangeName({super.key});
 
   @override
   Widget build(BuildContext context) {
     final controller = UpdateNameController.instance;
+    final lang = AppLocalizations.of(context);
     return Scaffold(
-      appBar: TAppBar(showBackArrow: true,title: Text("Change name",style: Theme.of(context).textTheme.headlineSmall,)),
+      appBar: TAppBar(showBackArrow: true,title: Text(lang.translate('change_name'),style: Theme.of(context).textTheme.headlineSmall,)),
       body: Padding(
         padding: const EdgeInsets.all(DSize.defaultspace),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             //Heading
-            Text('User real name for easy verification. This name will appear on several pages',style: Theme.of(context).textTheme.labelMedium,),
+            Text(lang.translate('change_name_msg'),style: Theme.of(context).textTheme.labelMedium,),
             const SizedBox(height: DSize.spaceBtwSection,),
             //Textfiela and button
             Form(key: controller.updateUsernameFormKey,
@@ -29,7 +32,7 @@ class ChangeName extends StatelessWidget {
                   controller: controller.firstName,
                   validator: (value)=> DValidator.validateEmptyText('Firstname', value),
                   expands: false,
-                  decoration: const InputDecoration(labelText: DText.firstName,prefixIcon: Icon(Iconsax.user)),
+                  decoration:  InputDecoration(labelText: lang.translate('firstName'),prefixIcon: Icon(Iconsax.user)),
 
                 ),
                 const SizedBox(height: DSize.spaceBtwInputFielRadius,),
@@ -37,7 +40,7 @@ class ChangeName extends StatelessWidget {
                   controller: controller.lastName,
                   validator: (value)=> DValidator.validateEmptyText('Lastname', value),
                   expands: false,
-                  decoration: const InputDecoration(labelText: DText.lastName,prefixIcon: Icon(Iconsax.user)),
+                  decoration: InputDecoration(labelText: lang.translate('lastName'),prefixIcon: Icon(Iconsax.user)),
 
                 ),
               ],
@@ -47,7 +50,7 @@ class ChangeName extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: ()=> controller.updateUserName(),
-                child: const Text("Save"),
+                child:  Text(lang.translate('save')),
               ),
             )
 

@@ -86,4 +86,40 @@ class AddressRepository extends GetxController {
       throw "Something went wrong while saving Address Information. Try again later.";
     }
   }
+
+  Future<void> deleteAddress(String userId, String addressId) async {
+    try {
+      await _db
+          .collection('User')
+          .doc(userId)
+          .collection('Addresses')
+          .doc(addressId)
+          .delete();
+    } catch (e) {
+      throw Exception("Error deleting address: $e");
+    }
+  }
+
+  Future<void> updateAddress(String userId, AddressModel updatedAddress) async {
+    try {
+      await _db
+          .collection('User')
+          .doc(userId)
+          .collection('Addresses')
+          .doc(updatedAddress.id)
+          .update({
+        'Name': updatedAddress.name,
+        'PhoneNumber': updatedAddress.phoneNumber,
+        'Street': updatedAddress.street,
+        'City': updatedAddress.city,
+        'District': updatedAddress.district,
+        'Commune': updatedAddress.commune,
+        'Country': updatedAddress.country,
+        'DateTime': updatedAddress.dateTime,
+        'SelectedAddress': updatedAddress.selectedAddress,
+      });
+    } catch (e) {
+      throw Exception("Error updating address: $e");
+    }
+  }
 }

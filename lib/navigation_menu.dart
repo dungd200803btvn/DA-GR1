@@ -5,6 +5,7 @@ import 'package:t_store/features/notification/screen/notification_screen.dart';
 import 'package:t_store/features/personalization/screens/setting/setting.dart';
 import 'package:t_store/features/shop/screens/home/home.dart';
 import 'package:t_store/features/shop/screens/wishlist/wishlist.dart';
+import 'package:t_store/l10n/app_localizations.dart';
 import 'package:t_store/utils/helper/helper_function.dart';
 import 'features/notification/widget/notification_icon.dart';
 import 'features/shop/screens/store/store.dart';
@@ -15,6 +16,7 @@ class NavigationMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(NavigationController());
     final dark = DHelperFunctions.isDarkMode(context);
+    final lang = AppLocalizations.of(context);
     return Scaffold(
       bottomNavigationBar: Obx(
         ()=>NavigationBar(
@@ -24,15 +26,15 @@ class NavigationMenu extends StatelessWidget {
           onDestinationSelected: (index)=> controller.selectedIndex.value = index,
           backgroundColor: dark? Colors.black:Colors.white,
           indicatorColor: dark? Colors.white.withOpacity(0.1):Colors.black.withOpacity(0.1),
-          destinations: const [
-            NavigationDestination(icon: Icon(Iconsax.home), label: 'Home'),
-            NavigationDestination(icon: Icon(Iconsax.shop), label: 'Store'),
-            NavigationDestination(icon: Icon(Iconsax.heart), label: 'Wishlist'),
+          destinations: [
+            NavigationDestination(icon: Icon(Iconsax.home), label: lang.translate('home')),
+            NavigationDestination(icon: Icon(Iconsax.shop), label:  lang.translate('store')),
+            NavigationDestination(icon: Icon(Iconsax.heart), label: lang.translate('wishlist')),
             // Mục Notification với badge
             NavigationDestination(
                 icon: NotificationIcon(),
-                label: 'Notification'),
-            NavigationDestination(icon: Icon(Iconsax.user), label: 'Profile'),
+                label: lang.translate('notification')),
+            NavigationDestination(icon: Icon(Iconsax.user), label: lang.translate('profile')),
           ],
         ),
       ),

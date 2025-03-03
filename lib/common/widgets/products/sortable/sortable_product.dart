@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:t_store/common/widgets/products/sortable/sort_option.dart';
 import 'package:t_store/features/shop/controllers/product/all_products_controller.dart';
 import 'package:t_store/features/shop/models/product_model.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../layouts/grid_layout.dart';
 import '../product_cards/product_card_vertical.dart';
@@ -19,18 +21,27 @@ class TSortableProducts extends StatelessWidget {
     final controller = Get.put(AllProductsController());
     // Di chuyển logic cập nhật trạng thái ra ngoài build
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.assignProducts(products);
+      controller.assignProducts(products,context);
     });
     return Column(
       children: [
         //Drop down
-        DropdownButtonFormField(
-          items: ['Name','Higher Price','Lower Price','Sale','Newest','Popularity'].map((option) => DropdownMenuItem(value:option,child:  Text(option))).toList(),
+        DropdownButtonFormField<SortOption>(
+          items: SortOption.values.map((option) {
+            return DropdownMenuItem<SortOption>(
+              value: option,
+              child: Text(option.getLabel(context)),
+            );
+          }).toList(),
           value: controller.selectedSortOption.value,
-          onChanged: (value){
-            controller.sortProducts(value!);
+          onChanged: (SortOption? newOption) {
+            if (newOption != null) {
+              controller.sortProducts(newOption, context);
+            }
           },
-          decoration: const InputDecoration(prefixIcon: Icon(Iconsax.sort)),),
+          decoration: const InputDecoration(prefixIcon: Icon(Iconsax.sort)),
+        ),
+
         const SizedBox(height: DSize.spaceBtwSection,),
         /// Products
         Obx((){

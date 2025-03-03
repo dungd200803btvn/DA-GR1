@@ -7,6 +7,7 @@ import 'package:t_store/utils/constants/sizes.dart';
 import 'package:t_store/utils/formatter/formatter.dart';
 import 'package:t_store/utils/helper/pricing_calculator.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../voucher/controllers/voucher_controller.dart';
 import '../../../controllers/product/order_controller.dart';
 class TBillingAmountSection extends StatelessWidget {
@@ -18,13 +19,14 @@ class TBillingAmountSection extends StatelessWidget {
     final orderController = OrderController.instance;
     final subTotal = cartController.totalCartPrice.value;
     final controller = VoucherController.instance;
+    final lang = AppLocalizations.of(context);
     return Column(
       children: [
         //SubTotal
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Subtotal',style: Theme.of(context).textTheme.bodyMedium,),
+            Text(lang.translate('subtotal'),style: Theme.of(context).textTheme.bodyMedium,),
             Text('${DFormatter.formattedAmount(subTotal*24500)} VND',style: Theme.of(context).textTheme.bodyMedium,),
           ],
         ),
@@ -33,7 +35,7 @@ class TBillingAmountSection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Shipping Fee',style: Theme.of(context).textTheme.bodyMedium,),
+            Text(lang.translate('shipping_fee'),style: Theme.of(context).textTheme.bodyMedium,),
             Obx(()=> Text('${DFormatter.formattedAmount(orderController.fee.value*24500)} VND',style: Theme.of(context).textTheme.labelLarge,)) ,
           ],
         ),
@@ -42,7 +44,7 @@ class TBillingAmountSection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Order Total',style: Theme.of(context).textTheme.bodyMedium,),
+            Text(lang.translate('order_total'),style: Theme.of(context).textTheme.bodyMedium,),
             Obx(()=> Text('${DFormatter.formattedAmount(orderController.totalAmount.value*24500)} VND',style: Theme.of(context).textTheme.labelLarge,)) ,
           ],
         ),
@@ -59,7 +61,7 @@ class TBillingAmountSection extends StatelessWidget {
                   children: [
                     Flexible(
                       child: Text(
-                        'Voucher: ${voucherInfo.type}',
+                        '${lang.translate('voucher')}: ${voucherInfo.type}',
                         style: Theme.of(context).textTheme.bodyMedium,
                         overflow: TextOverflow.ellipsis, // Cắt bỏ phần text vượt quá
                         maxLines: 1,
@@ -85,7 +87,7 @@ class TBillingAmountSection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Net Total',style: Theme.of(context).textTheme.bodyMedium,),
+            Text(lang.translate('net_total'),style: Theme.of(context).textTheme.bodyMedium,),
             Obx((){
              return Text('${DFormatter.formattedAmount(orderController.netAmount.value*24500)}   VND',style: Theme.of(context).textTheme.labelLarge,);
     } ) ,

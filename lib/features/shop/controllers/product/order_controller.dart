@@ -32,8 +32,7 @@ class OrderController extends GetxController {
   var totalAmount = 0.0.obs; // Biến quan sát được để lưu giá trị totalFee
   var netAmount = 0.0.obs;
   var totalDiscount = 0.0.obs;
-
-  //variables
+  late AppLocalizations lang;
   final cartController = Get.put(CartController());
   final addressController = AddressController.instance;
   final checkoutController = CheckoutController.instance;
@@ -41,20 +40,22 @@ class OrderController extends GetxController {
   final orderRepository = Get.put(OrderRepository());
   final suggestionRepository = Get.put(ProductSuggestionRepository());
   ShippingOrderModel? shippingOrder;
+  @override
+  void onReady() {
+    super.onReady();
+    // Bây giờ Get.context đã có giá trị hợp lệ, ta mới khởi tạo lang
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      lang = AppLocalizations.of(Get.context!);
+    });
+  }
 
   Future<List<OrderModel>> fetchUserOrders() async {
     try {
       final userOrders = await orderRepository.fetchUserOrders();
       await suggestionRepository.generateAndSaveSuggestions(userOrders);
-      const productId = "002";
-      final suggestion = await suggestionRepository.getProductSuggestions(productId);
-      if (kDebugMode) {
-        print('Suggested products for $productId: ${suggestion.suggestedProducts}');
-      }
-      await suggestionRepository.getSortedSuggestions(productId);
       return userOrders;
     } catch (e) {
-      TLoader.warningSnackbar(title: 'Oh Snap!', message: e.toString());
+      TLoader.warningSnackbar(title: lang.translate('snap'), message: e.toString());
       return [];
     }
   }
@@ -67,12 +68,8 @@ class OrderController extends GetxController {
       // Fetch current user details
       final userDetails = await userController.fetchCurrentUserDetails(userId);
       final selectedAddress = addressController.selectedAddress.value;
-      if (kDebugMode) {
-        print('selectedAddress: ${selectedAddress.toJson()}');
-      }
-      // Nếu không có địa chỉ được chọn, thông báo lỗi và dừng tiến trình
       if (selectedAddress == AddressModel.empty()) {
-        TLoader.errorSnackbar(title: 'Error', message: 'No address selected');
+        TLoader.errorSnackbar(title: lang.translate('error'), message: lang.translate('no_address_selected'));
         return;
       }
 
@@ -121,7 +118,7 @@ class OrderController extends GetxController {
       totalAmount.value = subTotal + fee.value;
       netAmount.value = totalAmount.value;
     } catch (e) {
-      TLoader.errorSnackbar(title: 'Oh Snap', message: e.toString());
+      TLoader.errorSnackbar(title: lang.translate('snap'), message: e.toString());
     }
   }
 
@@ -151,7 +148,6 @@ class OrderController extends GetxController {
               items: cartController.cartItems.toList(),
               orderDetail: shippingDetailOrder);
           await orderRepository.saveOrder(order, userId);
-          // gen suggest từ đơn hàng mới
           final userOrders = await orderRepository.fetchUserOrders();
           await suggestionRepository.generateAndSaveSuggestions(userOrders);
           cartController.clearCart();
@@ -163,7 +159,7 @@ class OrderController extends GetxController {
         }
       }
     } catch (e) {
-      TLoader.errorSnackbar(title: 'Oh Snap', message: e.toString());
+      TLoader.errorSnackbar(title: lang.translate('snap'), message: e.toString());
     }
   }
 

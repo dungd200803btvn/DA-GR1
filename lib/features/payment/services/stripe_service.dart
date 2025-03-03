@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -100,7 +98,7 @@ class StripeService{
        ));
        if(response.data!=null){
          if (kDebugMode) {
-           print(response.data);
+           print(response);
          }
          return response.data['client_secret'];
        }
@@ -108,16 +106,16 @@ class StripeService{
 
      }catch(e){
         if (kDebugMode) {
-          print(e);
+          print("Lỗi ở service: $e");
         }
      }
+     return null;
 
   }
 
   Future<String?> _getListPaymentIntent() async {
     try {
       final Dio dio = Dio();
-
       final response = await dio.get(
         'https://api.stripe.com/v1/payment_intents',
         queryParameters: {'limit': 3}, // Thêm tham số limit=3
@@ -146,6 +144,4 @@ class StripeService{
       return null;
     }
   }
-
-
 }

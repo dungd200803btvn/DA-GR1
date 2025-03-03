@@ -41,21 +41,20 @@ class CategoryBrands extends StatelessWidget {
             itemCount: brands.length,
             itemBuilder: (_, index) {
               final brand = brands[index];
-             if(brand!=null )
-              return FutureBuilder(
-                  future: controller.getBrandProducts(brandId: brand.id,limit: 100),
-                  builder: (context, snapshot) {
-                   // handle loader, no record, or error message
-                    final widget = TCloudHelperFunctions.checkMultiRecordState(
-                        snapshot: snapshot, loader: loader);
-                    if (widget != null) return widget;
-                   // record found!
-                    final products = snapshot.data!;
-                    return TBrandShowCase(
-                      brand: brand,
-                      images: products.take(4).map((product) => product.thumbnail).toList(),
-                    );
-                  });
+             return FutureBuilder(
+                future: controller.getBrandProducts(brandId: brand.id,limit: 100),
+                builder: (context, snapshot) {
+                 // handle loader, no record, or error message
+                  final widget = TCloudHelperFunctions.checkMultiRecordState(
+                      snapshot: snapshot, loader: loader);
+                  if (widget != null) return widget;
+                 // record found!
+                  final products = snapshot.data!;
+                  return TBrandShowCase(
+                    brand: brand,
+                    images: products.take(4).map((product) => product.thumbnail).toList(),
+                  );
+                });
             },
           );
         });

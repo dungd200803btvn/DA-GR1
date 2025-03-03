@@ -8,6 +8,7 @@ import 'package:t_store/utils/constants/sizes.dart';
 import 'package:t_store/utils/helper/cloud_helper_functions.dart';
 
 import '../../../../common/widgets/products/cart/cart_menu_icon.dart';
+import '../../../../utils/helper/helper_function.dart';
 import '../../models/brand_model.dart';
 
 class BrandProducts extends StatelessWidget {
@@ -18,9 +19,10 @@ class BrandProducts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = BrandController.instance;
+    final dark = DHelperFunctions.isDarkMode(context);
     return Scaffold(
       appBar: TAppBar(
-        title: Text(brand.name),
+        title: Text(brand.name,style: TextStyle(color: dark ? Colors.white : Colors.black),),
         showBackArrow: true,
         actions: const [
           TCartCounterIcon(),

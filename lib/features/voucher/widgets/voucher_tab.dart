@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:t_store/l10n/app_localizations.dart';
 import '../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../utils/constants/colors.dart';
 import '../../../utils/popups/loader.dart';
@@ -23,6 +24,7 @@ class DVoucherTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final lang = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: FutureBuilder<List<VoucherModel>>(
@@ -32,7 +34,7 @@ class DVoucherTab extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return const Center(child: Text('Error loading vouchers'));
+            return  Center(child: Text(lang.translate('err_load_voucher')));
           }
 
           final vouchers = snapshot.data ?? [];
@@ -43,7 +45,6 @@ class DVoucherTab extends StatelessWidget {
           return Obx(() {
             // Ép GetX theo dõi biến Rx (dummy read)
             final _ = controller.claimedVouchers.length;
-
             // Lọc danh sách voucher dựa trên trạng thái của tab
             List<VoucherModel> filteredVouchers;
             switch (voucherTabStatus) {
@@ -67,7 +68,6 @@ class DVoucherTab extends StatelessWidget {
                 filteredVouchers = vouchers;
                 break;
             }
-
             // Lấy ra danh sách cần hiển thị dựa vào showAllVouchers
             final displayedVouchers = showAllVouchers
                 ? filteredVouchers
@@ -75,7 +75,7 @@ class DVoucherTab extends StatelessWidget {
 
             // Nếu không còn voucher nào, hiển thị thông báo
             if (displayedVouchers.isEmpty) {
-              return const Center(child: Text('No available vouchers'));
+              return  Center(child: Text(lang.translate('no_available_voucher')));
             }
 
             // Xác định nội dung nút dựa trên trạng thái của tab
@@ -84,26 +84,23 @@ class DVoucherTab extends StatelessWidget {
             Color buttonColor;
             switch (voucherTabStatus) {
               case VoucherTabStatus.available:
-                buttonText = "Claim";
-                warningMessage =
-                "This voucher has been received and cannot be received again";
+                buttonText = lang.translate('claim');
+                warningMessage =  lang.translate('claim_voucher_msg');
                 buttonColor = Colors.blue;
                 break;
               case VoucherTabStatus.claimed:
-                buttonText = "Claimed";
-                warningMessage = "This voucher has already been claimed";
+                buttonText = lang.translate('claimed');
+                warningMessage =  lang.translate('claimed_voucher_msg');
                 buttonColor = DColor.grey;
                 break;
               case VoucherTabStatus.used:
-                buttonText = "Used";
-                warningMessage =
-                "This voucher has been used and cannot be claimed again";
+                buttonText = lang.translate('used');
+                warningMessage =  lang.translate('used_voucher_msg');
                 buttonColor = DColor.grey;
                 break;
               case VoucherTabStatus.expired:
-                buttonText = "Expired";
-                warningMessage =
-                "This voucher has expired and cannot be claimed";
+                buttonText = lang.translate('expired');
+                warningMessage =  lang.translate('expired_voucher_msg');
                 buttonColor = DColor.grey;
                 break;
             }
@@ -181,8 +178,8 @@ class DVoucherTab extends StatelessWidget {
                       onPressed: onToggleShowAll,
                       child: Text(
                           !showAllVouchers && filteredVouchers.length > 5
-                              ? 'Xem thêm'
-                              : "Thu gọn"),
+                              ? lang.translate('show_more')
+                              : lang.translate('less')),
                     ),
                   ],
                 );

@@ -5,12 +5,15 @@ import 'package:t_store/features/authentication/controller/forget_password/forge
 import 'package:t_store/utils/constants/sizes.dart';
 import 'package:t_store/utils/constants/text_string.dart';
 import 'package:t_store/utils/validators/validation.dart';
+
+import '../../../../l10n/app_localizations.dart';
 class ForgetPassword extends StatelessWidget {
   const ForgetPassword({super.key});
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ForgetPasswordController());
+    var lang = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
@@ -19,9 +22,9 @@ class ForgetPassword extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             //Heading
-            Text(DText.forgetPasswordTitle,style: Theme.of(context).textTheme.headlineMedium),
+            Text(lang.translate('forgetPasswordTitle'),style: Theme.of(context).textTheme.headlineMedium),
             const SizedBox(height: DSize.spaceBtwItem),
-            Text(DText.forgetPasswordSubTitle,style: Theme.of(context).textTheme.labelMedium),
+            Text(lang.translate('forgetPasswordSubTitle'),style: Theme.of(context).textTheme.labelMedium),
             const SizedBox(height: DSize.spaceBtwSection*2),
             //Textfield
             //Email
@@ -29,7 +32,7 @@ class ForgetPassword extends StatelessWidget {
               key: controller.forgetPasswordFormKey,
               child: TextFormField(controller: controller.email,
                   validator: (value) => DValidator.validateEmail(value),
-                  decoration: const InputDecoration(labelText: DText.email,prefixIcon: Icon(Iconsax.direct_right))),
+                  decoration:  InputDecoration(labelText: lang.translate('email'),prefixIcon: Icon(Iconsax.direct_right))),
             ),
             const SizedBox(height: DSize.spaceBtwSection),
             
@@ -37,7 +40,7 @@ class ForgetPassword extends StatelessWidget {
             SizedBox(width: double.infinity,
                 child: ElevatedButton( onPressed: () async {
                   await controller.sendPasswordResentEmail();
-                }, child: const Text(DText.submit)))
+                }, child: Text(lang.translate('submit'))))
           ],
         ),
 

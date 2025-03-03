@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,6 +13,7 @@ import 'package:t_store/utils/constants/sizes.dart';
 import 'package:t_store/utils/popups/full_screen_loader.dart';
 import 'package:t_store/utils/popups/loader.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/helper/network_manager.dart';
 
 class UserController extends GetxController {
@@ -24,21 +26,34 @@ class UserController extends GetxController {
   final verifyEmail = TextEditingController();
   final verifyPassword = TextEditingController();
   GlobalKey<FormState> reAuthFormKey = GlobalKey<FormState>();
-
+  late AppLocalizations lang;
   @override
   void onInit() {
     super.onInit();
     fetchUserRecord();
   }
-
+    @override
+  void onReady() {
+    super.onReady();
+    // Bây giờ Get.context đã có giá trị hợp lệ, ta mới khởi tạo lang
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      lang = AppLocalizations.of(Get.context!);
+    });
+  }
   //fetch user record
   Future<void> fetchUserRecord() async {
     try {
       profileLoading.value = true;
       final user1 = await userRepository.fetchUserDetails();
       user.value = user1;
+      if (kDebugMode) {
+        print("Gia tri cua user sau khi update: ${user.value.toString()}");
+      }
       profileLoading.value = false;
     } catch (e) {
+      if (kDebugMode) {
+        print("Lỗi xảy ra: ${e.toString()}");
+      }
       user.value = UserModel.empty();
     } finally {
       profileLoading.value = false;
@@ -93,25 +108,25 @@ class UserController extends GetxController {
   void deleteAccountWarningPopup() {
     Get.defaultDialog(
         contentPadding: const EdgeInsets.all(DSize.md),
-        title: 'Delete Account',
+        title: lang.translate('delete_account'),
         middleText:
-            'Are you sure want to delete your account permanently? This action is not reversible and all of your data will be removed permanently',
+        lang.translate('delete_account_msg'),
         confirm: ElevatedButton(
           onPressed: () async => deleteUserAccount(),
           style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red, side: const BorderSide(color: Colors.red)),
-          child: const Padding(
+          child:  Padding(
             padding: EdgeInsets.symmetric(horizontal: DSize.lg),
-            child: Text('Delete'),
+            child: Text(lang.translate('delete')),
           ),
         ),
         cancel: OutlinedButton(
             onPressed: () => Navigator.of(Get.overlayContext!).pop(),
-            child: const Text('Cancel')));
+            child:  Text(lang.translate('cancel'))));
   }
   void deleteUserAccount() async{
     try{
-      TFullScreenLoader.openLoadingDialog('Processing', TImages.docerAnimation);
+      TFullScreenLoader.openLoadingDialog(lang.translate('process'), TImages.docerAnimation);
       //first re-authenticate user
       final auth = AuthenticationRepository.instance;
       final provider =auth.authUser!.providerData.map((e)=> e.providerId).first;
@@ -129,13 +144,13 @@ class UserController extends GetxController {
       }
     }catch(e){
       TFullScreenLoader.stopLoading();
-      TLoader.warningSnackbar(title: 'Oh Snap',message: e.toString());
+      TLoader.warningSnackbar(title: lang.translate('snap'),message: e.toString());
     }
   }
 
   Future<void> reAuthenticateEmailAndPasswordUser() async{
     try{
-      TFullScreenLoader.openLoadingDialog('Processing', TImages.docerAnimation);
+      TFullScreenLoader.openLoadingDialog(lang.translate('process'), TImages.docerAnimation);
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
         TFullScreenLoader.stopLoading();
@@ -152,7 +167,7 @@ class UserController extends GetxController {
       Get.offAll(const LoginScreen());
     }catch(e){
       TFullScreenLoader.stopLoading();
-      TLoader.warningSnackbar(title: 'Oh snap',message: e.toString());
+      TLoader.warningSnackbar(title: lang.translate('snap'),message: e.toString());
     }
   }
   uploadUserProfilePicture()async{
@@ -170,10 +185,21 @@ class UserController extends GetxController {
     }
 
     }catch(e){
-      TLoader.errorSnackbar(title: 'Oh Snap',message: 'Something went wrong: $e');
+      TLoader.errorSnackbar(title: lang.translate('snap'),message: 'Something went wrong: $e');
     }finally{
       imageUploading.value =false;
     }
   }
+  Future<void> updateSingleField( Map<String,dynamic> json) async{
+    try{
+      await userRepository.updateSingleField(json);
+      await fetchUserRecord();
+      TLoader.successSnackbar(title: 'Congratulation',message: 'Your Profile Image has been updated!');
+    }catch(e){
+      TLoader.errorSnackbar(title: lang.translate('snap'),message: 'Something went wrong: $e');
+    }
+
+  }
+
 
 }

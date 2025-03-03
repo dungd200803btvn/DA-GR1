@@ -15,7 +15,6 @@ import 'package:t_store/utils/helper/cloud_helper_functions.dart';
 
 class SubCategoriesScreen extends StatelessWidget {
   const SubCategoriesScreen({super.key, required this.category});
-
   final CategoryModel category;
 
   @override
@@ -23,7 +22,7 @@ class SubCategoriesScreen extends StatelessWidget {
     final controller = CategoryController.instance;
     return Scaffold(
       appBar: TAppBar(
-        title: Text(category.name),
+        title: Text(category.name,style:Theme.of(context).textTheme.headlineSmall),
         showBackArrow: true,
       ),
       body: SingleChildScrollView(
@@ -41,10 +40,8 @@ class SubCategoriesScreen extends StatelessWidget {
               const SizedBox(
                 height: DSize.spaceBtwSection,
               ),
-
               //Sub categories
               FutureBuilder(
-
                 future: controller.getSubCategories(category.id),
                 builder: (context, snapshot) {
                  // handle loader no record error message
@@ -70,8 +67,6 @@ class SubCategoriesScreen extends StatelessWidget {
                                     snapshot: snapshot, loader: loader);
                             if (widget != null) return widget;
                             final products = snapshot.data!;
-
-
                             return Column(
                               children: [
                                 TSectionHeading(

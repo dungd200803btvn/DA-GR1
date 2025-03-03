@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/l10n/app_localizations.dart';
 import '../../../../../utils/constants/sizes.dart';
 import '../../../../review/controller/review_controller.dart';
 import '../../../../review/model/review_model.dart';
@@ -18,6 +19,7 @@ class ReviewListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = WriteReviewScreenController.instance;
+    final lang =AppLocalizations.of(context);
     return FutureBuilder<List<ReviewModel>>(
       future: controller.getReviewsByProductId(
         productId,
@@ -30,10 +32,10 @@ class ReviewListWidget extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError) {
-          return const Center(child: Text("Error loading reviews"));
+          return  Center(child: Text(lang.translate('err_load_review')));
         }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text("No reviews yet."));
+          return  Center(child: Text(lang.translate('no_review')));
         }
         final reviews = snapshot.data!;
         return ListView.separated(

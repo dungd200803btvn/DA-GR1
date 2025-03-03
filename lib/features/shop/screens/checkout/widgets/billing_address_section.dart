@@ -6,6 +6,7 @@ import 'package:t_store/features/personalization/controllers/address_controller.
 import 'package:t_store/utils/constants/colors.dart';
 import 'package:t_store/utils/constants/sizes.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../../utils/helper/helper_function.dart';
 class TBillingAddressSection extends StatelessWidget {
   const TBillingAddressSection({super.key});
@@ -13,11 +14,12 @@ class TBillingAddressSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final addressController = AddressController.instance;
+    final lang = AppLocalizations.of(context);
     return Obx(
       ()=> Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TSectionHeading(title: 'Shipping Address',buttonTitle: 'Change',onPressed: ()=> addressController.selectNewAddressPopup(context),),
+          TSectionHeading(title: lang.translate('shipping_address'),buttonTitle: lang.translate('change'),onPressed: ()=> addressController.selectNewAddressPopup(context),),
           addressController.selectedAddress.value.id.isNotEmpty?
           Obx(
           ()=> Column(
@@ -43,7 +45,7 @@ class TBillingAddressSection extends StatelessWidget {
                 ),
               ],
             ),
-          ) : Text('Select Address',style: Theme.of(context).textTheme.bodyMedium),
+          ) : Text(lang.translate('select_address'),style: Theme.of(context).textTheme.bodyMedium),
         ],
       ),
     );

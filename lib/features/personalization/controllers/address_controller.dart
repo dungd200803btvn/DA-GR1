@@ -5,6 +5,7 @@ import 'package:t_store/data/repositories/address/address_repository.dart';
 import 'package:t_store/features/personalization/screens/address/add_new_address.dart';
 import 'package:t_store/features/personalization/screens/address/address.dart';
 import 'package:t_store/features/personalization/screens/address/widgets/single_address.dart';
+import 'package:t_store/l10n/app_localizations.dart';
 import 'package:t_store/utils/constants/image_strings.dart';
 import 'package:t_store/utils/constants/sizes.dart';
 import 'package:t_store/utils/helper/cloud_helper_functions.dart';
@@ -18,19 +19,27 @@ class AddressController extends GetxController {
   final name = TextEditingController();
   final phoneNumber = TextEditingController();
   final street = TextEditingController();
-  final city = TextEditingController();
-  final district = TextEditingController();
-  final commune = TextEditingController();
-  final country = TextEditingController();
+  String selectedCity = "";
+  String selectedDistrict = "";
+  String selectedWard = "";
   GlobalKey<FormState> addressFormkey = GlobalKey<FormState>();
   final addressRepository = Get.put(AddressRepository());
   final Rx<AddressModel> selectedAddress = AddressModel.empty().obs;
   RxBool refreshData = true.obs;
+  late AppLocalizations lang;
 
   @override
   void onInit() {
     fetchAndSetSelectedAddress();
     super.onInit();
+  }
+  @override
+  void onReady() {
+    super.onReady();
+    // Bây giờ Get.context đã có giá trị hợp lệ, ta mới khởi tạo lang
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      lang = AppLocalizations.of(Get.context!);
+    });
   }
 
   void fetchAndSetSelectedAddress() async {
@@ -40,7 +49,7 @@ class AddressController extends GetxController {
       refreshData.value = !refreshData.value; // Trigger UI update
     } catch (e) {
       TLoader.errorSnackbar(
-        title: 'Error',
+        title: lang.translate('error'),
         message: e.toString(),
       );
     }
@@ -54,7 +63,7 @@ class AddressController extends GetxController {
           orElse: () => AddressModel.empty());
       return addresses;
     } catch (e) {
-      TLoader.errorSnackbar(title: 'Address not found', message: e.toString());
+      TLoader.errorSnackbar(title: lang.translate('address_not_found'), message: e.toString());
       return [];
     }
   }
@@ -68,14 +77,14 @@ class AddressController extends GetxController {
         },
         barrierDismissible: false,
         backgroundColor: Colors.transparent,
-        content: const Column(
+        content:  Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 20),
+            const CircularProgressIndicator(),
+            const SizedBox(height: 20),
             Text(
-              "Updating address now, please wait...",
-              style: TextStyle(color: Colors.white),
+              lang.translate('update_select_address'),
+              style: const TextStyle(color: Colors.white),
               textAlign: TextAlign.center,
             ),
           ],
@@ -91,14 +100,14 @@ class AddressController extends GetxController {
           selectedAddress.value.id, true);
       Get.back();
     } catch (e) {
-      TLoader.errorSnackbar(title: 'Error in selection', message: e.toString());
+      TLoader.errorSnackbar(title: lang.translate('err_select_address'), message: e.toString());
     }
   }
 
   Future addNewAddresses() async {
     try {
       TFullScreenLoader.openLoadingDialog(
-          'Storing Address', TImages.docerAnimation);
+          lang.translate('add_address'), TImages.docerAnimation);
       //Check internet connect
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
@@ -115,20 +124,19 @@ class AddressController extends GetxController {
           name: name.text.trim(),
           phoneNumber: phoneNumber.text.trim(),
           street: street.text.trim(),
-          city: city.text.trim(),
-          district: district.text.trim(),
-          commune: district.text.trim(),
-          country: country.text.trim(),
+          city: selectedCity,
+          district: selectedDistrict,
+          commune: selectedWard,
+          country: "Việt Nam",
           dateTime: DateTime.now(),
-          selectedAddress: true);
+          selectedAddress: false);
       final id = await addressRepository.addAddress(address);
       address.id = id;
-      selectAddress(address);
       //remove loader
       TFullScreenLoader.stopLoading();
       TLoader.successSnackbar(
-          title: 'Congratulations',
-          message: 'Your address has been saved successfully');
+          title: lang.translate('congratulations'),
+          message: lang.translate('add_address_success_msg'));
       //refresh data
       refreshData.value = !refreshData.value;
       //reset field
@@ -137,7 +145,7 @@ class AddressController extends GetxController {
       Get.to(() => const UserAddressScreen());
     } catch (e) {
       TFullScreenLoader.stopLoading();
-      TLoader.errorSnackbar(title: 'Address not found', message: e.toString());
+      TLoader.errorSnackbar(title: lang.translate('address_not_found'), message: e.toString());
     }
   }
 
@@ -150,7 +158,7 @@ class AddressController extends GetxController {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const TSectionHeading(title: 'Select Address', showActionButton: false,),
+              TSectionHeading(title: lang.translate('select_address'), showActionButton: false,),
               FutureBuilder(
                 future: getAllUserAddresses(),
                 builder: (_, snapshot) {
@@ -169,6 +177,7 @@ class AddressController extends GetxController {
                         Get.back();
                       },
                     ),
+
                   );
                 },
               ),
@@ -177,7 +186,7 @@ class AddressController extends GetxController {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () => Get.to(() => AddNewAddressScreen()),
-                  child: Text('Add new address'),
+                  child: Text(lang.translate('add_address')),
                 ),
               )
             ],
@@ -187,15 +196,21 @@ class AddressController extends GetxController {
     );
   }
 
-
   void resetFormField() {
     name.clear();
     phoneNumber.clear();
     street.clear();
-    district.clear();
-    city.clear();
-    commune.clear();
-    country.clear();
+    selectedCity   ="";
+    selectedDistrict = "";
+    selectedWard = "";
     addressFormkey.currentState?.reset();
   }
+
+  Future<void> deleteAddress(String userId, String addressId) async{
+    addressRepository.deleteAddress(userId, addressId);
+  }
+  Future<void> updateAddress(String userId, AddressModel updatedAddress) async{
+    addressRepository.updateAddress(userId, updatedAddress);
+  }
+
 }

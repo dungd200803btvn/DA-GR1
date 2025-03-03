@@ -4,6 +4,7 @@ import 'package:t_store/features/voucher/models/VoucherTabStatus.dart';
 import 'package:t_store/utils/constants/colors.dart';
 
 import '../../../common/widgets/appbar/appbar.dart';
+import '../../../l10n/app_localizations.dart';
 import '../controllers/voucher_controller.dart';
 import '../widgets/voucher_tab.dart';
 
@@ -35,10 +36,11 @@ class _HistoryScreenState extends State<HistoryScreen>
 
   @override
   Widget build(BuildContext context) {
+    final lang = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: DColor.white,
       appBar: AppBar(
-        title: const Text('Voucher History'),
+        title:  Text(lang.translate('vouchers_history')),
         backgroundColor: Colors.white, // Nền trắng cho AppBar
         foregroundColor: Colors.black, // Màu nút back
         bottom: TabBar(
@@ -46,10 +48,10 @@ class _HistoryScreenState extends State<HistoryScreen>
           indicatorColor: Colors.blue,
           labelColor: Colors.blue,
           unselectedLabelColor: Colors.grey,
-          tabs: const [
-            Tab(text: 'Đã nhận'),
-            Tab(text: 'Đã dùng'),
-            Tab(text: 'Hết hạn'),
+          tabs:  [
+            Tab(text: lang.translate('claimed')),
+            Tab(text: lang.translate('used')),
+            Tab(text: lang.translate('expired')),
           ],
         ),
       ),

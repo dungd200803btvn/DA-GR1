@@ -7,6 +7,7 @@ import 'package:t_store/utils/constants/colors.dart';
 import 'package:t_store/utils/constants/image_strings.dart';
 import 'package:t_store/utils/constants/sizes.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../../utils/helper/helper_function.dart';
 class TBillingPaymentSection extends StatelessWidget {
   const TBillingPaymentSection({super.key});
@@ -15,9 +16,10 @@ class TBillingPaymentSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = DHelperFunctions.isDarkMode(context);
     final controller = CheckoutController.instance;
+    final lang = AppLocalizations.of(context);
     return Column(
       children: [
-        TSectionHeading(title: 'Payment Method',buttonTitle: 'Change',onPressed: ()=> controller.selectPaymentMethod(context),),
+        TSectionHeading(title: lang.translate('payment_method'),buttonTitle: lang.translate('change'),onPressed: ()=> controller.selectPaymentMethod(context),),
         const SizedBox(height: DSize.spaceBtwItem/2,),
         Obx(
           ()=> Row(

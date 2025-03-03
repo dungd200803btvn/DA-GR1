@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../common/widgets/appbar/appbar.dart';
 import '../../../data/repositories/authentication/authentication_repository.dart';
+import '../../../l10n/app_localizations.dart';
 import '../controller/notification_controller.dart';
 import '../model/notification_model.dart';
 import '../widget/notification_item.dart';
@@ -32,10 +33,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final lang = AppLocalizations.of(context);
     return Scaffold(
         appBar: TAppBar(
           title: Text(
-            'Notification',
+            lang.translate('notification'),
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           showBackArrow: widget.showBackArrow,
@@ -47,9 +49,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
-                  return Center(child: Text("Lỗi: ${snapshot.error}"));
+                  return Center(child: Text("${lang.translate('error')}: ${snapshot.error}"));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text("Không có thông báo nào."));
+                  return Center(child: Text(lang.translate('no_notification')));
                 }
 
                 final notifications = snapshot.data!;

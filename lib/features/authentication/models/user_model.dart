@@ -11,12 +11,16 @@ class UserModel {
   String profilePicture;
   int points;
   String fcmToken;
+  String gender;
+  late DateTime dateOfBirth;
 
   UserModel(
        this.id, this.firstName, this.lastName, this.userName, this.email,
       this.phoneNumber, this.profilePicture,{
-        this.points = 100,this.fcmToken =""
-      });
+        this.points = 100,this.fcmToken ="", this.gender = "Male", DateTime? dateOfBirth,
+      }){
+    this.dateOfBirth = dateOfBirth ?? DateTime(2003, 8, 20);
+  }
   String get fullname => '$firstName $lastName';
   String get formattedPhoneNo => DFormatter.formatPhoneNumber(phoneNumber);
   static List<String> nameParts(fullname) => fullname.split(" ");
@@ -39,6 +43,8 @@ class UserModel {
       'ProfilePicture':profilePicture,
       'Points': points,
       'FcmToken': fcmToken,
+      'Gender':gender,
+      'DateOfBirth': Timestamp.fromDate(dateOfBirth),
     };
   }
 
@@ -53,7 +59,9 @@ class UserModel {
           data['PhoneNumber']?? " ",
           data['ProfilePicture']?? " ",
           points: data['Points'] ?? 100,
-          fcmToken: data['FcmToken'] ?? ""
+          fcmToken: data['FcmToken'] ?? "",
+          gender: data['Gender']?? "Male",
+          dateOfBirth: data['DateOfBirth']!= null? (data['DateOfBirth'] as Timestamp).toDate(): DateTime(2003, 8, 20)
       );
     }else{
       return UserModel.empty();

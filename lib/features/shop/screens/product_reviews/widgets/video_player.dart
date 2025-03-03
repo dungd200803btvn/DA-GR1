@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-
 import '../../../../../common/widgets/appbar/appbar.dart';
+import '../../../../../l10n/app_localizations.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
   final String videoUrl;
   const VideoPlayerScreen({super.key, required this.videoUrl});
-
   @override
   _VideoPlayerScreenState createState() => _VideoPlayerScreenState();
 }

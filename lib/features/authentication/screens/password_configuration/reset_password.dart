@@ -7,12 +7,14 @@ import 'package:t_store/utils/constants/image_strings.dart';
 import 'package:t_store/utils/constants/sizes.dart';
 import 'package:t_store/utils/constants/text_string.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/helper/helper_function.dart';
 class ResetPassword extends StatelessWidget {
   const ResetPassword({super.key, required this.email});
 final String email;
   @override
   Widget build(BuildContext context) {
+    var lang = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -35,7 +37,7 @@ final String email;
             ),
             //Title ans Subtitle
             Text(
-              DText.changeYourPasswordTitle,
+              lang.translate('changeYourPasswordTitle'),
               style: Theme.of(context).textTheme.headlineMedium,
               textAlign: TextAlign.center,
             ),
@@ -43,7 +45,7 @@ final String email;
               height: DSize.spaceBtwItem,
             ),
             Text(
-              DText.changeYourPasswordSubTitle,
+              lang.translate('changeYourPasswordSubTitle'),
               style: Theme.of(context).textTheme.labelMedium,
               textAlign: TextAlign.center,
             ),
@@ -54,7 +56,7 @@ final String email;
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                  child: const Text(DText.done), onPressed: ()=> Get.offAll(()=> const LoginScreen())),
+                  child:  Text(lang.translate('done')), onPressed: ()=> Get.offAll(()=> const LoginScreen())),
             ),
             const SizedBox(
               height: DSize.spaceBtwItem,
@@ -62,7 +64,7 @@ final String email;
             SizedBox(
               width: double.infinity,
               child: TextButton(
-                  child: const Text(DText.resendEmail), onPressed: ()=> ForgetPasswordController.instance.resendPasswordResentEmail(email)),
+                  child: Text(lang.translate('resendEmail')), onPressed: ()=> ForgetPasswordController.instance.resendPasswordResentEmail(email)),
             ),
 
           ],

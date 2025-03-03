@@ -13,15 +13,18 @@ import 'package:t_store/utils/constants/image_strings.dart';
 import 'package:t_store/utils/constants/sizes.dart';
 import 'package:t_store/utils/helper/cloud_helper_functions.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 class FavouriteScreen extends StatelessWidget {
   const FavouriteScreen({super.key});
   @override
   Widget build(BuildContext context) {
     final controller = FavouritesController.instance;
+    final lang = AppLocalizations.of(context);
     return Scaffold(
       appBar: TAppBar(
         title:
-            Text('Wishlist', style: Theme.of(context).textTheme.headlineMedium),
+            Text(lang.translate('wishlist'), style: Theme.of(context).textTheme.headlineMedium),
         actions: [
           TCircularIcon(
               icon: Iconsax.add, onPressed: () {
@@ -40,10 +43,10 @@ class FavouriteScreen extends StatelessWidget {
                 builder: (context, snapshot) {
                   //nothing found widget
                   final emptyWidget = TAnimationLoaderWidget(
-                    text: 'Whoops!Wishlist is empty',
+                    text: lang.translate('wishlist_empty'),
                     animation: TImages.pencilAnimation,
                     showAction: true,
-                    actionText: 'Let\'s add some',
+                    actionText: lang.translate('let_add_some'),
                     onActionPressed: () {
                       final navController = Get.find<NavigationController>();
                       navController.goToHome();

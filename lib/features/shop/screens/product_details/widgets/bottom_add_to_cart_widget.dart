@@ -7,6 +7,8 @@ import 'package:t_store/features/shop/models/product_model.dart';
 import 'package:t_store/utils/constants/colors.dart';
 import 'package:t_store/utils/constants/sizes.dart';
 import 'package:t_store/utils/helper/helper_function.dart';
+
+import '../../../../../l10n/app_localizations.dart';
 class TBottomAddToCart extends StatelessWidget {
   const TBottomAddToCart({super.key, required this.product,this.salePercentage});
 final ProductModel product;
@@ -15,7 +17,7 @@ final double? salePercentage;
   Widget build(BuildContext context) {
     final dark = DHelperFunctions.isDarkMode(context);
     final controller = CartController.instance;
-    // controller.updateAlreadyAddedProductCount(product);
+    final lang = AppLocalizations.of(context);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.updateAlreadyAddedProductCount(product);
     });
@@ -61,13 +63,10 @@ final double? salePercentage;
               padding: const EdgeInsets.all(DSize.md),
               backgroundColor: DColor.black,
               side: const BorderSide(color: DColor.black)
-            ), child: const Text('Add to cart'),),
-
-
+            ), child:  Text(lang.translate('add_cart')),),
           ],
         ),
       ),
-
     );
   }
 }

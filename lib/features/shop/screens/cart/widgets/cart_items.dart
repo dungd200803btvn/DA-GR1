@@ -5,19 +5,20 @@ import 'package:t_store/features/shop/controllers/product_controller.dart';
 import '../../../../../common/widgets/products/cart/add_remove_button.dart';
 import '../../../../../common/widgets/products/cart/cart_item.dart';
 import '../../../../../common/widgets/texts/product_price_text.dart';
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../../utils/constants/sizes.dart';
 import '../../../controllers/product/cart_controller.dart';
 import '../../all_products/all_products.dart';
 
 class TCartItems extends StatelessWidget {
   const TCartItems({super.key, this.showAddRemoveButtons = true, this.scrollable = true,});
-
   final bool showAddRemoveButtons;
   final bool scrollable;
   @override
   Widget build(BuildContext context) {
     final controller = CartController.instance;
     final productController = ProductController.instance;
+    final lang = AppLocalizations.of(context);
     return Obx(
       () => ListView.separated(
           physics: scrollable ? null : const NeverScrollableScrollPhysics(),
@@ -56,7 +57,7 @@ class TCartItems extends StatelessWidget {
                                 child: TextButton(
                                   onPressed: () => Get.to(
                                         () => AllProducts(
-                                      title: 'Suggest promotional products',
+                                      title: lang.translate('suggest_promotional_products'),
                                       query: FirebaseFirestore.instance
                                           .collection('Products')
                                           .where('IsFeatured', isEqualTo: true)
@@ -65,7 +66,7 @@ class TCartItems extends StatelessWidget {
                                           applyDiscount: true,
                                     ),
                                   ),
-                                  child: const Text("See suggested products",
+                                  child:  Text(lang.translate('suggest_products'),
                                   overflow: TextOverflow.ellipsis,
                                     selectionColor: Colors.white,
 

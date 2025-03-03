@@ -3,70 +3,10 @@ import 'package:t_store/common/widgets/appbar/appbar.dart';
 import 'package:t_store/features/review/widget/rating_tab_bar.dart';
 import 'package:t_store/features/shop/screens/product_reviews/widgets/list_review.dart';
 import 'package:t_store/features/shop/screens/product_reviews/widgets/rating_progress_indicator.dart';
-import 'package:t_store/features/shop/screens/product_reviews/widgets/user_review_card.dart';
 import 'package:t_store/l10n/app_localizations.dart';
 import 'package:t_store/utils/constants/sizes.dart';
-
 import '../../../../common/widgets/products/ratings/rating_indicator.dart';
 import '../../../review/controller/review_controller.dart';
-
-// class ProductReviewScreen extends StatelessWidget {
-//   const ProductReviewScreen({super.key, required this.productId});
-//   final String productId;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final controller = WriteReviewScreenController.instance;
-//     var lang = AppLocalizations.of(context);
-//     return Scaffold(
-//       appBar:  TAppBar(
-//         title: Text(lang.translate('review_and_rating',), style: Theme.of(context).textTheme.headlineSmall,),
-//         showBackArrow: true,
-//       ),
-//       body: SingleChildScrollView(
-//         child: Padding(
-//           padding: const EdgeInsets.all(DSize.defaultspace),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               //Overal product rating
-//               TOverallProductRating(productId: productId,),
-//               TRatingBarIndicator(
-//                 productId: productId,
-//               ),
-//               FutureBuilder<int>(
-//                   future: controller.fetchTotalReviews(productId),
-//                   builder: (context, snapshot) {
-//                     if (snapshot.connectionState == ConnectionState.waiting) {
-//                       return const SizedBox(
-//                         width: 20,
-//                         height: 20,
-//                         child: CircularProgressIndicator(strokeWidth: 2),
-//                       ); // Hiển thị loading nhỏ
-//                     }
-//                     if (snapshot.hasError || !snapshot.hasData) {
-//                       return const Text("?",
-//                           style: TextStyle(
-//                               color: Colors.red)); // Nếu lỗi, hiển thị "?"
-//                     }
-//                     int totalReviews = snapshot.data ?? 0;
-//                     return Text(
-//                       '${lang.translate('total_review',)}$totalReviews',
-//                       style: Theme.of(context).textTheme.bodySmall,
-//                     );
-//                   }),
-//               const SizedBox(
-//                 height: DSize.spaceBtwSection,
-//               ),
-//               //User review list
-//               ReviewListWidget(productId: productId,)
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class ProductReviewScreen extends StatefulWidget {
   const ProductReviewScreen({super.key, required this.productId});
@@ -95,7 +35,6 @@ class _ProductReviewScreenState extends State<ProductReviewScreen>
     _tabController.dispose();
     super.dispose();
   }
-
   /// Nếu tab 0 (index 0) được chọn, ta lọc review có media.
   /// Nếu tab 1 đến 5 được chọn, ta lọc theo rating (5, 4, 3, 2, 1)
   int? get filterRating {

@@ -42,6 +42,9 @@ class DFormatter{
   static String FormattedDate(DateTime day){
     return DateFormat("dd/MM/yyyy HH:mm").format(day);
   }
+  static String FormattedDate1(DateTime day){
+    return DateFormat("dd/MM/yyyy").format(day);
+  }
   static String calculateAmountForStripe(double amount){
     final calculatedAmount = amount*100;
     return calculatedAmount.round().toString();

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import '../../../data/repositories/authentication/authentication_repository.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/colors.dart';
 import '../../../utils/popups/loader.dart';
 import '../controllers/voucher_controller.dart';
@@ -16,6 +17,7 @@ class DVoucherApply extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final lang = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: FutureBuilder<List<VoucherModel>>(
@@ -25,7 +27,7 @@ class DVoucherApply extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return const Center(child: Text('Error loading vouchers'));
+            return  Center(child: Text(lang.translate('err_load_voucher')));
           }
 
           final vouchers = snapshot.data ?? [];
@@ -38,7 +40,7 @@ class DVoucherApply extends StatelessWidget {
                 .toList();
             // Nếu không còn voucher nào, hiển thị thông báo
             if (availableVouchers.isEmpty) {
-              return const Center(child: Text('No available vouchers'));
+              return  Center(child: Text(lang.translate('no_available_voucher')));
             }
             return ListView.builder(
               itemCount: availableVouchers.length,
@@ -79,7 +81,7 @@ class DVoucherApply extends StatelessWidget {
                           onPressed: isUsed
                               ? () {
                             TLoader.warningSnackbar(
-                              title: "This voucher has been used and cannot be used again",
+                              title: lang.translate('voucher_has_been_used'),
                             );
                           }
                               : () {
@@ -92,7 +94,7 @@ class DVoucherApply extends StatelessWidget {
                             ),
                           ),
                           child: Text(
-                            isUsed ? 'Applied' : 'Apply',
+                            isUsed ? lang.translate('applied') : lang.translate('apply'),
                             style: const TextStyle(color: Colors.white),
                           ),
                         );

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:t_store/data/repositories/vouchers/ClaimedVoucherRepository.dart';
@@ -7,6 +8,7 @@ import 'package:t_store/features/shop/controllers/product/order_controller.dart'
 import 'package:t_store/features/voucher/models/VoucherModel.dart';
 import '../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../data/repositories/user/user_repository.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/popups/loader.dart';
 import '../../personalization/controllers/user_controller.dart';
 import '../../shop/controllers/product/cart_controller.dart';
@@ -20,6 +22,15 @@ class VoucherController extends GetxController{
   var claimedVouchers = <String>[].obs;
   var appliedVouchers = <String>[].obs;
   var appliedVouchersInfo = <VoucherAppliedInfo>[].obs;
+  late AppLocalizations lang;
+  @override
+  void onReady() {
+    super.onReady();
+    // Bây giờ Get.context đã có giá trị hợp lệ, ta mới khởi tạo lang
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      lang = AppLocalizations.of(Get.context!);
+    });
+  }
   Future<List<VoucherModel>> getAllVouchers() async {
     try {
       final vouchers = await voucherRepository.fetchAllVouchers();
@@ -302,7 +313,7 @@ class VoucherController extends GetxController{
         }
       }else{
         claimedVouchers.add(voucherId);
-        TLoader.successSnackbar(title: "Voucher claimed successfully!");
+        TLoader.successSnackbar(title: lang.translate('voucher_claimed_success'));
         await claimedVoucherRepository.claimVoucher(userId, claimedVoucher);
         final voucher = await voucherRepository.getVoucherById(voucherId);
         if(voucher!=null){
@@ -345,7 +356,7 @@ class VoucherController extends GetxController{
         }
       } else {
         if(OrderController.instance.netAmount.value==0){
-          TLoader.warningSnackbar(title: 'Giá trị cuả net total đã là 0, không cần áp dụng thêm voucher nữa');
+          TLoader.warningSnackbar(title: lang.translate('no_apply_voucher_msg'));
         }
         else{
           final voucher = await voucherRepository.getVoucherById(voucherId);
@@ -396,7 +407,7 @@ class VoucherController extends GetxController{
           }
         }
         else {
-          TLoader.warningSnackbar(title: "Giá ship đã free, không cần áp dụng thêm voucher này nữa");
+          TLoader.warningSnackbar(title: lang.translate('no_apply_freeship'));
         }
         break;
       case 'limited_quantity':
@@ -428,7 +439,7 @@ class VoucherController extends GetxController{
       case 'first_purchase':
         discountValue = await applyFirstPurchaseVoucher(voucher);
         if(discountValue==0){
-          TLoader.warningSnackbar(title: "Giá trị đơn hàng chưa đạt đến mức tối thiểu để có thể áp dụng voucher này");
+          TLoader.warningSnackbar(title: lang.translate('no_apply_mininum_value_voucher'));
         }
         if (kDebugMode) {
           print("First purchase discount: $discountValue");
@@ -471,7 +482,7 @@ class VoucherController extends GetxController{
       case 'flat_price':
         discountValue = calculateFlatPriceDiscount(voucher);
         if(discountValue==0){
-          TLoader.warningSnackbar(title: "Giá trị đơn hàng chưa đạt đến mức tối thiểu để có thể áp dụng voucher này");
+          TLoader.warningSnackbar(title: lang.translate('no_apply_mininum_value_voucher'));
         }
         if (kDebugMode) {
           print("Flat price discount: $discountValue");
@@ -522,7 +533,7 @@ class VoucherController extends GetxController{
          print("Updated Net Amount: ${OrderController.instance.netAmount.value}");
        }
        appliedVouchers.add(voucherId);
-       TLoader.successSnackbar(title: "Voucher used successfully!");
+       TLoader.successSnackbar(title: lang.translate('voucher_used_success'));
        await claimedVoucherRepository.applyVoucher(userId, voucherId);
        // Lưu thông tin voucher đã áp dụng
       appliedVouchersInfo.add(
@@ -589,11 +600,10 @@ class VoucherController extends GetxController{
     if (await voucherRepository.isFirstPurchaseVoucher(voucher)) {
       return voucher.discountValue;
     } else {
-      TLoader.errorSnackbar(title: "Voucher chỉ áp dụng cho đơn hàng đầu tiên");
+      TLoader.warningSnackbar(title: lang.translate('no_apply_first_purchase_voucher'));
       return 0;
     }
   }
-
 
   Future<num> applyPointsBasedVoucher(VoucherModel voucher) async {
     final userPoints = UserController.instance.user.value.points; // Điểm hiện có của người dùng
@@ -604,7 +614,7 @@ class VoucherController extends GetxController{
       UserRepository.instance.updateUserPoints(UserController.instance.user.value.id, newPoints);
       return voucher.discountValue;
     } else {
-      TLoader.errorSnackbar(title: "Bạn không đủ điểm để sử dụng voucher này");
+      TLoader.warningSnackbar(title: lang.translate('no_apply_points-based_voucher'));
       return 0;
     }
   }

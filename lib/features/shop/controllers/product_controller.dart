@@ -1,16 +1,15 @@
 import 'dart:math';
-
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:t_store/data/repositories/product/product_repository.dart';
 import 'package:t_store/features/shop/models/product_attribute_model.dart';
 import 'package:t_store/features/shop/models/product_model.dart';
 import 'package:t_store/utils/enum/enum.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/popups/loader.dart';
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:path_provider/path_provider.dart';
-
 import '../../suggestion/suggestion_repository.dart';
 import '../models/brand_model.dart';
 import '../models/product_variation_model.dart';
@@ -26,6 +25,15 @@ class ProductController extends GetxController {
     fetchFeaturedProducts();
     super.onInit();
   }
+  late AppLocalizations lang;
+  @override
+  void onReady() {
+    super.onReady();
+    // Bây giờ Get.context đã có giá trị hợp lệ, ta mới khởi tạo lang
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      lang = AppLocalizations.of(Get.context!);
+    });
+  }
 
   void fetchFeaturedProducts() async {
     try {
@@ -37,8 +45,10 @@ class ProductController extends GetxController {
       featuredProducts.assignAll(products);
       allProducts.assignAll(products1);
     } catch (e) {
-      TLoader.errorSnackbar(title: 'Oh Snap', message: e.toString());
-      print("error: $e");
+      TLoader.errorSnackbar(title: lang.translate('snap'), message: e.toString());
+      if (kDebugMode) {
+        print("error in fetchFeaturedProducts() : $e");
+      }
     } finally {
       isLoading.value = false;
     }
@@ -48,7 +58,7 @@ class ProductController extends GetxController {
      try{
       return await productRepository.getAllProducts();
     }catch(e){
-     TLoader.errorSnackbar(title: 'Oh Snap!',message: e.toString());
+     TLoader.errorSnackbar(title: lang.translate('snap'),message: e.toString());
       return [];
     }
   }
@@ -60,7 +70,7 @@ class ProductController extends GetxController {
       final products = await productRepository.getProductsByIds(productIds);
       return products;
     }catch(e){
-      TLoader.errorSnackbar(title: 'Oh Snap!',message: e.toString());
+      TLoader.errorSnackbar(title: lang.translate('snap'),message: e.toString());
       return [];
     }
   }
@@ -109,7 +119,7 @@ class ProductController extends GetxController {
   }
 
   String getProductStockStatus(int stock) {
-    return stock > 0 ? 'In Stock' : 'Out Stock';
+    return stock > 0 ? lang.translate('in_stock') : lang.translate('out_stock');
   }
 
   Future<String> getFileData(String path) async {

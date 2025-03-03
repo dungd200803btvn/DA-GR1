@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t_store/l10n/app_localizations.dart';
 
 import '../../../../../utils/constants/image_strings.dart';
 import '../../../../../utils/constants/sizes.dart';
@@ -11,6 +12,7 @@ class TLoginHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dark = DHelperFunctions.isDarkMode(context);
+    var lang = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -20,11 +22,11 @@ class TLoginHeader extends StatelessWidget {
           height: 150,
         ),
         //title
-        Text( DText.loginTitle,
+        Text( lang.translate('loginTitle') ,
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         const SizedBox(height: DSize.sm,),
-        Text( DText.loginSubTitle,
+        Text( lang.translate('loginSubTitle'),
           style: Theme.of(context).textTheme.bodyMedium,
         ),
       ],

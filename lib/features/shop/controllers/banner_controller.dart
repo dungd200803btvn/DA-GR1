@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:t_store/data/repositories/banners/banner_repository.dart';
 import 'package:t_store/features/shop/models/banner_model.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/popups/loader.dart';
 
 class BannerController extends GetxController{
@@ -15,6 +17,15 @@ class BannerController extends GetxController{
     fetchBanners();
     super.onInit();
   }
+  late AppLocalizations lang;
+  @override
+  void onReady() {
+    super.onReady();
+    // Bây giờ Get.context đã có giá trị hợp lệ, ta mới khởi tạo lang
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      lang = AppLocalizations.of(Get.context!);
+    });
+  }
   //update page navigation dots
   void updatePageIndicator(index){
     carousalCurrentIndex.value  = index;
@@ -28,10 +39,9 @@ class BannerController extends GetxController{
       final banners = await bannerRepo.fetchBanners();
       this.banners.assignAll(banners);
     }catch(e){
-      TLoader.errorSnackbar(title: 'Oh Snap',message: e.toString());
+      TLoader.errorSnackbar(title: lang.translate('snap'),message: e.toString());
     }finally{
       isLoading.value = false;
     }
   }
-
 }

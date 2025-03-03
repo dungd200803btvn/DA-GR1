@@ -7,13 +7,24 @@ import 'package:t_store/features/shop/screens/checkout/widgets/payment_tile.dart
 import 'package:t_store/utils/constants/image_strings.dart';
 import 'package:t_store/utils/constants/sizes.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 class CheckoutController extends GetxController{
   static CheckoutController get instance => Get.find();
   final Rx<PaymentMethodModel> selectedPaymentMethod = PaymentMethodModel.empty().obs;
+  late AppLocalizations lang;
   @override
   void onInit() {
     selectedPaymentMethod.value = PaymentMethodModel(image: TImages.paypal, name: 'Paypal');
     super.onInit();
+  }
+  @override
+  void onReady() {
+    super.onReady();
+    // Bây giờ Get.context đã có giá trị hợp lệ, ta mới khởi tạo lang
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      lang = AppLocalizations.of(Get.context!);
+    });
   }
 
   Future<dynamic>  selectPaymentMethod(BuildContext buildContext){
@@ -24,7 +35,7 @@ class CheckoutController extends GetxController{
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TSectionHeading(title: 'Select Payment Method',showActionButton: false,),
+                TSectionHeading(title: lang.translate('select_payment_method'),showActionButton: false,),
                 SizedBox(height: DSize.spaceBtwSection,),
                 TPaymentTile(paymentMethod: PaymentMethodModel(name: 'Paypal',image: TImages.paypal)),
                 SizedBox(height: DSize.spaceBtwItem/2,),

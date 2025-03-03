@@ -8,6 +8,7 @@ import 'package:t_store/features/shop/screens/checkout/checkout.dart';
 import 'package:t_store/navigation_menu.dart';
 import 'package:t_store/utils/constants/image_strings.dart';
 import 'package:t_store/utils/constants/sizes.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../controllers/product/order_controller.dart';
 
 class CartScreen extends StatelessWidget {
@@ -17,25 +18,23 @@ class CartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(CartController());
     Get.put(OrderController());
+    final lang = AppLocalizations.of(context);
     return Scaffold(
       appBar: TAppBar(
         title: Text(
-          'Cart',
+          lang.translate('cart'),
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         showBackArrow: true,
       ),
       body: Obx(() {
         //nothing found widget
-
         final emptyWidget = TAnimationLoaderWidget(
-          text: 'Whoops! Cart is EMPTY!',
+          text: lang.translate('cart_empty'),
           animation: TImages.cartAnimation,
           showAction: true,
-          actionText: 'Let\'s fill it',
+          actionText: lang.translate('fill_cart'),
           onActionPressed: (){
-            final navController = Get.find<NavigationController>();
-            // Sử dụng Get.to để điều hướng
             Get.offAll(const NavigationMenu());
           }
         );
@@ -55,7 +54,7 @@ class CartScreen extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () => Get.to(() => const CheckoutScreen()),
                 child: Obx(() =>
-                    Text('Checkout \$${controller.totalCartPrice.value.toStringAsFixed(1)}')),
+                    Text('${lang.translate('checkout')} \$${controller.totalCartPrice.value.toStringAsFixed(1)}')),
               ),
             ),
     );

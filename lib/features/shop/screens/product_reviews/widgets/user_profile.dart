@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../../utils/constants/image_strings.dart';
 import '../../../../review/model/review_model.dart';
 
@@ -10,6 +10,7 @@ class UserProfileInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final lang = AppLocalizations.of(context);
     return FutureBuilder<DocumentSnapshot>(
       future: FirebaseFirestore.instance.collection('User').doc(review.userId).get(),
       builder: (context, snapshot) {
@@ -20,7 +21,7 @@ class UserProfileInfo extends StatelessWidget {
                 child: CircularProgressIndicator(strokeWidth: 2),
               ),
               const SizedBox(width: 8),
-              Text('Loading...', style: Theme.of(context).textTheme.titleLarge),
+              Text(lang.translate('loading'), style: Theme.of(context).textTheme.titleLarge),
             ],
           );
         }
@@ -29,16 +30,16 @@ class UserProfileInfo extends StatelessWidget {
             children: [
               const CircleAvatar(child: Icon(Icons.error)),
               const SizedBox(width: 8),
-              Text('Unknown', style: Theme.of(context).textTheme.titleLarge),
+              Text(lang.translate('unknown'), style: Theme.of(context).textTheme.titleLarge),
             ],
           );
         }
         final userData = snapshot.data!.data() as Map<String, dynamic>;
         String avatarUrl = userData['ProfilePicture'] ?? '';
-        String displayName = userData['FirstName'] +" " +userData['LastName'] ?? 'Anonymous';
+        String displayName = userData['FirstName'] +" " +userData['LastName'] ?? lang.translate('anonymous');
         if(review.isAnonymous){
          avatarUrl = '';
-         displayName = 'Anonymous';
+         displayName = lang.translate('anonymous');
         }
 
         return Row(

@@ -1,16 +1,15 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:t_store/common/widgets/success_screen/success_screen.dart';
 import 'package:t_store/data/repositories/authentication/authentication_repository.dart';
 import 'package:t_store/utils/constants/image_strings.dart';
-import 'package:t_store/utils/constants/text_string.dart';
 import 'package:t_store/utils/popups/loader.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class VerifyEmailController extends GetxController {
   static VerifyEmailController get instance => Get.find();
-
+  var lang = AppLocalizations.of(Get.context!);
   //send email whenever verify screen appear and set timer for auto redirect
   @override
   void onInit() {
@@ -23,12 +22,13 @@ class VerifyEmailController extends GetxController {
     try {
       await AuthenticationRepository.instance.sendEmailVerification();
       TLoader.successSnackbar(
-          title: 'Email sent',
-          message: "Please check your inbox and verify your email");
+          title: lang.translate('send_email'),
+          message: lang.translate('verify_email_msg'));
     } catch (e) {
-      TLoader.errorSnackbar(title: 'Oh Snap', message: e.toString());
+      TLoader.errorSnackbar(title: lang.translate('snap'), message: e.toString());
     }
   }
+  
   setTimerForAutoRedirect(){
     Timer.periodic(const Duration(seconds: 1), (timer) async{
       await FirebaseAuth.instance.currentUser?.reload();
@@ -38,8 +38,8 @@ class VerifyEmailController extends GetxController {
         Get.off(
             () => SuccessScreen(
                 image: TImages.successfullyRegisterAnimation,
-                title: DText.yourAccountCreatedTitle,
-                subTitle: DText.yourAccountCreatedSubTitle,
+                title: lang.translate('yourAccountCreatedTitle'),
+                subTitle: lang.translate('yourAccountCreatedSubTitle'),
                 onPressed: ()=> AuthenticationRepository.instance.screenRedirect(),
             )
         );
@@ -53,8 +53,8 @@ checkEmailVerificationStatus() async{
       Get.off(
               () => SuccessScreen(
             image: TImages.successfullyRegisterAnimation,
-            title: DText.yourAccountCreatedTitle,
-            subTitle: DText.yourAccountCreatedSubTitle,
+            title: lang.translate('yourAccountCreatedTitle'),
+            subTitle: lang.translate('yourAccountCreatedSubTitle'),
             onPressed: ()=> AuthenticationRepository.instance.screenRedirect(),
           )
       );

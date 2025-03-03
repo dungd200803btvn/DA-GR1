@@ -41,7 +41,7 @@ final VoidCallback? add,remove;
             size: DSize.md,
             color: dark ? DColor.white : DColor.black,
             backgroundColor: DColor.primary,
-        onPressed: add,),
+            onPressed: add,),
       ],
     );
   }

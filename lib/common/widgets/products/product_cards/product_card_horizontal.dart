@@ -131,4 +131,3 @@ final ProductModel product;
     );
   }
 }
-

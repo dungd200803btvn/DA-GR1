@@ -5,6 +5,7 @@ import 'package:t_store/features/personalization/controllers/user_controller.dar
 import 'package:t_store/features/personalization/screens/profile/profile.dart';
 import 'package:t_store/utils/popups/loader.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/image_strings.dart';
 import '../../../utils/helper/network_manager.dart';
 import '../../../utils/popups/full_screen_loader.dart';
@@ -16,11 +17,20 @@ class UpdateNameController extends GetxController{
   final userController = UserController.instance;
   final userRepository = Get.put(UserRepository());
   GlobalKey<FormState> updateUsernameFormKey = GlobalKey<FormState>();
+  late AppLocalizations lang;
   @override
   void onInit() {
    initializeNames();
     super.onInit();
 
+  }
+  @override
+  void onReady() {
+    super.onReady();
+    // Bây giờ Get.context đã có giá trị hợp lệ, ta mới khởi tạo lang
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      lang = AppLocalizations.of(Get.context!);
+    });
   }
   Future<void> initializeNames() async{
     firstName.text = userController.user.value.firstName;
@@ -29,7 +39,7 @@ class UpdateNameController extends GetxController{
   Future<void> updateUserName() async{
     try{
       //start loading
-      TFullScreenLoader.openLoadingDialog("We are updating your information...", TImages.docerAnimation);
+      TFullScreenLoader.openLoadingDialog(lang.translate('update_in4'), TImages.docerAnimation);
       //Check internet connect
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
@@ -50,12 +60,12 @@ class UpdateNameController extends GetxController{
       //remove loader
       TFullScreenLoader.stopLoading();
       //show success 
-      TLoader.successSnackbar(title: 'Congratulation',message: 'Your name has been updated');
+      TLoader.successSnackbar(title: lang.translate('congratulations'),message: lang.translate('update_name'));
       //Move to previous screen
       Get.off(()=>const ProfileScreen());
     }catch(e){
       TFullScreenLoader.stopLoading();
-      TLoader.errorSnackbar(title: 'Oh Snap!',message: e.toString());
+      TLoader.errorSnackbar(title: lang.translate('snap'),message: e.toString());
     }
   }
 }

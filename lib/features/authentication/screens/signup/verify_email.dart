@@ -8,6 +8,8 @@ import 'package:t_store/utils/constants/sizes.dart';
 import 'package:t_store/utils/constants/text_string.dart';
 import 'package:t_store/utils/helper/helper_function.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 class VerifyEmailScreen extends StatelessWidget {
   const VerifyEmailScreen({super.key, this.email});
   final String? email;
@@ -15,6 +17,7 @@ class VerifyEmailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(VerifyEmailController());
+    var lang = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -39,7 +42,7 @@ class VerifyEmailScreen extends StatelessWidget {
               ),
               //Title ans Subtitle
               Text(
-                DText.confirmEmail,
+                lang.translate('confirmEmail'),
                 style: Theme.of(context).textTheme.headlineMedium,
                 textAlign: TextAlign.center,
               ),
@@ -55,7 +58,7 @@ class VerifyEmailScreen extends StatelessWidget {
                 height: DSize.spaceBtwItem,
               ),
               Text(
-                DText.confirmEmailSubTitle,
+                lang.translate('confirmEmailSubTitle'),
                 style: Theme.of(context).textTheme.labelMedium,
                 textAlign: TextAlign.center,
               ),
@@ -66,7 +69,7 @@ class VerifyEmailScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  child: const Text(DText.tContinue),
+                  child: Text(lang.translate('tContinue')),
                   onPressed: () => Get.to(
                     () => controller.checkEmailVerificationStatus()
                   ),
@@ -80,7 +83,7 @@ class VerifyEmailScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: TextButton(
-                  child: const Text(DText.resendEmail),
+                  child:  Text(lang.translate('resendEmail')),
                   onPressed: () => controller.sendEmailVerification(),
                 ),
               ),

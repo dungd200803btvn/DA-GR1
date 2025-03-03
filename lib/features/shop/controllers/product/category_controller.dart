@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:t_store/data/repositories/categories/category_repository.dart';
 import 'package:t_store/utils/popups/loader.dart';
 import '../../../../data/repositories/product/product_repository.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../models/category_model.dart';
 import '../../models/product_model.dart';
 
@@ -11,13 +13,21 @@ class CategoryController extends GetxController {
   final _categoryRepository = Get.put(CategoryRepository());
   RxList<CategoryModel> allCategories = <CategoryModel>[].obs;
   RxList<CategoryModel> featuredCategories = <CategoryModel>[].obs;
-
+  late AppLocalizations lang;
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
     // _categoryRepository.uploadDummyData(TDummyData.categories);
     fetchCategories();
+  }
+  @override
+  void onReady() {
+    super.onReady();
+    // Bây giờ Get.context đã có giá trị hợp lệ, ta mới khởi tạo lang
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      lang = AppLocalizations.of(Get.context!);
+    });
   }
 
   /// Load category data
@@ -33,7 +43,7 @@ class CategoryController extends GetxController {
           .take(8)
           .toList());
       } catch (e) {
-        TLoader.errorSnackbar(title: 'Oh Snap', message: e.toString());
+        TLoader.errorSnackbar(title: lang.translate('snap'), message: e.toString());
     } finally {
       isLoading.value = false;
     }
@@ -47,10 +57,8 @@ class CategoryController extends GetxController {
       final products = await ProductRepository.instance
           .getProductsForCategory1(categoryId: categoryId);
       return products;
-
     } catch (e) {
-     TLoader.errorSnackbar(title: 'Oh Snap!', message: e.toString() + " LCD");
-
+     TLoader.errorSnackbar(title: lang.translate('snap'), message: e.toString());
       return [];
     }
   }
@@ -62,7 +70,7 @@ class CategoryController extends GetxController {
       });
       return  subCategories;
     }catch (e) {
-      TLoader.errorSnackbar(title: 'Oh Snap!', message: e.toString());
+      TLoader.errorSnackbar(title: lang.translate('snap'), message: e.toString());
       return [];
     }
   }

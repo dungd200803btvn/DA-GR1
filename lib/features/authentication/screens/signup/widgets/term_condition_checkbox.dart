@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:t_store/features/authentication/controller/signup/signup_controller.dart';
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../../utils/constants/colors.dart';
 import '../../../../../utils/constants/sizes.dart';
 import '../../../../../utils/constants/text_string.dart';
@@ -15,6 +16,7 @@ class TTermsAndConditionCheckBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = SignupController.instance;
     final dark = DHelperFunctions.isDarkMode(context);
+    var lang = AppLocalizations.of(context);
     return Row(
       children: [
         SizedBox(
@@ -33,11 +35,11 @@ class TTermsAndConditionCheckBox extends StatelessWidget {
         ),
         Text.rich(TextSpan(children: [
           TextSpan(
-            text: DText.iAgreeTo,
+            text: lang.translate('iAgreeTo'),
             style: Theme.of(context).textTheme.bodySmall,
           ),
           TextSpan(
-            text: " ${DText.privacyPolicy}",
+            text: " ${lang.translate('privacyPolicy')}",
             style: Theme.of(context).textTheme.bodyMedium!.apply(
                   color: dark ? DColor.white : DColor.primary,
                   decoration: TextDecoration.underline,
@@ -45,11 +47,11 @@ class TTermsAndConditionCheckBox extends StatelessWidget {
                 ),
           ),
           TextSpan(
-            text: " ${DText.and}",
+            text: " ${lang.translate('and')}",
             style: Theme.of(context).textTheme.bodySmall,
           ),
           TextSpan(
-            text: " ${DText.termsOfUse}",
+            text: " ${lang.translate('termsOfUse')}",
             style: Theme.of(context).textTheme.bodyMedium!.apply(
                   color: dark ? DColor.white : DColor.primary,
                   decoration: TextDecoration.underline,

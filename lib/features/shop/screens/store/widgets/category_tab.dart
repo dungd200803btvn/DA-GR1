@@ -9,6 +9,7 @@ import 'package:t_store/features/shop/controllers/product/category_controller.da
 import 'package:t_store/features/shop/models/category_model.dart';
 import 'package:t_store/features/shop/screens/all_products/all_products.dart';
 import 'package:t_store/features/shop/screens/store/widgets/category_brands.dart';
+import 'package:t_store/l10n/app_localizations.dart';
 import 'package:t_store/utils/helper/cloud_helper_functions.dart';
 import '../../../../../common/widgets/layouts/grid_layout.dart';
 import '../../../../../common/widgets/products/product_cards/product_card_vertical.dart';
@@ -26,7 +27,7 @@ class TCategoryTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = CategoryController.instance;
-
+    final lang = AppLocalizations.of(context);
     return ListView(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -52,18 +53,19 @@ class TCategoryTab extends StatelessWidget {
 
                     return Column(
                       children: [
-                        TSectionHeading(title: 'You might like', onPressed: ()
-                        =>  Get.to(AllProducts(title: category.name,futureMethod: controller.getCategoryProducts(categoryId: category.id,),))),
+                        TSectionHeading(title: lang.translate('you_might_like'),
+                            onPressed:
+                                () =>  Get.to(AllProducts(title: category.name,futureMethod: controller.getCategoryProducts(categoryId: category.id,),))),
                         const SizedBox(height: DSize.spaceBtwItem),
                         TGridLayout(
                             itemCount: products.length,
                             itemBuilder: (_, index) => TProductCardVertical(
                              product: products[index],
-                            )),
+                            )
+                        ),
                       ],
                     );
                   },
-
                 ),
               ],
             ),

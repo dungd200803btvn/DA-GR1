@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:t_store/data/repositories/authentication/authentication_repository.dart';
 import 'package:t_store/data/repositories/user/user_repository.dart';
 import 'package:t_store/features/authentication/screens/signup/verify_email.dart';
+import 'package:t_store/l10n/app_localizations.dart';
 import 'package:t_store/utils/popups/full_screen_loader.dart';
 import 'package:t_store/utils/popups/loader.dart';
 import '../../../../utils/constants/image_strings.dart';
@@ -12,7 +13,6 @@ import '../../models/user_model.dart';
 
 class SignupController extends GetxController {
   static SignupController get instance => Get.find();
-
   ///Variables
   final hidePassword = true.obs;
   final privacyPolacy = true.obs;
@@ -23,13 +23,13 @@ class SignupController extends GetxController {
   final firstName = TextEditingController();
   final phoneNumber = TextEditingController();
   GlobalKey<FormState> signupFormKey = GlobalKey<FormState>();
-
+  var lang = AppLocalizations.of(Get.context!);
   /// Signup
   void signup() async {
     try {
       //Start loading
       TFullScreenLoader.openLoadingDialog(
-          'We are processing your information', TImages.docerAnimation);
+          lang.translate('process_info'), TImages.docerAnimation);
       //Check internet connect
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
@@ -44,9 +44,9 @@ class SignupController extends GetxController {
       //Privacy Policy check
       if (!privacyPolacy.value) {
         TLoader.warningSnackbar(
-            title: 'Accept Privacy Policy',
+            title: lang.translate('accept_privacy'),
             message:
-                'In order to create account, you must have to read  and accept the Privacy Policy & Terms of Use');
+            lang.translate('accept_privacy_msg'));
         return;
       }
       //register user in the Firebase Authentication and save in the firebase
@@ -66,10 +66,10 @@ class SignupController extends GetxController {
       await  userRepository.saveUserRecord(newUser);
     //Show Success Message
       TFullScreenLoader.stopLoading();
-      TLoader.successSnackbar(title: 'Congratulations',message: "Your account has been created!Verify email to continue");
+      TLoader.successSnackbar(title: lang.translate('accept_privacy'),message: lang.translate('accept_privacy_msg'));
       Get.to(()=>  VerifyEmailScreen(email: email.text.trim(),));
     } catch (e) {
-      TLoader.errorSnackbar(title: 'Oh Snap', message: e.toString());
+      TLoader.errorSnackbar(title: lang.translate('snap'), message: e.toString());
       TFullScreenLoader.stopLoading();
       return;
     }

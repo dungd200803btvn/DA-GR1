@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:t_store/features/voucher/widgets/voucher_apply.dart';
 import '../../../../features/voucher/controllers/voucher_controller.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../../utils/helper/helper_function.dart';
@@ -32,7 +33,7 @@ class _TCouponCodeState extends State<TCouponCode> {
   Widget build(BuildContext context) {
     final dark = DHelperFunctions.isDarkMode(context);
     final controller = VoucherController.instance;
-
+    final lang = AppLocalizations.of(context);
     return TRoundedContainer(
       showBorder: true,
       backgroundColor: dark ? DColor.dark : DColor.white,
@@ -48,8 +49,8 @@ class _TCouponCodeState extends State<TCouponCode> {
           Expanded(
             child: TextFormField(
               controller: _promoController,
-              decoration: const InputDecoration(
-                hintText: 'Have a promo code? Enter here',
+              decoration:  InputDecoration(
+                hintText: lang.translate('have_promo_code'),
                 border: InputBorder.none,
                 focusedBorder: InputBorder.none,
                 enabledBorder: InputBorder.none,
@@ -101,7 +102,7 @@ class _TCouponCodeState extends State<TCouponCode> {
                 backgroundColor: DColor.grey.withOpacity(0.2),
                 side: BorderSide(color: DColor.grey.withOpacity(0.1)),
               ),
-              child: const Text('Apply'),
+              child:  Text(lang.translate('apply')),
             ),
           ),
         ],

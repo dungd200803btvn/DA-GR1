@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:t_store/common/widgets/shimmer/shimmer.dart';
 import 'package:t_store/features/shop/controllers/banner_controller.dart';
+import 'package:t_store/l10n/app_localizations.dart';
 import 'package:t_store/utils/constants/colors.dart';
 import 'package:t_store/utils/constants/image_strings.dart';
 import 'package:t_store/utils/constants/sizes.dart';
@@ -16,7 +17,7 @@ class TPromoSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(BannerController());
-
+    final lang = AppLocalizations.of(context);
     return Obx(() {
       // Loading state
       if (controller.isLoading.value) {
@@ -25,7 +26,7 @@ class TPromoSlider extends StatelessWidget {
 
       // No data found state
       if (controller.banners.isEmpty) {
-        return const Center(child: Text('No data found'));
+        return Center(child: Text(lang.translate('no_data_found')));
       }
 
       final banners = controller.banners;

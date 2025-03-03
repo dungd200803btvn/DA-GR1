@@ -3,6 +3,7 @@ import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:t_store/features/voucher/controllers/voucher_controller.dart';
 import 'package:t_store/features/voucher/screens/voucher_history.dart';
 import 'package:t_store/features/voucher/widgets/voucher_tab.dart';
+import 'package:t_store/l10n/app_localizations.dart';
 import 'package:t_store/utils/constants/colors.dart';
 import '../../../common/widgets/appbar/appbar.dart';
 import '../../../utils/constants/sizes.dart';
@@ -39,6 +40,7 @@ class _VoucherScreenState extends State<VoucherScreen>
 
   @override
   Widget build(BuildContext context) {
+    final lang = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: DColor.white,
       appBar: AppBar(
@@ -47,13 +49,16 @@ class _VoucherScreenState extends State<VoucherScreen>
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              'Vouchers',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .headlineSmall!
-                  .copyWith(color: Colors.black), // Chữ đen
+            Expanded(
+              child: Text(
+                lang.translate('vouchers_list'),
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .headlineSmall!
+                    .copyWith(color: Colors.black),
+                overflow: TextOverflow.ellipsis,// Chữ đen
+              ),
             ),
             GestureDetector(
               onTap: () {
@@ -66,12 +71,13 @@ class _VoucherScreenState extends State<VoucherScreen>
                 );
               },
               child: Text(
-                'History',
+                lang.translate('vouchers_history'),
                 style: TextStyle(
                   color: Colors.blue,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
@@ -81,10 +87,10 @@ class _VoucherScreenState extends State<VoucherScreen>
           indicatorColor: Colors.blue,
           labelColor: Colors.blue,
           unselectedLabelColor: Colors.grey,
-          tabs: const [
-            Tab(text: 'Tất cả'),
-            Tab(text: 'Toàn sàn'),
-            Tab(text: 'Vận chuyển & cửa hàng'),
+          tabs:  [
+            Tab(text: lang.translate('total')),
+            Tab(text: lang.translate('entire_e-commerce')),
+            Tab(text: lang.translate('shipping_store')),
           ],
         ),
       ),

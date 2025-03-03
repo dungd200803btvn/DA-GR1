@@ -5,14 +5,17 @@ import 'package:t_store/features/personalization/controllers/user_controller.dar
 import 'package:t_store/utils/constants/sizes.dart';
 import 'package:t_store/utils/constants/text_string.dart';
 import 'package:t_store/utils/validators/validation.dart';
+
+import '../../../../../l10n/app_localizations.dart';
 class ReAuthLoginForm extends StatelessWidget {
   const ReAuthLoginForm({super.key});
 
   @override
   Widget build(BuildContext context) {
     final controller = UserController.instance;
+    final lang = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Re-Authenticate User'),),
+      appBar: AppBar(title:  Text(lang.translate('re_auth')),),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(DSize.defaultspace),
@@ -25,7 +28,7 @@ class ReAuthLoginForm extends StatelessWidget {
                 TextFormField(
                   controller: controller.verifyEmail,
                   validator: (value)=>DValidator.validateEmail(value),
-                  decoration: const InputDecoration(prefixIcon: Icon(Iconsax.direct_right),labelText: DText.email),
+                  decoration:  InputDecoration(prefixIcon: Icon(Iconsax.direct_right),labelText: lang.translate('email')),
                 ),
                 const SizedBox(height: DSize.spaceBtwInputFielRadius,),
                 ///Password
@@ -34,7 +37,7 @@ class ReAuthLoginForm extends StatelessWidget {
                   controller: controller.verifyPassword,
                   validator: (value)=> DValidator.validatePassword(value),
                   decoration: InputDecoration(
-                    labelText: DText.password,
+                    labelText: lang.translate('password'),
                     prefixIcon: const Icon(Iconsax.password_check),
                     suffixIcon: IconButton(
                       onPressed: ()=> controller.hidePassword.value = !controller.hidePassword.value ,
@@ -46,7 +49,7 @@ class ReAuthLoginForm extends StatelessWidget {
               //Button
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(onPressed: ()=>controller.reAuthenticateEmailAndPasswordUser(),child: const Text('Verify'),),
+                  child: ElevatedButton(onPressed: ()=>controller.reAuthenticateEmailAndPasswordUser(),child:  Text(lang.translate('verify')),),
                 )
               ],
             ),

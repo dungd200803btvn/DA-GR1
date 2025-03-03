@@ -8,6 +8,8 @@ import 'package:t_store/utils/constants/colors.dart';
 import 'package:t_store/utils/helper/helper_function.dart';
 import 'package:t_store/utils/validators/validation.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 class TSearchContainer extends StatelessWidget {
   const TSearchContainer({
     super.key,
@@ -29,7 +31,7 @@ class TSearchContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = DHelperFunctions.isDarkMode(context);
     final controller = Get.put(HomeController());
-
+    final lang = AppLocalizations.of(context);
     return Padding(
       padding: padding,
       child: TextFormField(
@@ -42,16 +44,15 @@ class TSearchContainer extends StatelessWidget {
             borderRadius: BorderRadius.circular(8.0),
             borderSide: BorderSide(color: dark ? DColor.dark : DColor.grey),
           ) : InputBorder.none,
-          hintText: 'Search...',
+          hintText: lang.translate('search'),
           hintStyle: TextStyle(color: DColor.grey),
           suffixIcon: IconButton(
             icon: Icon(Iconsax.search_normal),
             color: DColor.grey,
             onPressed: () {
               // Thực hiện hành động khi bấm vào icon search
-              Get.to(() => const AllProductsByLocal(
-                title: 'Search Result',
-               // products: controller.getProductsBySearchQuery(controller.query.text.trim().toString()),
+              Get.to(() =>  AllProductsByLocal(
+                title: lang.translate('search_result'),
               ));
             },
           ),

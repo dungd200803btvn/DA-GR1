@@ -14,6 +14,7 @@ import '../../../../common/widgets/custom_shapes/containers/primary_header_conta
 import '../../../../common/widgets/custom_shapes/containers/search_container.dart';
 import '../../../../common/widgets/layouts/grid_layout.dart';
 import '../../../../common/widgets/texts/section_heading.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -21,37 +22,37 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ProductController());
-
+    final lang = AppLocalizations.of(context);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
             //1. Header
-            const TPrimaryHeaderContainer(
+            TPrimaryHeaderContainer(
               child: Column(
                 children: [
                   //Appbar
-                  THomeAppBar(),
-                  SizedBox(
+                  const THomeAppBar(),
+                  const SizedBox(
                     height: DSize.spaceBtwSection,
                   ),
 
                   //Search
                   TSearchContainer(
-                    text: "Search in store",
+                    text: lang.translate('search_in_store'),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: DSize.spaceBtwSection,
                   ),
 
                   //Categories
-                  Padding(
+                   Padding(
                     padding: EdgeInsets.only(left: DSize.defaultspace),
                     child: Column(
                       children: [
                         //Heading
                         TSectionHeading(
-                            title: 'Popular Category',
+                            title: lang.translate('popular_category'),
                             showActionButton: false,
                             textColor: DColor.white),
                         SizedBox(height: DSize.spaceBtwItem),
@@ -60,7 +61,7 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(height: DSize.spaceBtwSection)
+                  const SizedBox(height: DSize.spaceBtwSection)
                 ],
               ),
             ),
@@ -78,10 +79,10 @@ class HomeScreen extends StatelessWidget {
                   ),
                   //Heading
                   TSectionHeading(
-                      title: 'Popular Product',
+                      title: lang.translate('popularProducts'),
                       onPressed: () => Get.to(
                             () => AllProducts(
-                              title: 'Popular Product',
+                              title: lang.translate('popularProducts'),
                               query: FirebaseFirestore.instance
                                   .collection('Products')
                                   .where('IsFeatured', isEqualTo: true)
@@ -98,7 +99,7 @@ class HomeScreen extends StatelessWidget {
                     if (controller.featuredProducts.isEmpty) {
                       return Center(
                         child: Text(
-                          'No data found!',
+                          lang.translate('no_data_found'),
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       );
