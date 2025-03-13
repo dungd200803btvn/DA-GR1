@@ -7,8 +7,10 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 import 'package:t_store/utils/formatter/formatter.dart';
+import 'package:t_store/utils/helper/cloud_helper_functions.dart';
 import 'package:t_store/utils/popups/loader.dart';
 import '../../../common/widgets/success_screen/success_screen.dart';
+import '../../../data/repositories/review/review_repository.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../navigation_menu.dart';
 import '../../../utils/constants/api_constants.dart';
@@ -19,7 +21,7 @@ import '../../notification/controller/notification_service.dart';
 class StripeService{
   StripeService._();
   static final StripeService instance =  StripeService._();
-
+  final reviewRepository = ReviewRepository.instance;
   Future<void> makePayment(double amount, String currency,String userId,String orderId,BuildContext context)async{
     final lang = AppLocalizations.of(context);
     try{
@@ -42,14 +44,15 @@ class StripeService{
             Get.offAll(() => const NavigationMenu());
           }
       ));
-      final now = DateTime.now();
-      final formattedTime = DateFormat('HH:mm dd/MM/yyyy').format(now);
+      final formattedTime = DFormatter.FormattedDate(DateTime.now());
       final NotificationService notificationService = NotificationService(userId: userId);
+      String url =  await TCloudHelperFunctions.uploadAssetImage("assets/images/content/order_success.png", "order_success");
       await notificationService.createAndSendNotification(
-        title: "Đặt hàng thành công",
-        message: "Đơn hàng của bạn đã được đặt thành công vào $formattedTime",
+        title: lang.translate('order_success'),
+        message: "${lang.translate('order_success_msg')} $formattedTime",
         type: "order",
-        orderId: orderId, // nếu có
+        orderId: orderId,
+        imageUrl: url// nếu có
       );
     }catch(e){
       if (kDebugMode) {

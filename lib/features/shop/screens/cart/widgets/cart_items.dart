@@ -7,6 +7,7 @@ import '../../../../../common/widgets/products/cart/cart_item.dart';
 import '../../../../../common/widgets/texts/product_price_text.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../utils/constants/sizes.dart';
+import '../../../../../utils/formatter/formatter.dart';
 import '../../../controllers/product/cart_controller.dart';
 import '../../all_products/all_products.dart';
 
@@ -78,7 +79,7 @@ class TCartItems extends StatelessWidget {
                           //Product total price
                           Expanded(
                             child: TProductPriceText(
-                              price: (item.price * item.quantity).toStringAsFixed(1),
+                              price: DFormatter.formattedAmount(item.price * item.quantity*24500) ,
                             ),
                           ),
                            // TProductPriceText(price: (item.price * item.quantity).toStringAsFixed(1)),

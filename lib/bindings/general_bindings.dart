@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
+import 'package:t_store/data/repositories/bonus_point/daily_checkin_repository.dart';
 import 'package:t_store/data/repositories/user/user_repository.dart';
 import 'package:t_store/data/repositories/vouchers/ClaimedVoucherRepository.dart';
+import 'package:t_store/features/bonus_point/controller/daily_checkin_controller.dart';
 import 'package:t_store/features/personalization/controllers/address_controller.dart';
 import 'package:t_store/features/personalization/controllers/user_controller.dart';
 import 'package:t_store/features/shop/controllers/product/cart_controller.dart';
@@ -8,6 +10,7 @@ import 'package:t_store/features/shop/controllers/product/checkout_controller.da
 import 'package:t_store/features/shop/controllers/product/variation_controller.dart';
 import 'package:t_store/features/voucher/controllers/voucher_controller.dart';
 import 'package:t_store/utils/helper/network_manager.dart';
+import '../data/repositories/authentication/authentication_repository.dart';
 import '../data/repositories/notification/notification_repository.dart';
 import '../data/repositories/review/review_repository.dart';
 import '../data/repositories/vouchers/VoucherRepository.dart';
@@ -18,6 +21,7 @@ import '../features/review/controller/review_controller.dart';
 class GeneralBindings extends Bindings{
   @override
   void dependencies() {
+    Get.put(AuthenticationRepository());
     Get.put(NetworkManager());
     Get.put(UserRepository());
     Get.put(UserController());
@@ -34,5 +38,7 @@ class GeneralBindings extends Bindings{
     NotificationController.instance.updateUserNotifications();
     Get.put(ReviewRepository());
     Get.put(WriteReviewScreenController());
+    Get.put(DailyCheckInRepository());
+    Get.put(DailyCheckinController());
   }
 }

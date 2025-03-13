@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:t_store/bindings/general_bindings.dart';
 import 'package:t_store/data/repositories/authentication/authentication_repository.dart';
 import 'package:t_store/data/repositories/user/user_repository.dart';
 import 'package:t_store/features/authentication/models/user_model.dart';
@@ -19,6 +20,7 @@ import '../../../../utils/exceptions/platform_exceptions.dart';
 import '../../../../utils/helper/network_manager.dart';
 
 class LoginController extends GetxController {
+  static LoginController get instance => Get.find();
   //Variables
   final rememberMe = false.obs;
   final hidePassword = true.obs;
@@ -27,7 +29,9 @@ class LoginController extends GetxController {
   final password = TextEditingController();
   GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
   final userController = UserController.instance;
-  var lang = AppLocalizations.of(Get.context!);
+  final userRepository = UserRepository.instance;
+  AppLocalizations get lang => AppLocalizations.of(Get.context!);
+
 //Email and password login
   Future<void> init() async {
     //Start loading
@@ -55,10 +59,22 @@ class LoginController extends GetxController {
         localStorage.write("REMEMBER_ME_EMAIL", "");
         localStorage.write("REMEMBER_ME_PASSWORD", "");
       }
-      //remove loader
+      final userCredentials = await AuthenticationRepository.instance.loginWithEmailAndPassword(email.text.trim(), password.text.trim());
+      // Check existing user record
+      final existingUser = await userRepository.fetchUserDetails();
+      if (existingUser == UserModel.empty() || existingUser.id != userCredentials.user!.uid) {
+        // New user or different account: Save user record
+        await userController.saveUserRecord(userCredentials);
+      } else {
+        // Existing account: Fetch updated user data (optional)
+        await  userController.fetchUserRecord();
+      }
+      // Fetch updated user record after sign-i
+      // await UserController.instance.fetchUserRecord();
+      // Remove loader
       TFullScreenLoader.stopLoading();
-      UserController.instance.fetchUserRecord();
-      //Redirect
+      GeneralBindings().dependencies();
+      // Navigate to NavigationMenu
       Get.to(() => const NavigationMenu());
     } on FirebaseAuthException catch (e) {
       TFullScreenLoader.stopLoading();
@@ -99,6 +115,7 @@ class LoginController extends GetxController {
       await UserController.instance.fetchUserRecord();
       // Remove loader
       TFullScreenLoader.stopLoading();
+      GeneralBindings().dependencies();
       // Navigate to NavigationMenu
       Get.to(() => const NavigationMenu());
     } catch (e) {

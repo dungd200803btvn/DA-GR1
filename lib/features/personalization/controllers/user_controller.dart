@@ -62,7 +62,6 @@ class UserController extends GetxController {
 
   //save user record from any registration provider
   Future<void> saveUserRecord(UserCredential? userCredential) async {
-
     try {
       await fetchUserRecord();
       if(user.value.id.isEmpty){

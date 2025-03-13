@@ -1,24 +1,40 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:t_store/data/repositories/user/user_repository.dart';
+import 'package:t_store/utils/constants/api_constants.dart';
+import 'package:t_store/utils/helper/cloud_helper_functions.dart';
 import 'package:t_store/utils/popups/loader.dart';
 import '../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../data/repositories/review/review_repository.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../utils/constants/image_strings.dart';
+import '../../../utils/popups/full_screen_loader.dart';
+import '../../notification/controller/notification_service.dart';
 import '../model/review_model.dart';
 
 class WriteReviewScreenController extends GetxController{
   static WriteReviewScreenController get instance => Get.find();
   final reviewRepository = ReviewRepository.instance;
+  final userRepository  = UserRepository.instance;
   final TextEditingController commentController = TextEditingController();
   double rating = 0.0;
   bool isAnonymous = false;
   List<File> selectedImages = [];
   List<File> selectedVideos = [];
   final ImagePicker _picker = ImagePicker();
-
+  late AppLocalizations lang;
+  @override
+  void onReady() {
+    super.onReady();
+    // Bây giờ Get.context đã có giá trị hợp lệ, ta mới khởi tạo lang
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      lang = AppLocalizations.of(Get.context!);
+    });
+  }
   // Hàm mở thư viện ảnh hoặc camera
   Future<void> pickMedia(BuildContext context) async {
     var lang = AppLocalizations.of(context);
@@ -117,24 +133,86 @@ class WriteReviewScreenController extends GetxController{
   }
 
   // Hàm xử lý gửi đánh giá
-  Future<void> submitReview(String productId) async {
-    final mediaUrls = await uploadMediaToStorage();
-    ReviewModel review = ReviewModel(
-      rating: rating,
-      comment: commentController.text.trim(),
-      isAnonymous: isAnonymous,
-      imageUrls: mediaUrls['imageUrls'] ?? [],
-      createdAt: DateTime.now(),
-      reviewId: '',
-      productId: productId,
-      userId: AuthenticationRepository.instance.authUser!.uid,
-      videoUrls: mediaUrls['videoUrls'] ?? [],
-    );
+  Future<void> submitReview(String productId, BuildContext context) async {
+    // Hiển thị loading dialog
+    TFullScreenLoader.openLoadingDialog(
+        lang.translate('process_order'), TImages.pencilAnimation);
+    try {
+      final mediaUrls = await uploadMediaToStorage();
+      final imageUrls = mediaUrls['imageUrls'] ?? [];
+      final videoUrls = mediaUrls['videoUrls'] ?? [];
 
-    await reviewRepository.saveReview(review);
-    // Reset dữ liệu sau khi submit thành công
-    resetData();
+      ReviewModel review = ReviewModel(
+        rating: rating,
+        comment: commentController.text.trim(),
+        isAnonymous: isAnonymous,
+        imageUrls: imageUrls,
+        createdAt: DateTime.now(),
+        reviewId: '',
+        productId: productId,
+        userId: AuthenticationRepository.instance.authUser!.uid,
+        videoUrls: videoUrls,
+      );
+
+      await reviewRepository.saveReview(review);
+
+      final points = basePoints +
+          (imageUrls.length * imageBonusPoints) +
+          (videoUrls.length * videoBonusPoints);
+      await userRepository.updateUserPoints(
+          AuthenticationRepository.instance.authUser!.uid, points);
+      // Xây dựng thông báo đa ngôn ngữ sử dụng placeholder đã được thay thế
+      String baseMessage = lang.translate(
+        'review_success_message',
+        args: [basePoints.toString()],
+      );
+      String photoMessage = imageUrls.isNotEmpty
+          ? lang.translate('upload_photo', args: [
+        imageUrls.length.toString(),
+        (imageUrls.length * imageBonusPoints).toString()
+      ])
+          : "";
+      String videoMessage = videoUrls.isNotEmpty
+          ? lang.translate('upload_video', args: [
+        videoUrls.length.toString(),
+        (videoUrls.length * videoBonusPoints).toString()
+      ])
+          : "";
+      String mediaMessage =
+          photoMessage + (videoMessage.isNotEmpty ? "\n" + videoMessage : "");
+      String endMessage = lang.translate(
+        'review_success_message_end',
+        args: [points.toString()],
+      );
+      String finalMessage =
+          baseMessage + (mediaMessage.isNotEmpty ? "\n" + mediaMessage : "")+endMessage;
+      // Loại bỏ các ký tự ngoặc nhọn nếu còn sót lại
+      finalMessage = finalMessage.replaceAll(RegExp(r'[{}]'), '');
+      // Upload ảnh bonus để dùng cho thông báo
+      String url = await  TCloudHelperFunctions.uploadAssetImage( "assets/images/content/bonus_point.jpg", "bonus_point");
+      final NotificationService notificationService =
+      NotificationService(userId: AuthenticationRepository.instance.authUser!.uid);
+      await notificationService.createAndSendNotification(
+        title: lang.translate('get_point_success'),
+        message: finalMessage,
+        type: "points",
+        imageUrl: url,
+      );
+      // Reset dữ liệu sau khi submit thành công
+      resetData();
+    } catch (e) {
+      // Xử lý lỗi theo yêu cầu, ví dụ hiển thị thông báo lỗi
+      if (kDebugMode) {
+        print("Error in submitReview: $e");
+      }
+    } finally {
+      // Đóng loading dialog khi hoàn tất (dù thành công hay thất bại)
+      TFullScreenLoader.stopLoading();
+      Navigator.pop(context);
+    }
   }
+
+
   /// Hàm reset toàn bộ dữ liệu đã nhập
   void resetData() {
     commentController.clear();

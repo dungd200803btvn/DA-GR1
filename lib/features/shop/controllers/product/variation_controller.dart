@@ -4,6 +4,7 @@ import 'package:t_store/features/shop/controllers/product/cart_controller.dart';
 import 'package:t_store/features/shop/controllers/product/images_controller.dart';
 import 'package:t_store/features/shop/models/product_model.dart';
 import 'package:t_store/features/shop/models/product_variation_model.dart';
+import 'package:t_store/utils/formatter/formatter.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class VariationController extends GetxController {
@@ -72,7 +73,8 @@ class VariationController extends GetxController {
   }
 
   String getVariationPrice([double? salePercentage]){
-    return (salePercentage!=null ? selectedVariation.value.price*(1-salePercentage):selectedVariation.value.price ).toStringAsFixed(1);
+    final price = salePercentage!=null ? selectedVariation.value.price*(1-salePercentage):selectedVariation.value.price;
+    return DFormatter.formattedAmount(price*24500);
   }
   //check status
   void getProductVariationStockStatus() {

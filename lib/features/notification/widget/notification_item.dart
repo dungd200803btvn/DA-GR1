@@ -20,6 +20,7 @@ class NotificationItem extends StatelessWidget {
     final formattedDate =
     DateFormat('dd/MM/yyyy HH:mm').format(notification.timestamp);
     final lang = AppLocalizations.of(context);
+    final asset = notification.type=="points"? "assets/images/content/bonus_point.jpg":"assets/images/content/user.png";
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       elevation: 3,
@@ -33,7 +34,7 @@ class NotificationItem extends StatelessWidget {
           backgroundImage: (notification.imageUrl != null &&
               notification.imageUrl!.isNotEmpty)
               ? NetworkImage(notification.imageUrl!)
-              : const AssetImage("assets/images/content/user.png")
+              :  const AssetImage("assets/images/content/user.png")
           as ImageProvider,
           backgroundColor: Colors.grey[200],
         ),

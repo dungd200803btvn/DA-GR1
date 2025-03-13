@@ -132,7 +132,14 @@ Future<String> uploadImage(String path,XFile image) async{
 
   Future<void> updateUserPoints(String userId, num newPoints) async {
     try {
-      await _db.collection("User").doc(userId).update({"points": newPoints});
+      final userDoc =  await _db.collection("User").doc(userId).get();
+      if(userDoc.exists){
+        num existingPoints = userDoc.data()?['Points'] ?? 0;
+        num updatedPoints = existingPoints+newPoints;
+        await _db.collection("User").doc(userId).update({"Points": updatedPoints});
+      }else{
+        throw "User not found!";
+      }
     } on FirebaseException catch (e) {
       throw TFirebaseException(e.code).message;
     } on FormatException catch (_) {

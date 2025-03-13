@@ -7,6 +7,7 @@ import 'package:t_store/features/shop/models/product_attribute_model.dart';
 import 'package:t_store/features/shop/models/product_model.dart';
 import 'package:t_store/utils/enum/enum.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../utils/formatter/formatter.dart';
 import '../../../utils/popups/loader.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
@@ -80,11 +81,11 @@ class ProductController extends GetxController {
     double largestPrice = 0.0;
     //if no variations exist, return simple price or sale price
     if(saleParcentage==null && product.productType == ProductType.single.toString()){
-      return product.price.toStringAsFixed(1);
+      return DFormatter.formattedAmount(product.price*24500);
     }
     else if (product.productType == ProductType.single.toString() && saleParcentage!=null ) {
       final discountedPrice = product.price * (1 - saleParcentage);
-      return discountedPrice.toStringAsFixed(1);
+      return DFormatter.formattedAmount(discountedPrice*24500);
     } else {
       //calculate max and min price
       for (var variation in product.productVariations!) {
@@ -103,9 +104,10 @@ class ProductController extends GetxController {
         }
       }
       if (smallestPrice.isEqual(largestPrice)) {
-        return largestPrice.toStringAsFixed(1);
+        // return largestPrice.toStringAsFixed(1);
+        return DFormatter.formattedAmount(largestPrice*24500);
       } else {
-        return '${smallestPrice.toStringAsFixed(1)} - \$${largestPrice.toStringAsFixed(1)}';
+        return '${DFormatter.formattedAmount(smallestPrice*24500)}  - ${DFormatter.formattedAmount(largestPrice*24500)}';
       }
     }
   }

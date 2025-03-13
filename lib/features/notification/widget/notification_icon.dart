@@ -9,24 +9,23 @@ class NotificationIcon extends StatefulWidget {
 }
 
 class _NotificationIconState extends State<NotificationIcon> {
-  Future<int> _fetchNotificationCount() async {
+  Stream<int>  _notificationCountStream()  {
     String? userId = AuthenticationRepository.instance.authUser?.uid;
-    if (userId == null) return 0; // Nếu user chưa đăng nhập, trả về 0 thông báo
+    if (userId == null) return Stream.value(0); // Nếu user chưa đăng nhập, trả về 0 thông báo
 
-    final snapshot = await FirebaseFirestore.instance
+    return FirebaseFirestore.instance
         .collection('User')
         .doc(userId)
         .collection('notifications')
         .where('read', isEqualTo: false)
-        .get();
-
-    return snapshot.docs.length; // Trả về số lượng thông báo chưa đọc
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<int>(
-      future: _fetchNotificationCount(),
+    return StreamBuilder<int>(
+      stream: _notificationCountStream(),
       builder: (context, snapshot) {
         int count = snapshot.data ?? 0; // Nếu chưa có dữ liệu, mặc định là 0
         return Stack(
@@ -63,4 +62,3 @@ class _NotificationIconState extends State<NotificationIcon> {
     );
   }
 }
-

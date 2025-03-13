@@ -8,12 +8,14 @@ import 'package:t_store/common/widgets/texts/product_title_text.dart';
 import 'package:t_store/common/widgets/texts/t_branc_title_text_with_verified_icon.dart';
 import 'package:t_store/features/shop/models/product_model.dart';
 import 'package:t_store/utils/enum/enum.dart';
+import 'package:t_store/utils/formatter/formatter.dart';
 
 import '../../../../features/shop/controllers/product_controller.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../../utils/helper/helper_function.dart';
 import '../../../styles/shadows.dart';
+import 'add_to_cart_button.dart';
 class TProductCardHorizontal extends StatelessWidget {
   const TProductCardHorizontal({super.key, required this.product,this.salePercentage,});
 final ProductModel product;
@@ -97,30 +99,16 @@ final ProductModel product;
                              if(product.productType == ProductType.single.toString() && salePercentage!=null)
                                Padding(padding: const EdgeInsets.only(left: DSize.sm),
                                child: Text(
-                                 product.price.toString(),
+                                 DFormatter.formattedAmount(product.price*24500) ,
                                  style: Theme.of(context).textTheme.labelMedium!.apply(decoration: TextDecoration.lineThrough),
-                               ),),
+                               ),
+                               ),
                              Padding(padding: const EdgeInsets.only(left: DSize.sm),child: TProductPriceText(price: controller.getProductPrice(product),),)
                            ],
                          )),
-                        //Add to cart
-                          Container(
-                            decoration: const BoxDecoration(
-                              color: DColor.dark,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(DSize.cardRadiusMd),
-                                bottomRight: Radius.circular(DSize.productImageRadius)
-                              )
-                            ),
-                            child: const SizedBox(
-                              width: DSize.iconLg*1.2,
-                              height: DSize.iconLg*1.2,
-                              child: Center(child: Icon(Iconsax.add,color: DColor.white,),),
-                            ),
-                          )
+                        ProductCardAddtoCartButton(product: product,salePercentage: salePercentage,)
                       ],
                     )
-            
                   ],
                 ),
               ),

@@ -11,6 +11,7 @@ import 'package:t_store/utils/constants/colors.dart';
 import 'package:t_store/utils/constants/sizes.dart';
 import 'package:t_store/utils/enum/enum.dart';
 import 'package:t_store/utils/helper/helper_function.dart';
+import '../../../../utils/formatter/formatter.dart';
 import '../../texts/product_price_text.dart';
 import '../../texts/product_title_text.dart';
 import '../../texts/t_branc_title_text_with_verified_icon.dart';
@@ -105,7 +106,7 @@ class TProductCardVertical extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: DSize.sm),
                           child: Text(
-                            product.price.toString(),
+                          DFormatter.formattedAmount(product.price*24500) ,
                             style: Theme.of(context).textTheme.labelMedium!.apply(decoration: TextDecoration.lineThrough),
                           ),
                         ),
@@ -120,7 +121,6 @@ class TProductCardVertical extends StatelessWidget {
                 ProductCardAddtoCartButton(product: product,salePercentage: salePercentage,)
               ],
             ),
-
           ],
         ),
       ),

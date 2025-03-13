@@ -189,10 +189,8 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                 controller.submitReview(widget.item.productId);
-                 TLoader.successSnackbar(title: lang.translate('comment_success'));
-                 Navigator.pop(context);
+                onPressed: () async{
+                 controller.submitReview(widget.item.productId,context);
                 },
                 child:  Text(lang.translate('submit'),),
               ),

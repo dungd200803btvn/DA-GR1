@@ -123,7 +123,7 @@ class OrderController extends GetxController {
   }
 
   //add methods for order processing
-  void processOrder(double subTotal,BuildContext context) async {
+  Future<void > processOrder(double subTotal,BuildContext context) async {
     try {
       //start loader
       final lang = AppLocalizations.of(context);
@@ -157,6 +157,8 @@ class OrderController extends GetxController {
         if (kDebugMode) {
           print('Failed to create order: $e');
         }
+      }finally{
+        TFullScreenLoader.stopLoading();
       }
     } catch (e) {
       TLoader.errorSnackbar(title: lang.translate('snap'), message: e.toString());

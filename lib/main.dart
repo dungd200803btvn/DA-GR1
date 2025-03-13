@@ -50,9 +50,6 @@ final WidgetsBinding widgetsBinding  = WidgetsFlutterBinding.ensureInitialized()
     options: DefaultFirebaseOptions.currentPlatform,
   ).then( (FirebaseApp value) {
     Get.put(AuthenticationRepository());
-    Get.put(UserRepository());
-    Get.put(VoucherRepository());
-    Get.put(NotificationController(), permanent: true);
   })  ;
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {

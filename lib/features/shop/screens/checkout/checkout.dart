@@ -87,13 +87,20 @@ class CheckoutScreen extends StatelessWidget {
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(DSize.defaultspace),
-        child: ElevatedButton (
-          onPressed: subTotal> 0 ? ()=> orderController.processOrder(subTotal,context)
-          : () => TLoader.warningSnackbar(title: lang.translate('empty_cart'),message: lang.translate('add_cart_warning')),
-          child: Obx(() => Text('${lang.translate('checkout')}: ${DFormatter.formattedAmount(orderController.netAmount.value*24500)} VND')),
+        child: ElevatedButton(
+          onPressed: () async {
+            if (subTotal > 0) {
+              orderController.processOrder(subTotal, context);
+            } else {
+              TLoader.warningSnackbar(
+                  title: lang.translate('empty_cart'),
+                  message: lang.translate('add_cart_warning'));
+            }
+          },
+          child: Obx(() => Text(
+              '${lang.translate('checkout')}: ${DFormatter.formattedAmount(orderController.netAmount.value * 24500)} VND')),
         ),
       ),
-
     );
   }
 }

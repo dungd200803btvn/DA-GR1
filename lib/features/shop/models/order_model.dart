@@ -33,10 +33,10 @@ class OrderModel {
         this.orderDetail,
         this.notificationSent = false});
 
-  String get formattedOrderDate => DFormatter.formatDate(orderDate);
+  String get formattedOrderDate => DFormatter.FormattedDate1(orderDate);
 
   String get formattedDeliveryDate =>
-      deliveryDate != null ? DFormatter.formatDate(deliveryDate!) : " ";
+      deliveryDate != null ? DFormatter.FormattedDate1(deliveryDate!) : " ";
 
   String get orderStatusText => status == OrderStatus.delivered
       ? "Delivered"

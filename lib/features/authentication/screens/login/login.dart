@@ -8,12 +8,14 @@ import 'package:t_store/common/widgets/login_signup/login_social_buttons.dart';
 import 'package:t_store/utils/constants/text_string.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/constants/sizes.dart';
+import '../../controller/login/login_controller.dart';
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     var lang = AppLocalizations.of(context);
+    final controller = Get.put(LoginController());
     return Scaffold(
         body: SingleChildScrollView(
             child: Padding(

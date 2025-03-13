@@ -8,6 +8,7 @@ import 'package:t_store/common/widgets/custom_shapes/containers/primary_header_c
 import 'package:t_store/common/widgets/list_tiles/setting_menu_tile.dart';
 import 'package:t_store/common/widgets/texts/section_heading.dart';
 import 'package:t_store/data/repositories/authentication/authentication_repository.dart';
+import 'package:t_store/features/bonus_point/screens/daily_checkin_screen.dart';
 import 'package:t_store/features/payment/screens/payment_test.dart';
 import 'package:t_store/features/personalization/screens/address/address.dart';
 import 'package:t_store/features/review/screen/review_screen.dart';
@@ -25,6 +26,7 @@ import '../../../notification/controller/notification_controller.dart';
 import '../../../notification/screen/notification_screen.dart';
 import '../../../setting/screen/language_settings.dart';
 import '../../../voucher/screens/voucher.dart';
+import '../../controllers/user_controller.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
@@ -32,6 +34,7 @@ class SettingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final lang = AppLocalizations.of(context);
+    final user = UserController.instance.user.value;
     return Scaffold(
         body: SingleChildScrollView(
       child: Column(
@@ -90,20 +93,25 @@ class SettingScreen extends StatelessWidget {
                   subTitle: lang.translate('my_notification_msg'),
                   onTap: ()=> Get.to(()=>const NotificationScreen( )) ,),
 
+                TSettingMenuTile(
+                  icon: Icons.monetization_on,
+                  title: lang.translate('my_bonus_point'),
+                  subTitle: lang.translate('my_bonus_point_msg'),
+                  onTap: ()=> Get.to(()=>DailyCheckInScreen(currentUser: user, )) ,),
                 //App Settings
                 const SizedBox(height: DSize.spaceBtwSection),
                 TSectionHeading(
                     title: lang.translate('app_setting'), showActionButton: false),
                 const SizedBox(height: DSize.spaceBtwItem),
                 TSettingMenuTile(
-                  icon: Iconsax.bank,
+                  icon: Icons.language,
                   title: lang.translate('my_language'),
                   subTitle: lang.translate('my_language_msg'),
                   onTap: ()=> Get.to(()=> const LanguageSelectorScreen( )) ,
                 ),
 
                 TSettingMenuTile(
-                  icon: Iconsax.security_user,
+                  icon: Icons.dark_mode,
                   title: lang.translate('dark_mode'),
                   subTitle: lang.translate('dark_mode_msg'),
                   trailing: Switch(

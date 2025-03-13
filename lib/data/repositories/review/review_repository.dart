@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import '../../../features/review/model/review_model.dart';
+import '../../services/cloud_storage/firebase_storage_service.dart';
 
 class ReviewRepository {
   static ReviewRepository get instance => ReviewRepository();
@@ -52,4 +55,5 @@ class ReviewRepository {
         .map((doc) => ReviewModel.fromJson(doc.data() as Map<String, dynamic>))
         .toList();
   }
+
 }

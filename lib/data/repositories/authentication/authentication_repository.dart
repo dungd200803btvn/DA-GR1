@@ -16,6 +16,7 @@ import 'package:t_store/utils/exceptions/format_exceptions.dart';
 import 'package:t_store/utils/exceptions/platform_exceptions.dart';
 import 'package:t_store/utils/local_storage/storage_utility.dart';
 
+import '../../../features/notification/controller/notification_service.dart';
 import '../../../utils/exceptions/firebase_auth_exceptions.dart';
 import '../../../utils/exceptions/firebase_exceptions.dart';
 
@@ -25,13 +26,13 @@ class AuthenticationRepository extends GetxController {
   //variables
   final deviceStorage = GetStorage();
   final _auth = FirebaseAuth.instance;
-  User? get authUser => _auth.currentUser!;
+  User? get authUser => _auth.currentUser;
 
   @override
   void onReady() {
     // TODO: implement onReady
     FlutterNativeSplash.remove();
-    screenRedirect();
+
   }
 
   screenRedirect() async {
@@ -49,7 +50,6 @@ class AuthenticationRepository extends GetxController {
           ? Get.offAll(() => const LoginScreen())
           : Get.offAll(() => const OnBoardingScreen());
     }
-
   }
     //Login
   Future<UserCredential> loginWithEmailAndPassword(
@@ -169,6 +169,7 @@ class AuthenticationRepository extends GetxController {
     try {
       await GoogleSignIn().signOut();
       await _auth.signOut();
+      NotificationService.resetInstance();
       UserController.instance.user.value = UserModel.empty();
       Get.offAll(()=> const LoginScreen());
     } on FirebaseAuthException catch (e) {

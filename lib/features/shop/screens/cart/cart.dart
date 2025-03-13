@@ -9,6 +9,7 @@ import 'package:t_store/navigation_menu.dart';
 import 'package:t_store/utils/constants/image_strings.dart';
 import 'package:t_store/utils/constants/sizes.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../utils/formatter/formatter.dart';
 import '../../controllers/product/order_controller.dart';
 
 class CartScreen extends StatelessWidget {
@@ -54,7 +55,7 @@ class CartScreen extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () => Get.to(() => const CheckoutScreen()),
                 child: Obx(() =>
-                    Text('${lang.translate('checkout')} \$${controller.totalCartPrice.value.toStringAsFixed(1)}')),
+                    Text('${lang.translate('checkout')} ${DFormatter.formattedAmount(controller.totalCartPrice.value*24500)} VND')),
               ),
             ),
     );

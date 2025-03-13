@@ -7,11 +7,17 @@ import 'package:t_store/features/notification/model/notification_model.dart';
 import 'package:http/http.dart' as http;
 
 class NotificationService {
+  static NotificationService? _instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final String userId; // Giả sử bạn có userId của người dùng hiện tại
-
-  NotificationService({required this.userId});
+  NotificationService._internal({required this.userId});
+  factory NotificationService({required String userId}) {
+    // Nếu instance chưa tồn tại, khởi tạo với userId được truyền vào
+    _instance ??= NotificationService._internal(userId: userId);
+    // Nếu cần cập nhật userId (ví dụ user mới đăng nhập), bạn có thể xử lý thêm ở đây
+    return _instance!;
+  }
 
   /// Lưu thông báo vào Firestore
   Future<void> saveNotification(NotificationModel notification) async {
@@ -99,5 +105,8 @@ class NotificationService {
         print("Failed to send push notification: ${response.body}");
       }
     }
+  }
+  static void resetInstance() {
+    _instance = null;
   }
 }

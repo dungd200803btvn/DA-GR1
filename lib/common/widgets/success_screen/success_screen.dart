@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:t_store/common/styles/spacing_styles.dart';
+import 'package:t_store/l10n/app_localizations.dart';
 import '../../../utils/constants/sizes.dart';
 import '../../../utils/constants/text_string.dart';
 import '../../../utils/helper/helper_function.dart';
@@ -18,6 +19,7 @@ class SuccessScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final lang = AppLocalizations.of(context);
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -53,7 +55,7 @@ class SuccessScreen extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                     onPressed: onPressed,
-                    child: const Text(DText.tContinue)),
+                    child: Text(lang.translate('tContinue'))),
               ),
             ],
           ),
@@ -62,5 +64,3 @@ class SuccessScreen extends StatelessWidget {
     );
   }
 }
-//()=>Get.to(()=> const LoginScreen()
-//TImages.staticSuccessIllustration

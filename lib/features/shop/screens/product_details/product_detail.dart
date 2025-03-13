@@ -97,22 +97,24 @@ class ProductDetailScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      TSectionHeading(
-                        titleWidget: FutureBuilder<int>(
-                          future: controller.fetchTotalReviews(product.id),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return Text('${lang.translate('review')}(...)'); // Loading
-                            }
-                            if (snapshot.hasError) {
-                              return Text('${lang.translate('review')}(0)'); // Nếu lỗi thì hiển thị 0
-                            }
-                            final int totalReviews = snapshot.data ?? 0;
-                            return Text('${lang.translate('review')}($totalReviews)');
-                          },
+                      Expanded(
+                        child: TSectionHeading(
+                          titleWidget: FutureBuilder<int>(
+                            future: controller.fetchTotalReviews(product.id),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return Text('${lang.translate('review')}(...)'); // Loading
+                              }
+                              if (snapshot.hasError) {
+                                return Text('${lang.translate('review')}(0)'); // Nếu lỗi thì hiển thị 0
+                              }
+                              final int totalReviews = snapshot.data ?? 0;
+                              return Text('${lang.translate('review')}($totalReviews)');
+                            },
+                          ),
+                          onPressed: () {},
+                          showActionButton: false,
                         ),
-                        onPressed: () {},
-                        showActionButton: false,
                       ),
 
                       IconButton(

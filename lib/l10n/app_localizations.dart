@@ -23,8 +23,14 @@ class AppLocalizations {
         jsonMap.map((key, value) => MapEntry(key, value.toString()));
   }
 
-  String translate(String key) {
-    return _localizedStrings[key] ?? key;
+  String translate(String key,{List<String>? args}) {
+    String translation =  _localizedStrings[key]??key;
+    if(args!=null){
+      for(int i=0;i<args.length;i++){
+        translation = translation.replaceAll(RegExp(r'\{' + i.toString() + r'\}'), args[i]);
+      }
+    }
+    return translation;
   }
 }
 
