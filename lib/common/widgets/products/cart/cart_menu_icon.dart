@@ -4,6 +4,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:t_store/features/shop/controllers/product/cart_controller.dart';
 import 'package:t_store/features/shop/screens/cart/cart.dart';
+import 'package:t_store/utils/helper/event_logger.dart';
 import 'package:t_store/utils/helper/helper_function.dart';
 import '../../../../utils/constants/colors.dart';
 class TCartCounterIcon extends StatelessWidget {
@@ -19,7 +20,10 @@ class TCartCounterIcon extends StatelessWidget {
     return Stack(
       children: [
         IconButton(
-          onPressed: ()=> Get.to(()=> const CartScreen()),
+          onPressed: () async{
+            await EventLogger().logEvent(eventName: 'navigate_to_cart');
+            Get.to(()=> const CartScreen());
+    } ,
             icon: Icon(
               Iconsax.shopping_cart,
               color: iconColor?? (dark? DColor.white: DColor.black),

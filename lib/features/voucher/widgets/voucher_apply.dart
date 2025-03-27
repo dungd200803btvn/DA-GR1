@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:t_store/utils/helper/event_logger.dart';
 import '../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/colors.dart';
@@ -84,8 +85,13 @@ class DVoucherApply extends StatelessWidget {
                               title: lang.translate('voucher_has_been_used'),
                             );
                           }
-                              : () {
-                            controller.applyVoucher(voucher.id, userId);
+                              : () async{
+                            final discount = await controller.applyVoucher(voucher.id, userId);
+                            await EventLogger().logEvent(eventName: 'apply_voucher',
+                            additionalData: {
+                              'voucher_id' :voucher.id,
+                              'discount_value':discount
+                            });
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: isUsed ? DColor.grey : Colors.green,

@@ -44,18 +44,9 @@ class AllProductsController extends GetxController{
         products.sort((a, b) => a.price.compareTo(b.price));
         break;
       case SortOption.newest:
-        products.sort((a, b) => a.date!.compareTo(b.date!));
+        products.sort((a, b) => a.createAt.compareTo(b.createAt));
         break;
       case SortOption.sale:
-        products.sort((a, b) {
-          if (b.salePrice > 0) {
-            return b.salePrice.compareTo(a.salePrice);
-          } else if (a.salePrice > 0) {
-            return -1;
-          } else {
-            return 1;
-          }
-        });
         break;
       case SortOption.popularity:
         products.sort((a, b) => a.title.compareTo(b.title));
@@ -66,5 +57,4 @@ class AllProductsController extends GetxController{
     this.products.assignAll(products);
     sortProducts(SortOption.name,context);
   }
-
 }

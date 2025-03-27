@@ -11,6 +11,7 @@ import 'package:t_store/features/shop/screens/all_products/all_products.dart';
 import 'package:t_store/features/shop/screens/store/widgets/category_brands.dart';
 import 'package:t_store/l10n/app_localizations.dart';
 import 'package:t_store/utils/helper/cloud_helper_functions.dart';
+import 'package:t_store/utils/helper/event_logger.dart';
 import '../../../../../common/widgets/layouts/grid_layout.dart';
 import '../../../../../common/widgets/products/product_cards/product_card_vertical.dart';
 import '../../../../../utils/constants/sizes.dart';
@@ -55,7 +56,16 @@ class TCategoryTab extends StatelessWidget {
                       children: [
                         TSectionHeading(title: lang.translate('you_might_like'),
                             onPressed:
-                                () =>  Get.to(AllProducts(title: category.name,futureMethod: controller.getCategoryProducts(categoryId: category.id,),))),
+                                () async {
+                                  await EventLogger().logEvent(eventName: 'view_product_of_category',
+                                  additionalData: {
+                                    'category_name': category.name
+                                  });
+                                  Get.to(AllProducts(title: category.name,futureMethod: controller.getCategoryProducts(categoryId: category.id,),));
+                    }
+
+                    )
+                    ,
                         const SizedBox(height: DSize.spaceBtwItem),
                         TGridLayout(
                             itemCount: products.length,

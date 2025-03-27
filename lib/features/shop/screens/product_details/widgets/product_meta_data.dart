@@ -13,6 +13,7 @@ import 'package:t_store/utils/constants/sizes.dart';
 import 'package:t_store/utils/enum/enum.dart';
 import 'package:t_store/utils/helper/helper_function.dart';
 
+import '../../../../../common/widgets/texts/section_heading.dart';
 import '../../../models/product_model.dart';
 class TProductMetaData extends StatelessWidget {
   const TProductMetaData({super.key,
@@ -27,10 +28,11 @@ class TProductMetaData extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        //Price && Sale price
+
         Row(
           children: [
             //Sale Tag
+            TProductTitleText(title: lang.translate('price')),
             if(salePercentage!=null)
             TRoundedContainer(
               radius: DSize.sm,
@@ -49,25 +51,26 @@ class TProductMetaData extends StatelessWidget {
           ],
         ),
         //Title
-         TProductTitleText(title: product.title),
-        const SizedBox(height: DSize.spaceBtwItem/1.5),
+        TProductTitleText(title: lang.translate('product_name')),
+        const SizedBox(width: DSize.spaceBtwItem),
+        TProductTitleText(title: product.title),
         //Stock Status
+
         Row(
           children: [
-            TProductTitleText(title: lang.translate('status')),
+            TProductTitleText(title: lang.translate('stock')),
             const SizedBox(width: DSize.spaceBtwItem),
             Text(controller.getProductStockStatus(product.stock),style: Theme.of(context).textTheme.titleMedium),
           ],
         ),
 
-        const SizedBox(height: DSize.spaceBtwItem/1.5),
         //Branch
         Row(
           children: [
-            TCircularImage(image: product.brand!= null? product.brand!.image : TImages.zaraLogo,
-                width: 32,height: 32,overlayColor: dark? DColor.white:DColor.black,isNetworkImage: true,),
+            TProductTitleText(title: lang.translate('brand')),
+            const SizedBox(width: DSize.spaceBtwItem),
             TBrandTitleWithVerifiedIcon(title: product.brand!= null? product.brand!.name :" " ,
-                branchTextSize: TTextSize.medium),
+                branchTextSize: TTextSize.largre),
           ],
         ),
       ],

@@ -118,14 +118,15 @@ void removeFromCartDialog(int index){
         : salePercentage!=null
             ? product.price*(1-salePercentage)
             : product.price;
+    final category =  (product.categories!=null && product.categories!.isNotEmpty) ? product.categories!.first.id: "";
     return CartItemModel(
         productId: product.id,
         title: product.title,
-        category: product.categoryId!=null ? product.categoryId!  : " ",
+        category: category,
         price: price,
         quantity: quantity,
     variationId: variation.id,
-    image: isVariation? variation.image: product.thumbnail,
+    image: isVariation? variation.image: product.images![0],
     brandName: product.brand!=null ? product.brand!.name : " ",
     selectedVariation: isVariation?   variation.attributeValues : null);
   }

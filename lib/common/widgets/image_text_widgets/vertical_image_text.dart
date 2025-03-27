@@ -6,62 +6,65 @@ import '../../../utils/helper/helper_function.dart';
 
 class TVerticalImageText extends StatelessWidget {
   const TVerticalImageText({
-    super.key,
-    required this.image,
+    Key? key,
     required this.title,
-    this.textColor = DColor.white,
+    this.textColor = Colors.white,
     this.onTap,
     this.backgroundColor,
-  });
+    required this.url,
+  }) : super(key: key);
 
-  final String image, title;
+  final String title;
+  final String url;
   final Color textColor;
   final Color? backgroundColor;
   final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final dark = DHelperFunctions.isDarkMode(context);
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.only(right: DSize.spaceBtwItem),
+        padding: const EdgeInsets.only(right: 8.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Circular Icon
+            // Hình tròn hiển thị hình ảnh từ Unsplash
             Container(
               width: 56,
               height: 56,
-              padding: const EdgeInsets.all(DSize.sm),
               decoration: BoxDecoration(
-                color: backgroundColor ?? (dark ? DColor.black.withOpacity(0.9) : DColor.white.withOpacity(0.9)),
-                borderRadius: BorderRadius.circular(100),
+                shape: BoxShape.circle,
+                color: backgroundColor ?? Colors.grey[300],
               ),
-              child: Center(
-                child: Image(
-                  height: 30,
-                  image: NetworkImage(image),
+              child: ClipOval(
+                child: Image.network(
+                  url,
                   fit: BoxFit.cover,
-                  color: dark ? DColor.light : DColor.dark,
+                  errorBuilder: (context, error, stackTrace) => Icon(
+                    Icons.image,
+                    color: Colors.grey[700],
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: DSize.spaceBtwItem / 3),
-            // Text
-            Expanded(
-              child: SizedBox(
-                child: Text(
-                  title,
-                  style: Theme.of(context)
-                      .textTheme
-                      .labelMedium!
-                      .apply(color: textColor),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
+            const SizedBox(height: 4),
+            // Container chứa text với chiều cao cố định để tránh overflow
+            Container(
+              width: 85,
+              height: 44,
+              alignment: Alignment.center,
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .labelMedium!
+                    .copyWith(color: textColor),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
-            )
+            ),
           ],
         ),
       ),

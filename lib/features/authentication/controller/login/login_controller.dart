@@ -12,11 +12,13 @@ import 'package:t_store/navigation_menu.dart';
 import 'package:t_store/utils/constants/image_strings.dart';
 import 'package:t_store/utils/popups/full_screen_loader.dart';
 import 'package:t_store/utils/popups/loader.dart';
+import 'package:uuid/uuid.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/exceptions/firebase_auth_exceptions.dart';
 import '../../../../utils/exceptions/firebase_exceptions.dart';
 import '../../../../utils/exceptions/format_exceptions.dart';
 import '../../../../utils/exceptions/platform_exceptions.dart';
+import '../../../../utils/helper/event_logger.dart';
 import '../../../../utils/helper/network_manager.dart';
 
 class LoginController extends GetxController {
@@ -74,6 +76,10 @@ class LoginController extends GetxController {
       // Remove loader
       TFullScreenLoader.stopLoading();
       GeneralBindings().dependencies();
+      EventLogger().initialize(
+        userId: AuthenticationRepository.instance.authUser!.uid,
+        sessionId: const Uuid().v4(), // hoặc tạo từ Uuid().v4()
+      );
       // Navigate to NavigationMenu
       Get.to(() => const NavigationMenu());
     } on FirebaseAuthException catch (e) {
@@ -116,6 +122,10 @@ class LoginController extends GetxController {
       // Remove loader
       TFullScreenLoader.stopLoading();
       GeneralBindings().dependencies();
+     EventLogger().initialize(
+       userId: AuthenticationRepository.instance.authUser!.uid,
+       sessionId: const Uuid().v4(), // hoặc tạo từ Uuid().v4()
+     );
       // Navigate to NavigationMenu
       Get.to(() => const NavigationMenu());
     } catch (e) {

@@ -6,8 +6,8 @@ import 'package:t_store/data/repositories/product/product_repository.dart';
 import 'package:t_store/features/shop/models/brand_model.dart';
 import 'package:t_store/features/shop/models/product_model.dart';
 import 'package:t_store/utils/popups/loader.dart';
-
 import '../../../l10n/app_localizations.dart';
+import '../../../utils/constants/api_constants.dart';
 
 class BrandController extends GetxController{
   static BrandController get instance => Get.find();
@@ -18,8 +18,6 @@ class BrandController extends GetxController{
   final productRepository  = Get.put(ProductRepository());
   @override
   void onInit() {
-   // brandRepository.uploadBrandCategoryData(TDummyData.brandCategorys);
-   // productRepository.uploadProductCategoryData(TDummyData.productCategorys);
     getFeaturedBrands();
     super.onInit();
   }
@@ -35,11 +33,15 @@ class BrandController extends GetxController{
   Future<void> getFeaturedBrands() async{
     try{
       isLoading.value = true;
-      final brands = await brandRepository.getAllBrands();
-      allBrands.assignAll(brands);
-      featuredBrands.assignAll(allBrands.where((brand) => brand.isFeatured== false).take(6));
+      final brands = await brandRepository.fetchTopBrands1(limit: feature_brand);
+      featuredBrands.assignAll(brands);
+      final allBrand = await brandRepository.fetchTopBrands1(limit: all_brand);
+      // final allBrand = await brandRepository.fetchTopItems(all_brand, fetchType: 'brands');
+      print("All Brand co so luong: ${allBrand.length}");
+      allBrands.assignAll(allBrand);
     }catch(e){
       TLoader.errorSnackbar(title: lang.translate('snap'),message: e.toString());
+      print('getFeaturedBrands(): loi: $e');
     }finally{
       isLoading.value = false;
     }

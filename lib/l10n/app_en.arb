@@ -274,5 +274,8 @@
   "order_success": "Order successful",
   "order_success_msg": "Your order has been successfully placed on",
   "today": "Today",
-  "day": "Day"
+  "day": "Day",
+  "detail": "Detail",
+  "product_name": "Product Name",
+  "feature_shops": "Feature Shops"
 }

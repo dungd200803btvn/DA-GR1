@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:t_store/features/shop/controllers/product_controller.dart';
+import 'package:t_store/utils/helper/event_logger.dart';
 import '../../../../../common/widgets/products/cart/add_remove_button.dart';
 import '../../../../../common/widgets/products/cart/cart_item.dart';
 import '../../../../../common/widgets/texts/product_price_text.dart';
@@ -48,25 +49,43 @@ class TCartItems extends StatelessWidget {
                               //Add and remove button
                               TProductQuantityWithAddRemoveButton(
                                 quantity: item.quantity,
-                                add: () => controller.addOneToCart(item),
-                                remove: () =>
-                                    controller.removeOneFromCart(item),
+                                add: () async{
+                                  controller.addOneToCart(item);
+                                  await EventLogger().logEvent(eventName: 'add_one_in_cart',
+                                      additionalData:{
+                                    'product_id': item.productId
+                                      } );
+            }  ,
+                                remove: () async{
+                                  controller.removeOneFromCart(item);
+                                  await EventLogger().logEvent(eventName: 'remove_one_in_cart',
+                                      additionalData:{
+                                        'product_id': item.productId
+                                      } );
+            }
+                                   ,
                               ),
                               // Button: See suggested products
                               ConstrainedBox(
                                 constraints: const BoxConstraints(maxWidth: 180),
                                 child: TextButton(
-                                  onPressed: () => Get.to(
-                                        () => AllProducts(
-                                      title: lang.translate('suggest_promotional_products'),
-                                      query: FirebaseFirestore.instance
-                                          .collection('Products')
-                                          .where('IsFeatured', isEqualTo: true)
-                                          .limit(20),
-                                      futureMethod: productController.getSuggestedProductsById(item.productId),
-                                          applyDiscount: true,
-                                    ),
-                                  ),
+                                  onPressed: () async{
+                                    Get.to(
+                                          () => AllProducts(
+                                        title: lang.translate('suggest_promotional_products'),
+                                        query: FirebaseFirestore.instance
+                                            .collection('Products')
+                                            .where('IsFeatured', isEqualTo: true)
+                                            .limit(20),
+                                        futureMethod: productController.getSuggestedProductsById(item.productId),
+                                        applyDiscount: true,
+                                      ),
+                                    );
+                                    await EventLogger().logEvent(eventName: 'see_suggest_product',
+                                    additionalData: {
+                                      'product_id': item.productId
+                                    });
+            } ,
                                   child:  Text(lang.translate('suggest_products'),
                                   overflow: TextOverflow.ellipsis,
                                     selectionColor: Colors.white,
@@ -79,10 +98,9 @@ class TCartItems extends StatelessWidget {
                           //Product total price
                           Expanded(
                             child: TProductPriceText(
-                              price: DFormatter.formattedAmount(item.price * item.quantity*24500) ,
+                              price: DFormatter.formattedAmount(item.price * item.quantity) ,
                             ),
                           ),
-                           // TProductPriceText(price: (item.price * item.quantity).toStringAsFixed(1)),
                         ],
                       )
                   ],

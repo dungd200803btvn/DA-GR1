@@ -5,6 +5,7 @@ import 'package:t_store/features/shop/controllers/product/cart_controller.dart';
 import 'package:t_store/features/shop/models/product_model.dart';
 import 'package:t_store/features/shop/screens/product_details/product_detail.dart';
 import 'package:t_store/utils/enum/enum.dart';
+import 'package:t_store/utils/helper/event_logger.dart';
 
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';
@@ -22,11 +23,25 @@ class ProductCardAddtoCartButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = CartController.instance;
     return GestureDetector(
-      onTap: () {
+      onTap: () async{
         if (product.productType == ProductType.single.toString()) {
           final cartItem = controller.toCartModel(product, 1,salePercentage);
           controller.addOneToCart(cartItem);
+          await EventLogger().logEvent(eventName: 'add_to_cart',
+          additionalData: {
+            'product_id':product.id,
+            'quantity_added': controller.productQuantityInCart.value,
+            'sale_percentage':salePercentage,
+            'product_type':product.productType
+          });
         } else {
+          await EventLogger().logEvent(
+            eventName: "navigate_to_product_detail",
+            additionalData: {
+              'product_id': product.id,
+              'product_type': product.productType,
+            },
+          );
           Get.to(()=> ProductDetailScreen(product: product,salePercentage: salePercentage,));
         }
       },

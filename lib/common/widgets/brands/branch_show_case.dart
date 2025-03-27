@@ -5,6 +5,7 @@ import 'package:t_store/common/widgets/brands/t_brand_cart.dart';
 import 'package:t_store/common/widgets/shimmer/shimmer.dart';
 import 'package:t_store/features/shop/models/brand_model.dart';
 import 'package:t_store/features/shop/screens/brand/brand_products.dart';
+import 'package:t_store/utils/helper/event_logger.dart';
 import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/sizes.dart';
 import '../../../utils/helper/helper_function.dart';
@@ -21,7 +22,13 @@ class TBrandShowCase extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: ()=> Get.to(()=> BrandProducts(brand: brand)),
+      onTap: () async{
+        await EventLogger().logEvent(eventName: 'view_product_of_brand',
+        additionalData: {
+          'brand_name':brand.name
+        });
+        Get.to(()=> BrandProducts(brand: brand));
+      } ,
       child: TRoundedContainer(
         showBorder: true,
         borderColor: DColor.darkGrey,

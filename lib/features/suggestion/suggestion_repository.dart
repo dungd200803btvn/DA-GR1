@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import 'package:t_store/features/suggestion/suggest_item_model.dart';
 import 'package:t_store/features/suggestion/suggestion_model.dart';
-
 import '../shop/models/order_model.dart';
 
-class ProductSuggestionRepository {
+class ProductSuggestionRepository  extends GetxController{
+  static ProductSuggestionRepository get instance => Get.find();
   final _firestore = FirebaseFirestore.instance;
-
   // Lấy gợi ý cho một sản phẩm
   Future<ProductSuggestionModel> getProductSuggestions(String productId) async {
     final doc = await _firestore.collection('productSuggestions').doc(productId).get();

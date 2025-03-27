@@ -1,12 +1,17 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:t_store/features/shop/models/brand_category_model.dart';
 import 'package:t_store/features/shop/models/brand_model.dart';
-
+import 'package:http/http.dart' as http;
+import '../../../features/shop/models/shop_model.dart';
+import '../../../utils/constants/api_constants.dart';
 import '../../../utils/exceptions/firebase_exceptions.dart';
 import '../../../utils/exceptions/platform_exceptions.dart';
-import '../../services/cloud_storage/firebase_storage_service.dart';
+import '../../../utils/local_storage/storage_utility.dart';
+
 
 class BrandRepository extends GetxController{
   static BrandRepository get instance => Get.find();
@@ -28,88 +33,188 @@ final _db = FirebaseFirestore.instance;
       throw 'Something went wrong. Please try again';
     }
   }
-  Future<void> fetchBrands() async {
+
+  Future<List<BrandModel>> fetchTopBrands(int top) async {
+    print('Fetch brands:');
+    final storage = DLocalStorage.instance();
+    const String cacheKey = 'top_brands_cache';
+    const String cacheTimeKey = 'top_brands_cache_timestamp';
+    const cacheDuration = Duration(hours: 24);
+    // Kiểm tra xem đã có dữ liệu cache chưa
+    final String? cachedData = storage.readData<String>(cacheKey);
+    final String? cachedTimeString = storage.readData<String>(cacheTimeKey);
+    if (cachedData != null && cachedTimeString != null) {
+      final cachedTime = DateTime.tryParse(cachedTimeString);
+      if (cachedTime != null && DateTime.now().difference(cachedTime) < cacheDuration) {
+        // Nếu dữ liệu cache còn hợp lệ, parse và trả về
+        print('difference(cachedTime): ${DateTime.now().difference(cachedTime)}');
+        print('Fetch brand tu local:');
+        print('cachedData Brands: $cachedData');
+        final Map<String, dynamic> data = jsonDecode(cachedData);
+        final List<dynamic> brandJson = data['topBrands'];
+        final List<BrandModel> brands = brandJson
+            .map((jsonItem) => BrandModel.fromJson(jsonItem))
+            .toList();
+        print('brands:${brands.length}');
+        return brands;
+      }
+    }
+    final url = Uri.parse('$baseUrl/top-brands?limit=$top');
     try {
-      List<BrandModel> brandModels = [];
-      Set<String> brandNamesSet = {};
-      QuerySnapshot querySnapshot = await _db.collection('Products').get();
-
-      // Duyệt qua các tài liệu và thêm vào danh sách brandModels
-      querySnapshot.docs.forEach((doc) {
-        var brand = doc['Brand'];
-        if (brand != null && brand['Name'] != null && brand['Image'] != null) {
-          String brandName = brand['Name'].toString();
-          // Chỉ thêm model nếu tên thương hiệu chưa tồn tại trong set
-          if (!brandNamesSet.contains(brandName)) {
-            BrandModel brandModel = BrandModel.fromFirestore(doc);
-            brandModels.add(brandModel);
-            brandNamesSet.add(brandName);
-            print(brandModel.name);
-          }
-        }
-      });
-     uploadDummyData(brandModels);
-      print(brandModels.length);
-
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        // Lưu dữ liệu và timestamp vào cache
+        await storage.writeData(cacheKey, response.body);
+        await storage.writeData(cacheTimeKey, DateTime.now().toIso8601String());
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        final List<dynamic> brandsJson = data['topBrands'];
+        final List<BrandModel> brands = brandsJson
+            .map((jsonItem) => BrandModel.fromJson(jsonItem))
+            .toList();
+        print('Gọi API thành công:');
+        return brands;
+      } else {
+        // Nếu status code không phải 200, có thể xử lý ở đây
+        print('Lỗi API, statusCode: ${response.statusCode}');
+      }
     } catch (e) {
-      print("Error fetching brands: $e");
+      print('Lỗi khi gọi API: $e');
+      print('Cached data: $cachedData');
+      if (cachedData != null) {
+        print('Sử dụng cache khi API call thất bại.');
+        final Map<String, dynamic> data = jsonDecode(cachedData);
+        final List<dynamic> brandsJson = data['topBrands'];
+        final List<BrandModel> brands = brandsJson
+            .map((jsonItem) => BrandModel.fromJson(jsonItem))
+            .toList();
+        return brands;
+      }
     }
+    // Nếu API call thất bại, cố gắng trả về cache nếu có
+    return [];
   }
 
-  Future<void> updateProductBrands() async {
-    // try {
-      // Bước 1: Lấy tất cả các tài liệu từ bảng Brands và lưu trữ các cặp name và id
-      QuerySnapshot brandsSnapshot = await _db.collection('Brands').get();
-      Map<String, String> brandNameToIdMap = {};
-      brandsSnapshot.docs.forEach((doc) {
-        var brandData = doc.data() as Map<String, dynamic>;
-        String brandName = brandData['Name'];
-        String brandId = doc.id;
-        brandNameToIdMap[brandName] = brandId;
-      });
+  /// Lấy top brands theo giới hạn truyền vào (mặc định 20)
+  Future<List<BrandModel>> fetchTopBrands1( {int limit = 20}) async {
+    try {
+      // 1. Lấy toàn bộ products
+      QuerySnapshot productSnapshot =
+      await _db.collection('Products').get();
+      print("Retrieved ${productSnapshot.docs.length} products");
 
-      // Bước 2: Lấy tất cả các tài liệu từ bảng Products
-      QuerySnapshot productsSnapshot = await _db.collection('Products').get();
-
-      // Bước 3 và 4: So sánh và cập nhật nếu cần thiết
-      for (var productDoc in productsSnapshot.docs) {
-        var productData = productDoc.data() as Map<String, dynamic>;
-        var brand = productData['Brand'] as Map<String, dynamic>;
-
-        if (brand != null && brand['Name'] != null) {
-          String brandName = brand['Name'];
-          if (brandNameToIdMap.containsKey(brandName)) {
-            String newBrandId = brandNameToIdMap[brandName]!;
-            await productDoc.reference.update({
-              'Brand.Id': newBrandId,
-            });
-            print('Updated Product ${productDoc.id} with Brand Id $newBrandId');
-          }
+      // 2. Đếm số lượng sản phẩm cho mỗi brand
+      Map<String, int> brandCount = {};
+      for (var doc in productSnapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        final String? brandId = data['brand_id'];
+        if (brandId != null) {
+          brandCount[brandId] = (brandCount[brandId] ?? 0) + 1;
         }
       }
 
-      print('Update complete');
-    // } catch (e) {
-    //   print("Error updating product brands: $e");
-    // }
-  }
-  //upload to cloud
-  Future<void> uploadDummyData(List<BrandModel> brands) async {
-    try {
-      final storage = Get.put(TFirebaseStorageService());
-      for (var brand in brands) {
-        // final file = await storage.getImageDataFromAssets(brand.image);
-        // final url =
-        // await storage.uploadImageData('Brands', file, brand.name);
-        // brand.image = url;
-        await _db
+      // 3. Sắp xếp các brand_id theo số lượng giảm dần và lấy top theo giới hạn
+      List<String> sortedBrandIds = brandCount.keys.toList()
+        ..sort((a, b) => brandCount[b]!.compareTo(brandCount[a]!));
+      sortedBrandIds = sortedBrandIds.take(limit).toList();
+
+      // 4. Truy vấn bảng Brands theo sortedBrandIds với batch (Firestore giới hạn whereIn tối đa 10 phần tử)
+      List<Map<String, dynamic>> brands = [];
+      const int batchSize = 10;
+      for (int i = 0; i < sortedBrandIds.length; i += batchSize) {
+        final int end =
+        (i + batchSize < sortedBrandIds.length) ? i + batchSize : sortedBrandIds.length;
+        final List<String> batchIds = sortedBrandIds.sublist(i, end);
+        QuerySnapshot brandSnapshot = await _db
             .collection('Brands')
-            .doc(brand.id)
-            .set(brand.toJson());
+            .where(FieldPath.documentId, whereIn: batchIds)
+            .get();
+        for (var doc in brandSnapshot.docs) {
+          final data = doc.data() as Map<String, dynamic>;
+          data['id'] = doc.id;
+          data['productCount'] = brandCount[doc.id];
+          brands.add(data);
+        }
       }
-    }  catch (e) {
-      throw "message: $e" ;
+
+      // 5. Sắp xếp lại các brand theo số lượng sản phẩm giảm dần
+      brands.sort((a, b) =>
+          (b['productCount'] as int).compareTo(a['productCount'] as int));
+      print("Successfully fetched top brands.");
+      final List<BrandModel> brandsModel = brands
+          .map((jsonItem) => BrandModel.fromJson(jsonItem))
+          .toList();
+      return brandsModel;
+    } catch (error) {
+      print("Error retrieving top brands: $error");
+      rethrow;
     }
+  }
+
+  Future<List> fetchTopItems(int top, {required String fetchType}) async {
+    // Xác định cache key và key của JSON trả về
+    final storage = DLocalStorage.instance();
+    final String cacheKey = 'top_${fetchType}_cache';
+    final String cacheTimeKey = 'top_${fetchType}_cache_timestamp';
+    const cacheDuration = Duration(hours: 24);
+    final String jsonKey = fetchType == 'brands' ? 'topBrands' : 'topShops';
+
+    // Kiểm tra cache
+    final String? cachedData = storage.readData<String>(cacheKey);
+    final String? cachedTimeString = storage.readData<String>(cacheTimeKey);
+    if (cachedData != null && cachedTimeString != null) {
+      final cachedTime = DateTime.tryParse(cachedTimeString);
+      if (cachedTime != null &&
+          DateTime.now().difference(cachedTime) < cacheDuration) {
+        final Map<String, dynamic> data = jsonDecode(cachedData);
+        final List<dynamic> itemsJson = data[jsonKey];
+        // Nếu cache đủ số lượng phần tử thì chỉ trả về phần tử cần thiết
+        if (itemsJson.length >= top) {
+          final List items = itemsJson
+              .take(top)
+              .map((jsonItem) => fetchType == 'brands'
+              ? BrandModel.fromJson(jsonItem)
+              : ShopModel.fromJson(jsonItem))
+              .toList();
+          return items;
+        }
+      }
+    }
+
+    // Nếu cache không tồn tại hoặc không đủ số lượng, gọi API
+    final url = Uri.parse('$baseUrl/top-$fetchType?limit=$top');
+    try {
+      print("Url: $url");
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        // Cập nhật cache
+        await storage.writeData(cacheKey, response.body);
+        await storage.writeData(cacheTimeKey, DateTime.now().toIso8601String());
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        final List<dynamic> itemsJson = data[jsonKey];
+        final List items = itemsJson
+            .map((jsonItem) => fetchType == 'brand'
+            ? BrandModel.fromJson(jsonItem)
+            : ShopModel.fromJson(jsonItem))
+            .toList();
+        return items;
+      } else {
+        print('API error: status code ${response.body}');
+      }
+    } catch (e) {
+      print('Error calling API: $e');
+      // Nếu API call thất bại, cố gắng trả về cache nếu có
+      if (cachedData != null) {
+        final Map<String, dynamic> data = jsonDecode(cachedData);
+        final List<dynamic> itemsJson = data[jsonKey];
+        final List items = itemsJson
+            .map((jsonItem) => fetchType == 'brand'
+            ? BrandModel.fromJson(jsonItem)
+            : ShopModel.fromJson(jsonItem))
+            .toList();
+        return items;
+      }
+    }
+    return [];
   }
 
   //get brands for category
@@ -156,6 +261,7 @@ final _db = FirebaseFirestore.instance;
     List<BrandModel> brands = brandsQuery.docs.map((doc) => BrandModel.fromSnapshot(doc)).toList();
     return brands;
   }
+
   Future<Set<String>> getUniqueBrandIds(String categoryId) async {
     final firestore = FirebaseFirestore.instance;
     final collectionRef = firestore.collection('Products');
@@ -174,6 +280,7 @@ final _db = FirebaseFirestore.instance;
     }
     return brandIds;
   }
+
   Future<void> genDataBrandCategory() async {
     final Map<int, Set<int>> brandCategories = {};
     List<BrandCategoryModel> data = [];
@@ -212,13 +319,6 @@ final _db = FirebaseFirestore.instance;
       uploadBrandCategoryData(data);
   }
 
-
-
-
-
-
-
-
   Future<void> uploadBrandCategoryData(List<BrandCategoryModel> brandcategory) async {
     for (var v in brandcategory) {
       await _db
@@ -241,6 +341,19 @@ final _db = FirebaseFirestore.instance;
     await batch.commit();
     print("All documents in $collectionPath have been deleted.");
   }
+
+  Future<BrandModel?> getBrandById(String brandId) async{
+    try{
+      DocumentSnapshot<Map<String,dynamic>> snapshot =  await _db.collection('Brands').doc(brandId).get();
+      if(snapshot.exists){
+        return BrandModel.fromSnapshot(snapshot);
+      }
+    }catch(e){
+        print('Loi: getBrandById: ${e.toString()} ');
+    }
+    return null;
+  }
+
 
 
 

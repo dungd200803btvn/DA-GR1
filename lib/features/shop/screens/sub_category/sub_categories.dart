@@ -13,6 +13,8 @@ import 'package:t_store/utils/constants/image_strings.dart';
 import 'package:t_store/utils/constants/sizes.dart';
 import 'package:t_store/utils/helper/cloud_helper_functions.dart';
 
+import '../../../../utils/helper/event_logger.dart';
+
 class SubCategoriesScreen extends StatelessWidget {
   const SubCategoriesScreen({super.key, required this.category});
   final CategoryModel category;
@@ -71,13 +73,21 @@ class SubCategoriesScreen extends StatelessWidget {
                               children: [
                                 TSectionHeading(
                                   title: subCategory.name,
-                                  onPressed: () => Get.to(() => AllProducts(
-                                        title: subCategory.name,
-                                        futureMethod:
-                                            controller.getCategoryProducts(
-                                                categoryId: subCategory.id,
-                                                ),
-                                      )),
+                                  onPressed: () async{
+                                    await EventLogger().logEvent(
+                                        eventName: "sub_category_tracked",
+                                        additionalData: {
+                                          "category_name": subCategory.name,
+                                        }
+                                    );
+                                    Get.to(() => AllProducts(
+                                      title: subCategory.name,
+                                      futureMethod:
+                                      controller.getCategoryProducts(
+                                        categoryId: subCategory.id,
+                                      ),
+                                    ));
+                                  } ,
                                 ),
                                 const SizedBox(
                                   height: DSize.spaceBtwItem / 2,

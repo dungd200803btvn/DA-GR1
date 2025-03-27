@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:t_store/l10n/app_localizations.dart';
+import 'package:t_store/utils/helper/event_logger.dart';
 import '../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../utils/constants/colors.dart';
 import '../../../utils/popups/loader.dart';
@@ -115,57 +116,73 @@ class DVoucherTab extends StatelessWidget {
                         itemCount: displayedVouchers.length,
                         itemBuilder: (_, index) {
                           final voucher = displayedVouchers[index];
-                          return Card(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              side: BorderSide(
-                                  color: DColor.grey.withOpacity(0.5)),
-                            ),
-                            elevation: 4,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                gradient: const LinearGradient(
-                                  colors: [Colors.white, Color(0xFFF0F0F0)],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
                               ),
-                              child: ListTile(
-                                title: Text(
-                                  voucher.title,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: Colors.black,
+                              elevation: 6,
+                              shadowColor: Colors.black26,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.white,
+                                      Colors.blue.shade50, // Màu gradient nhẹ nhàng
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
                                   ),
                                 ),
-                                subtitle: Text(
-                                  voucher.description,
-                                  style: const TextStyle(
-                                      color: Colors.black54),
-                                ),
-                                trailing: ElevatedButton(
-                                  onPressed: () {
-                                    if (voucherTabStatus ==
-                                        VoucherTabStatus.available) {
-                                      controller.claimVoucher(voucher.id, userId);
-                                    } else {
-                                      TLoader.warningSnackbar(
-                                          title: warningMessage);
-                                    }
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: buttonColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
+                                child: ListTile(
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                                  title: Text(
+                                    voucher.title,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18,
+                                      color: Colors.black87,
                                     ),
                                   ),
-                                  child: Text(
-                                    buttonText,
-                                    style: const TextStyle(color: Colors.white),
+                                  subtitle: Padding(
+                                    padding: const EdgeInsets.only(top: 6.0),
+                                    child: Text(
+                                      voucher.description,
+                                      style: const TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+                                  trailing: ElevatedButton(
+                                    onPressed: () async {
+                                      await EventLogger().logEvent(
+                                        eventName: 'claim_voucher',
+                                        additionalData: {'voucher_id': voucher.id},
+                                      );
+                                      if (voucherTabStatus == VoucherTabStatus.available) {
+                                        controller.claimVoucher(voucher.id, userId);
+                                      } else {
+                                        TLoader.warningSnackbar(title: warningMessage);
+                                      }
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: buttonColor, // Màu sắc đã định nghĩa của bạn
+                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      elevation: 4,
+                                    ),
+                                    child: Text(
+                                      buttonText,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -174,13 +191,28 @@ class DVoucherTab extends StatelessWidget {
                         },
                       ),
                     ),
+                    const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: onToggleShowAll,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                        backgroundColor: Colors.deepPurple,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        elevation: 4,
+                      ),
                       child: Text(
-                          !showAllVouchers && filteredVouchers.length > 5
-                              ? lang.translate('show_more')
-                              : lang.translate('less')),
+                        !showAllVouchers && filteredVouchers.length > 5
+                            ? lang.translate('show_more')
+                            : lang.translate('less'),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
+                    const SizedBox(height: 16),
                   ],
                 );
               },

@@ -5,6 +5,7 @@ import 'package:t_store/features/voucher/screens/voucher_history.dart';
 import 'package:t_store/features/voucher/widgets/voucher_tab.dart';
 import 'package:t_store/l10n/app_localizations.dart';
 import 'package:t_store/utils/constants/colors.dart';
+import 'package:t_store/utils/helper/event_logger.dart';
 import '../../../common/widgets/appbar/appbar.dart';
 import '../../../utils/constants/sizes.dart';
 import '../../../utils/helper/cloud_helper_functions.dart';
@@ -61,8 +62,9 @@ class _VoucherScreenState extends State<VoucherScreen>
               ),
             ),
             GestureDetector(
-              onTap: () {
+              onTap: () async{
                 // Điều hướng đến màn hình "HistoryScreen"
+                await EventLogger().logEvent(eventName: 'navigate_to_voucher_history');
                 Navigator.push(
                   context,
                   MaterialPageRoute(

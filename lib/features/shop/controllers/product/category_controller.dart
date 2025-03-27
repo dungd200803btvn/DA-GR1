@@ -34,15 +34,14 @@ class CategoryController extends GetxController {
   Future<void> fetchCategories() async {
     try {
       isLoading.value = true;
-      final categories = await _categoryRepository.getAllCategories();
+      final categories = await _categoryRepository.fetchTopCategories();
       //update new data
       allCategories.assignAll(categories);
       //filter
       featuredCategories.assignAll(allCategories
-          .where((category) => category.isFeatured && category.parentId.isEmpty)
-          .take(8)
           .toList());
       } catch (e) {
+        print('Loi o: fetchCategories() in controller: $e ');
         TLoader.errorSnackbar(title: lang.translate('snap'), message: e.toString());
     } finally {
       isLoading.value = false;

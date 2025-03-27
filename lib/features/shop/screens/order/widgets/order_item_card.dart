@@ -5,6 +5,7 @@ import 'package:t_store/features/shop/controllers/product/cart_controller.dart';
 import 'package:t_store/features/shop/screens/cart/cart.dart';
 import 'package:t_store/l10n/app_localizations.dart';
 import 'package:t_store/utils/formatter/formatter.dart';
+import 'package:t_store/utils/helper/event_logger.dart';
 import '../../../../../utils/popups/loader.dart';
 import '../../../../review/screen/review_screen.dart';
 import '../../../models/cart_item_model.dart';
@@ -84,7 +85,7 @@ class OrderItemCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       // Hiển thị price và quantity trên cùng 1 dòng
                       Text(
-                        "${lang.translate('one_product')}: ${DFormatter.formattedAmount(item.price*24500)}VND",
+                        "${lang.translate('one_product')}: ${DFormatter.formattedAmount(item.price)}VND",
                         style: const TextStyle(
                           fontSize: 14,
                           color: Colors.red,
@@ -107,7 +108,7 @@ class OrderItemCard extends StatelessWidget {
 
             // Tổng giá (trên 1 dòng độc lập)
             Text(
-              "${lang.translate('total')}: ${ DFormatter.formattedAmount(item.price * item.quantity*24500)} VND",
+              "${lang.translate('total')}: ${ DFormatter.formattedAmount(item.price * item.quantity)} VND",
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
@@ -121,10 +122,18 @@ class OrderItemCard extends StatelessWidget {
               children: [
                 // Button "Mua lại" (repurchase)
                 OutlinedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     cartController.addOneToCart(item);
+                    await EventLogger().logEvent(eventName: 'repurchase',
+                    additionalData: {
+                      'product_id':item.productId,
+                      'product_quantity':item.quantity,
+                      'product_variation':item.selectedVariation,
+                      'product_price':item.price
+                    });
                     TLoader.successSnackbar( title: lang.translate('add_to_cart'));
                     Get.to(()=> const CartScreen());
+                    await EventLogger().logEvent(eventName: 'navigate_to_cart');
                   },
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -141,7 +150,11 @@ class OrderItemCard extends StatelessWidget {
                 const SizedBox(width: 12),
                 // Button "Viết đánh giá" (write review)
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    await EventLogger().logEvent(eventName: 'write_review',
+                    additionalData: {
+                      'product_id':item.productId
+                    });
                     Get.to(()=> WriteReviewScreen(item: item,) );
                   },
                   style: ElevatedButton.styleFrom(

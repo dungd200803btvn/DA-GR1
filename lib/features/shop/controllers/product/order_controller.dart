@@ -113,7 +113,7 @@ class OrderController extends GetxController {
       final response = await shippingService.createShippingOrder(shippingData);
       shippingOrder = ShippingOrderModel.fromJson(response);
       if(shippingOrder!=null){
-        fee.value = shippingOrder!.totalFee.toDouble()/24500.0;//doi sang USD
+        fee.value = shippingOrder!.totalFee.toDouble();//doi sang USD
       }
       totalAmount.value = subTotal + fee.value;
       netAmount.value = totalAmount.value;
@@ -151,7 +151,7 @@ class OrderController extends GetxController {
           final userOrders = await orderRepository.fetchUserOrders();
           await suggestionRepository.generateAndSaveSuggestions(userOrders);
           cartController.clearCart();
-          StripeService.instance.makePayment(netAmount.value,"usd",userId,order.id,context);
+          StripeService.instance.makePayment(netAmount.value/24500,"usd",userId,order.id,context);
         }
       } catch (e) {
         if (kDebugMode) {

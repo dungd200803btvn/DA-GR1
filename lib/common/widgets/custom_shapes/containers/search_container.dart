@@ -5,6 +5,7 @@ import 'package:t_store/features/shop/controllers/home_controller.dart';
 import 'package:t_store/features/shop/screens/all_products/all_product_run_local.dart';
 import 'package:t_store/features/shop/screens/all_products/all_products.dart';
 import 'package:t_store/utils/constants/colors.dart';
+import 'package:t_store/utils/helper/event_logger.dart';
 import 'package:t_store/utils/helper/helper_function.dart';
 import 'package:t_store/utils/validators/validation.dart';
 
@@ -49,7 +50,11 @@ class TSearchContainer extends StatelessWidget {
           suffixIcon: IconButton(
             icon: Icon(Iconsax.search_normal),
             color: DColor.grey,
-            onPressed: () {
+            onPressed: () async {
+              await EventLogger().logEvent(eventName: 'search',
+              additionalData: {
+                'search_product_name':controller.query.text.trim()
+              });
               // Thực hiện hành động khi bấm vào icon search
               Get.to(() =>  AllProductsByLocal(
                 title: lang.translate('search_result'),

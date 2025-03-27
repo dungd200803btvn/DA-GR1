@@ -9,6 +9,7 @@ import 'package:t_store/features/shop/screens/checkout/widgets/billing_amount_se
 import 'package:t_store/features/shop/screens/checkout/widgets/billing_payment_section.dart';
 import 'package:t_store/utils/constants/colors.dart';
 import 'package:t_store/utils/constants/sizes.dart';
+import 'package:t_store/utils/helper/event_logger.dart';
 import 'package:t_store/utils/helper/helper_function.dart';
 import 'package:t_store/utils/popups/loader.dart';
 import '../../../../common/widgets/products/cart/coupon_widget.dart';
@@ -54,7 +55,7 @@ class CheckoutScreen extends StatelessWidget {
                   height: DSize.spaceBtwSection,
                 ),
                 //Coupon TextField
-                Obx(()=> TCouponCode(totalValue: orderController.totalAmount.value*24500, userId: AuthenticationRepository.instance.authUser!.uid ,)),
+                Obx(()=> TCouponCode(totalValue: orderController.totalAmount.value, userId: AuthenticationRepository.instance.authUser!.uid ,)),
                 const SizedBox(
                   height: DSize.spaceBtwSection,
                 ),
@@ -91,6 +92,7 @@ class CheckoutScreen extends StatelessWidget {
           onPressed: () async {
             if (subTotal > 0) {
               orderController.processOrder(subTotal, context);
+              await EventLogger().logEvent(eventName: 'navigate_payment');
             } else {
               TLoader.warningSnackbar(
                   title: lang.translate('empty_cart'),
@@ -98,7 +100,7 @@ class CheckoutScreen extends StatelessWidget {
             }
           },
           child: Obx(() => Text(
-              '${lang.translate('checkout')}: ${DFormatter.formattedAmount(orderController.netAmount.value * 24500)} VND')),
+              '${lang.translate('checkout')}: ${DFormatter.formattedAmount(orderController.netAmount.value)} VND')),
         ),
       ),
     );

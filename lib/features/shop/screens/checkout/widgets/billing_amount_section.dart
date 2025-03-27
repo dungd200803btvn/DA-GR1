@@ -27,7 +27,7 @@ class TBillingAmountSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(lang.translate('subtotal'),style: Theme.of(context).textTheme.bodyMedium,),
-            Text('${DFormatter.formattedAmount(subTotal*24500)} VND',style: Theme.of(context).textTheme.bodyMedium,),
+            Text('${DFormatter.formattedAmount(subTotal)} VND',style: Theme.of(context).textTheme.bodyMedium,),
           ],
         ),
         const SizedBox(height: DSize.spaceBtwItem/2,),
@@ -36,7 +36,7 @@ class TBillingAmountSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(lang.translate('shipping_fee'),style: Theme.of(context).textTheme.bodyMedium,),
-            Obx(()=> Text('${DFormatter.formattedAmount(orderController.fee.value*24500)} VND',style: Theme.of(context).textTheme.labelLarge,)) ,
+            Obx(()=> Text('${DFormatter.formattedAmount(orderController.fee.value)} VND',style: Theme.of(context).textTheme.labelLarge,)) ,
           ],
         ),
         const SizedBox(height: DSize.spaceBtwItem/2,),
@@ -45,7 +45,7 @@ class TBillingAmountSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(lang.translate('order_total'),style: Theme.of(context).textTheme.bodyMedium,),
-            Obx(()=> Text('${DFormatter.formattedAmount(orderController.totalAmount.value*24500)} VND',style: Theme.of(context).textTheme.labelLarge,)) ,
+            Obx(()=> Text('${DFormatter.formattedAmount(orderController.totalAmount.value)} VND',style: Theme.of(context).textTheme.labelLarge,)) ,
           ],
         ),
         const SizedBox(height: DSize.spaceBtwItem/2,),
@@ -89,7 +89,7 @@ class TBillingAmountSection extends StatelessWidget {
           children: [
             Text(lang.translate('net_total'),style: Theme.of(context).textTheme.bodyMedium,),
             Obx((){
-             return Text('${DFormatter.formattedAmount(orderController.netAmount.value*24500)}   VND',style: Theme.of(context).textTheme.labelLarge,);
+             return Text('${DFormatter.formattedAmount(orderController.netAmount.value)}   VND',style: Theme.of(context).textTheme.labelLarge,);
     } ) ,
           ],
         ),

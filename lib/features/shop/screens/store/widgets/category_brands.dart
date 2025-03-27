@@ -14,7 +14,6 @@ class CategoryBrands extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = BrandController.instance;
-
     return FutureBuilder(
         future: controller.getBrandsForCategory(category.id),
         builder: (context, snapshot) {
@@ -52,7 +51,7 @@ class CategoryBrands extends StatelessWidget {
                   final products = snapshot.data!;
                   return TBrandShowCase(
                     brand: brand,
-                    images: products.take(4).map((product) => product.thumbnail).toList(),
+                    images: products.take(4).map((product) => product.images![0]).toList(),
                   );
                 });
             },

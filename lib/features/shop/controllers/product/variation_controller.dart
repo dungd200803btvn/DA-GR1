@@ -6,6 +6,7 @@ import 'package:t_store/features/shop/models/product_model.dart';
 import 'package:t_store/features/shop/models/product_variation_model.dart';
 import 'package:t_store/utils/formatter/formatter.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../utils/helper/event_logger.dart';
 
 class VariationController extends GetxController {
   static VariationController get instance => Get.find();
@@ -25,8 +26,8 @@ class VariationController extends GetxController {
     });
   }
   ///select attributes and variations
-  void onAttributeSelected(
-      ProductModel product, attributeName, attributeValue) {
+  Future<void> onAttributeSelected (
+      ProductModel product, attributeName, attributeValue) async {
     final selectedAttributes =
         Map<String, dynamic>.from(this.selectedAttributes);
     selectedAttributes[attributeName] = attributeValue;
@@ -36,6 +37,15 @@ class VariationController extends GetxController {
             _isSameAttributeValues(element.attributeValues, selectedAttributes),
         orElse: () => ProductVariationModel.empty());
     //set main image to selected variation image
+
+   await EventLogger().logEvent(eventName: "select_variation",
+       additionalData:  {
+      "productId": product.id,
+      "attributeName": attributeName,
+      "attributeValue": attributeValue,
+      "selectedVariationId": selectedVariation.id,
+      "selectedVariationStock": selectedVariation.stock,
+    });
     if (selectedVariation.image.isNotEmpty) {
       ImagesController.instance.selectedProductImage.value =
           selectedVariation.image;
@@ -74,7 +84,7 @@ class VariationController extends GetxController {
 
   String getVariationPrice([double? salePercentage]){
     final price = salePercentage!=null ? selectedVariation.value.price*(1-salePercentage):selectedVariation.value.price;
-    return DFormatter.formattedAmount(price*24500);
+    return DFormatter.formattedAmount(price);
   }
   //check status
   void getProductVariationStockStatus() {

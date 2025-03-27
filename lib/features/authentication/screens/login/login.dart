@@ -15,7 +15,6 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var lang = AppLocalizations.of(context);
-    final controller = Get.put(LoginController());
     return Scaffold(
         body: SingleChildScrollView(
             child: Padding(

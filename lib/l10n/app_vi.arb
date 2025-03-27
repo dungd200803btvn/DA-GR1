@@ -274,5 +274,8 @@
   "order_success": "Đặt hàng thành công",
   "order_success_msg": "Đơn hàng của bạn đã được đặt thành công vào",
   "today": "Hôm nay",
-  "day": "Ngày"
+  "day": "Ngày",
+  "detail": "Chi tiết",
+  "product_name": "Tên sản phẩm",
+  "feature_shops": "Cửa hàng bán chạy"
 }

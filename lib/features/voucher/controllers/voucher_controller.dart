@@ -119,7 +119,7 @@ class VoucherController extends GetxController{
         switch (voucher.type) {
           case 'free_shipping':
           // Kiểm tra điều kiện minimumOrder có khác null và tổng đơn hàng có đủ không
-            if ((voucher.minimumOrder ?? double.infinity) <= OrderController.instance.totalAmount.value*24500 &&OrderController.instance.fee.value!=0 ) {
+            if ((voucher.minimumOrder ?? double.infinity) <= OrderController.instance.totalAmount.value &&OrderController.instance.fee.value!=0 ) {
               applicableVouchers.add(voucher);
             }
             break;
@@ -208,7 +208,7 @@ class VoucherController extends GetxController{
             break;
 
           case 'minimum_order':
-            if ((voucher.minimumOrder ?? double.infinity) <= OrderController.instance.totalAmount.value*24500) {
+            if ((voucher.minimumOrder ?? double.infinity) <= OrderController.instance.totalAmount.value) {
               applicableVouchers.add(voucher);
             }
             break;
@@ -331,7 +331,7 @@ class VoucherController extends GetxController{
     }
   }
   //Ham xu ly ap dung 1 voucher
-  Future<void> applyVoucher(String voucherId, String userId) async {
+  Future<num> applyVoucher(String voucherId, String userId) async {
     try {
       if (kDebugMode) {
         print("=== Bắt đầu áp dụng voucher ===");
@@ -354,14 +354,17 @@ class VoucherController extends GetxController{
             print("Voucher $voucherId đã có trong appliedVouchers, không thực hiện gì thêm.");
           }
         }
+        return 0;
       } else {
         if(OrderController.instance.netAmount.value==0){
           TLoader.warningSnackbar(title: lang.translate('no_apply_voucher_msg'));
+          return 0;
         }
         else{
           final voucher = await voucherRepository.getVoucherById(voucherId);
           if(voucher != null){
-            await applyVoucherDiscount(voucher,voucherId,userId);
+          final discount =    await applyVoucherDiscount(voucher,voucherId,userId);
+          return discount;
           }
         }
       }
@@ -369,10 +372,12 @@ class VoucherController extends GetxController{
      if (kDebugMode) {
        print("Loi: ${e.toString()}");
      }
+     return 0;
     }
+    return 0;
   }
 
-  Future<void> applyVoucherDiscount(VoucherModel voucher,String voucherId, String userId ) async {
+  Future<num> applyVoucherDiscount(VoucherModel voucher,String voucherId, String userId ) async {
      num discountValue = 0.0;
      if (kDebugMode) {
        print("=== Bắt đầu tính toán discount cho voucher ===");
@@ -389,18 +394,18 @@ class VoucherController extends GetxController{
         break;
       case 'percentage_discount':
         if (kDebugMode) {
-          print("totalAmount: ${OrderController.instance.totalAmount.value*24500}");
+          print("totalAmount: ${OrderController.instance.totalAmount.value}");
           print("discountValue: ${voucher.discountValue}");
           print("maxDiscount: ${voucher.maxDiscount}");
         }
-        discountValue = OrderController.instance.totalAmount.value*24500 * (voucher.discountValue/100).clamp(0, voucher.maxDiscount!);
+        discountValue = OrderController.instance.totalAmount.value * (voucher.discountValue/100).clamp(0, voucher.maxDiscount!);
         if (kDebugMode) {
           print("Percentage discount: $discountValue");
         }
         break;
       case 'free_shipping':
-        if(OrderController.instance.totalAmount.value*24500>=voucher.minimumOrder! && OrderController.instance.fee.value!=0 ){
-          discountValue = OrderController.instance.fee.value*24500;
+        if(OrderController.instance.totalAmount.value>=voucher.minimumOrder! && OrderController.instance.fee.value!=0 ){
+          discountValue = OrderController.instance.fee.value;
           OrderController.instance.fee.value = 0;
           if (kDebugMode) {
             print("Free shipping discount: $discountValue (đã miễn phí phí ship)");
@@ -412,10 +417,10 @@ class VoucherController extends GetxController{
         break;
       case 'limited_quantity':
         if (kDebugMode) {
-          print("totalAmount: ${OrderController.instance.totalAmount.value*24500}");
+          print("totalAmount: ${OrderController.instance.totalAmount.value}");
           print("discountValue: ${voucher.discountValue}");
         }
-        discountValue = OrderController.instance.totalAmount.value*24500 * (voucher.discountValue/100);
+        discountValue = OrderController.instance.totalAmount.value * (voucher.discountValue/100);
         if (kDebugMode) {
           print("limited_quantity discount: $discountValue");
         }
@@ -448,10 +453,10 @@ class VoucherController extends GetxController{
 
       case 'campaign_discount':
         if (kDebugMode) {
-          print("totalAmount: ${OrderController.instance.totalAmount.value*24500}");
+          print("totalAmount: ${OrderController.instance.totalAmount.value}");
           print("discountValue: ${voucher.discountValue}");
         }
-        discountValue = OrderController.instance.totalAmount.value*24500 * (voucher.discountValue/100);
+        discountValue = OrderController.instance.totalAmount.value * (voucher.discountValue/100);
         if (kDebugMode) {
           print("Campaign discount: $discountValue");
         }
@@ -464,14 +469,14 @@ class VoucherController extends GetxController{
         }
         break;
       case 'minimum_order':
-        if (OrderController.instance.totalAmount.value*24500 >= voucher.minimumOrder!) {
+        if (OrderController.instance.totalAmount.value >= voucher.minimumOrder!) {
           discountValue = voucher.discountValue;
           if (kDebugMode) {
             print("Minimum order discount: $discountValue");
           }
         } else {
           if (kDebugMode) {
-            print("Minimum order: Tổng đơn hàng chưa đạt yêu cầu (${OrderController.instance.totalAmount.value*24500} < ${voucher.minimumOrder})");
+            print("Minimum order: Tổng đơn hàng chưa đạt yêu cầu (${OrderController.instance.totalAmount.value} < ${voucher.minimumOrder})");
           }
         }
         break;
@@ -489,7 +494,7 @@ class VoucherController extends GetxController{
         }
         break;
       case 'user_discount':
-        discountValue = OrderController.instance.totalAmount.value*24500 * (voucher.discountValue/100);
+        discountValue = OrderController.instance.totalAmount.value * (voucher.discountValue/100);
         if (kDebugMode) {
           print("user_discount: $discountValue");
         }
@@ -501,10 +506,10 @@ class VoucherController extends GetxController{
       case 'time_based':
         if (isTimeInRange(voucher.startDate, voucher.endDate)) {
           if (kDebugMode) {
-            print("totalAmount: ${OrderController.instance.totalAmount.value*24500}");
+            print("totalAmount: ${OrderController.instance.totalAmount.value}");
             print("discountValue: ${voucher.discountValue}");
           }
-          discountValue = OrderController.instance.totalAmount.value*24500 * (voucher.discountValue / 100);
+          discountValue = OrderController.instance.totalAmount.value * (voucher.discountValue / 100);
           if (kDebugMode) {
             print("Time-based discount: $discountValue");
           }
@@ -528,7 +533,7 @@ class VoucherController extends GetxController{
          print("Total Amount: ${OrderController.instance.totalAmount.value}");
        }
        OrderController.instance.netAmount.value =
-           (OrderController.instance.totalAmount.value*24500 - OrderController.instance.totalDiscount.value).clamp(0, double.infinity)/24500;
+           (OrderController.instance.totalAmount.value - OrderController.instance.totalDiscount.value).clamp(0, double.infinity);
        if (kDebugMode) {
          print("Updated Net Amount: ${OrderController.instance.netAmount.value}");
        }
@@ -548,18 +553,16 @@ class VoucherController extends GetxController{
          print("Không có discount nào được áp dụng từ voucher.");
        }
      }
-     if (kDebugMode) {
-       print("=== Kết thúc tính toán discount ===");
-     }
+    return discountValue;
   }
 
   double calculateProductDiscount(VoucherModel voucher) {
     double discount = 0;
     for (var product in CartController.instance.cartItems) {
       if (voucher.applicableProducts!.contains(product.title)) {
-        discount += product.price *24500* (voucher.discountValue / 100)*product.quantity;
+        discount += product.price * (voucher.discountValue / 100)*product.quantity;
         if (kDebugMode) {
-          print("Tên sản phẩm có ProductDiscount: ${product.title} \n giá trị discount là: ${product.price *24500* (voucher.discountValue / 100)*product.quantity}");
+          print("Tên sản phẩm có ProductDiscount: ${product.title} \n giá trị discount là: ${product.price * (voucher.discountValue / 100)*product.quantity}");
         }
       }
     }
@@ -571,7 +574,7 @@ class VoucherController extends GetxController{
     double discount = 0;
     for (var product in CartController.instance.cartItems) {
       if (voucher.applicableCategories!.contains(product.category)) {
-        discount += product.price *24500* (voucher.discountValue / 100)*product.quantity;
+        discount += product.price * (voucher.discountValue / 100)*product.quantity;
       }
     }
     return discount;
@@ -585,11 +588,11 @@ class VoucherController extends GetxController{
       }
     }
     if (kDebugMode) {
-      print("applicableTotal: ${applicableTotal*24500}");
+      print("applicableTotal: ${applicableTotal}");
       print("discountValue: ${voucher.discountValue}");
     }
     // Nếu tổng giá của sản phẩm vượt quá flatPrice, giảm giá chính là phần chênh lệch
-    if (applicableTotal*24500 > voucher.discountValue) {
+    if (applicableTotal > voucher.discountValue) {
       return  voucher.discountValue.toDouble();
     }
     return 0.0;

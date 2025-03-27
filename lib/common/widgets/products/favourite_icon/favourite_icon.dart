@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:t_store/features/shop/controllers/product/favourite_controller.dart';
 import 'package:t_store/utils/constants/colors.dart';
+import '../../../../utils/helper/event_logger.dart';
 import '../../icons/t_circular_icon.dart';
 
 class TFavouriteIcon extends StatelessWidget {
@@ -21,7 +22,15 @@ class TFavouriteIcon extends StatelessWidget {
         icon:
             controller.isFavourite(productId) ? Iconsax.heart5 : Iconsax.heart,
         color: controller.isFavourite(productId) ? DColor.error : null,
-        onPressed: () => controller.toggleFavouriteProduct(productId),
+        onPressed: () async{
+          await EventLogger().logEvent(
+              eventName: "favourite_product",
+              additionalData: {
+                "product_id": productId,
+              }
+          );
+          controller.toggleFavouriteProduct(productId);
+        } ,
       ),
     );
   }

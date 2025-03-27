@@ -5,6 +5,8 @@ import 'package:t_store/features/shop/models/product_model.dart';
 import 'package:t_store/utils/constants/sizes.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../../utils/constants/colors.dart';
+import '../../../../utils/helper/helper_function.dart';
 
 class ImagesController extends GetxController {
   static ImagesController get instance => Get.find();
@@ -29,42 +31,54 @@ class ImagesController extends GetxController {
   // Initialize the controller with product data
   void initialize(ProductModel productModel) {
     // Reset the selected image and image list
-    selectedProductImage.value = productModel.thumbnail;
+    selectedProductImage.value = productModel.images![0];
     images.clear();
     // Add thumbnail and other unique images
-    Set<String> uniqueImages = {productModel.thumbnail};
+    Set<String> uniqueImages = {productModel.images![0]};
     if (productModel.images != null) {
       uniqueImages.addAll(productModel.images!);
     }
     images.addAll(uniqueImages);
   }
 
-
 //show image popup
-  void showEnlargedImage(String image) {
+  void showEnlargedImage(String image, BuildContext context) {
+    final dark = DHelperFunctions.isDarkMode(context);
+   final  color =  dark ? DColor.white : DColor.white;
     Get.to(
       fullscreenDialog: true,
-        () => Dialog.fullscreen(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(padding: const EdgeInsets.symmetric(vertical: DSize.defaultspace*2,horizontal: DSize.defaultspace),
-                child: CachedNetworkImage(imageUrl: image,),),
-                const SizedBox(height: DSize.spaceBtwSection,),
-                Align(
-                  alignment: Alignment.bottomCenter,
+          () => Dialog.fullscreen(
+        child: Scaffold(
+          backgroundColor: color,
+          body: Stack(
+            children: [
+              Center(
+                child: CachedNetworkImage(
+                  imageUrl: image,
+                  fit: BoxFit.contain, // hoặc BoxFit.cover nếu bạn muốn crop hình
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
+              ),
+              Positioned(
+                bottom: 40,
+                left: 0,
+                right: 0,
+                child: Center(
                   child: SizedBox(
                     width: 150,
-                    child: OutlinedButton(onPressed: ()=> Get.back(),child: Text(lang.translate('close')),),
+                    child: OutlinedButton(
+                      onPressed: () => Get.back(),
+                      child: Text(lang.translate('close')),
+                    ),
                   ),
-                )
-              ],
-            ),
+                ),
+              ),
+            ],
           ),
-        )
+        ),
+      ),
     );
   }
+
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:t_store/features/voucher/widgets/voucher_apply.dart';
+import 'package:t_store/utils/helper/event_logger.dart';
 import '../../../../features/voucher/controllers/voucher_controller.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/constants/colors.dart';
@@ -64,6 +65,7 @@ class _TCouponCodeState extends State<TCouponCode> {
             width: 80,
             child: ElevatedButton(
               onPressed: () async {
+                await EventLogger().logEvent(eventName: 'view_voucher');
                 // Nếu không có mã khuyến mại nào được nhập
                 if (_promoController.text.trim().isEmpty) {
                   // Hiển thị popup toàn bộ các voucher người dùng đã thu thập

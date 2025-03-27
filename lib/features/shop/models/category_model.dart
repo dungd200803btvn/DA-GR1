@@ -24,6 +24,18 @@ class CategoryModel {
       'IsFeatured':isFeatured,
     };
   }
+  // Factory constructor từ JSON trả về từ API Node.js
+  factory CategoryModel.fromJson(Map<String, dynamic> json) {
+    return CategoryModel(
+      id: json['id'] ?? '',
+      name: json['Name'] ?? '',
+      image: json['categoryImage'] ?? '', // Nếu API không trả về Image, có thể gán chuỗi rỗng
+      isFeatured: json['IsFeatured'] ?? false,
+      parentId: json['ParentId'] ?? '',
+    );
+  }
+
+
   //another constructor use factory keyword
   factory CategoryModel.fromSnapshot(DocumentSnapshot<Map<String,dynamic>> document){
     if(document.data()!=null){

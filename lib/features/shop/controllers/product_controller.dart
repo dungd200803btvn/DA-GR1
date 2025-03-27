@@ -1,26 +1,26 @@
 import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:t_store/data/repositories/product/product_repository.dart';
-import 'package:t_store/features/shop/models/product_attribute_model.dart';
 import 'package:t_store/features/shop/models/product_model.dart';
 import 'package:t_store/utils/enum/enum.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/formatter/formatter.dart';
 import '../../../utils/popups/loader.dart';
-import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import '../../suggestion/suggestion_repository.dart';
-import '../models/brand_model.dart';
-import '../models/product_variation_model.dart';
+
 class ProductController extends GetxController {
   static ProductController get instance => Get.find();
   final isLoading = false.obs;
+  final isLoadingMore = false.obs;
   RxList<ProductModel> featuredProducts = <ProductModel>[].obs;
   RxList<ProductModel> allProducts = <ProductModel>[].obs;
-  final productRepository = Get.put(ProductRepository());
-  final suggestionRepository = Get.put(ProductSuggestionRepository());
+  DocumentSnapshot? lastFeaturedDoc;
+  final productRepository = ProductRepository.instance;
+  final suggestionRepository = ProductSuggestionRepository.instance;
   @override
   void onInit() {
     fetchFeaturedProducts();
@@ -35,6 +35,108 @@ class ProductController extends GetxController {
       lang = AppLocalizations.of(Get.context!);
     });
   }
+
+  // Load trang đầu tiên (hoặc load cache nếu có)
+  void fetchFeaturedProductsPage() async {
+    print("=== fetchFeaturedProductsPage() START ===");
+    try {
+      isLoading.value = true;
+      Map<String, dynamic> result = await productRepository.getFeaturedProductsPage();
+      print(">> fetchFeaturedProductsPage() - result: $result");
+
+      // Kiểm tra xem dữ liệu products trả về là JSON hay đã là ProductModel
+      if (result['products'] is List<dynamic> && result['products'].isNotEmpty) {
+        // Kiểm tra phần tử đầu tiên, nếu nó Map thì cần parse, nếu đã là ProductModel thì có thể sử dụng luôn.
+        var first = result['products'][0];
+        print("Du lieu images: ${first['Images']}");
+        if (first is Map) {
+          print(">> Dữ liệu products trả về ở dạng JSON, bắt đầu parse thành ProductModel...");
+          List<ProductModel> fetchedProducts = await Future.wait(
+              (result['products'] as List<dynamic>).map((json) async {
+                final product = await ProductModel.toModelFromJson(json);
+                print(">> Parse product từ JSON: ${product.images![0]}");
+                return product;
+              })
+          );
+          fetchedProducts.forEach((product) => print(">> Sản phẩm: ${product.images![0]}"));
+          lastFeaturedDoc = result['lastDoc'];
+          featuredProducts.assignAll(fetchedProducts);
+        }
+        else if (first is ProductModel) {
+          print(">> Dữ liệu products trả về đã là ProductModel");
+          List<ProductModel> fetchedProducts = result['products'] as List<ProductModel>;
+          fetchedProducts.forEach((product) => print(">> Sản phẩm: ${product.images![0]}"));
+          lastFeaturedDoc = result['lastDoc'];
+          featuredProducts.assignAll(fetchedProducts);
+        } else {
+          print(">> Kiểu dữ liệu không xác định cho products: ${first.runtimeType}");
+        }
+      } else {
+        print(">> Không có sản phẩm nào được trả về");
+      }
+    } catch (e) {
+      print("Error in fetchFeaturedProducts: $e");
+    } finally {
+      isLoading.value = false;
+      print("=== fetchFeaturedProductsPage() END ===");
+    }
+  }
+
+
+  // Tải thêm sản phẩm (infinite scroll hoặc khi nhấn "Xem thêm")
+  void loadMoreFeaturedProducts() async {
+    print("=== loadMoreFeaturedProducts() START ===");
+    if (isLoadingMore.value) {
+      print(">> loadMoreFeaturedProducts(): isLoadingMore is true, returning early.");
+      return;
+    }
+    try {
+      isLoadingMore.value = true;
+      Map<String, dynamic> result = await productRepository.getFeaturedProductsPage(lastDoc: lastFeaturedDoc);
+      print(">> loadMoreFeaturedProducts() - result: $result");
+
+      List<ProductModel> fetchedProducts;
+      // Kiểm tra xem danh sách trả về có rỗng không
+      if (result['products'] is List && (result['products'] as List).isNotEmpty) {
+        var firstElement = (result['products'] as List)[0];
+        // Nếu dữ liệu trả về ở dạng JSON (Map) -> parse thành ProductModel
+        if (firstElement is Map) {
+          print(">> Dữ liệu products trả về ở dạng JSON, bắt đầu parse thành ProductModel...");
+             fetchedProducts = await Future.wait(
+              (result['products'] as List<dynamic>).map((json) async {
+                final product = await ProductModel.toModelFromJson(json);
+                print(">> Parse product từ JSON: ${product.images![0]}");
+                return product;
+              })
+          );
+          fetchedProducts.forEach((product) => print(">> Sản phẩm: ${product.images![0]}"));
+        }
+        // Nếu dữ liệu đã ở dạng ProductModel
+        else if (firstElement is ProductModel) {
+          print(">> loadMoreFeaturedProducts(): products returned as ProductModel.");
+          fetchedProducts = fetchedProducts = result['products'] as List<ProductModel>;
+        }
+        else {
+          print(">> loadMoreFeaturedProducts(): Unknown product data type: ${firstElement.runtimeType}");
+          fetchedProducts = [];
+        }
+      } else {
+        print(">> loadMoreFeaturedProducts(): No products returned.");
+        fetchedProducts = [];
+      }
+
+      lastFeaturedDoc = result['lastDoc'];
+      print(">> loadMoreFeaturedProducts(): Fetched products count: ${fetchedProducts.length}");
+      featuredProducts.addAll(fetchedProducts);
+      print(">> loadMoreFeaturedProducts(): Total featuredProducts count: ${featuredProducts.length}");
+    } catch (e) {
+      print("Error in loadMoreFeaturedProducts: $e");
+    } finally {
+      isLoadingMore.value = false;
+      print("=== loadMoreFeaturedProducts() END ===");
+    }
+  }
+
 
   void fetchFeaturedProducts() async {
     try {
@@ -81,11 +183,11 @@ class ProductController extends GetxController {
     double largestPrice = 0.0;
     //if no variations exist, return simple price or sale price
     if(saleParcentage==null && product.productType == ProductType.single.toString()){
-      return DFormatter.formattedAmount(product.price*24500);
+      return DFormatter.formattedAmount(product.price);
     }
     else if (product.productType == ProductType.single.toString() && saleParcentage!=null ) {
       final discountedPrice = product.price * (1 - saleParcentage);
-      return DFormatter.formattedAmount(discountedPrice*24500);
+      return DFormatter.formattedAmount(discountedPrice);
     } else {
       //calculate max and min price
       for (var variation in product.productVariations!) {
@@ -105,9 +207,9 @@ class ProductController extends GetxController {
       }
       if (smallestPrice.isEqual(largestPrice)) {
         // return largestPrice.toStringAsFixed(1);
-        return DFormatter.formattedAmount(largestPrice*24500);
+        return DFormatter.formattedAmount(largestPrice);
       } else {
-        return '${DFormatter.formattedAmount(smallestPrice*24500)}  - ${DFormatter.formattedAmount(largestPrice*24500)}';
+        return '${DFormatter.formattedAmount(smallestPrice)}  - ${DFormatter.formattedAmount(largestPrice)}';
       }
     }
   }
@@ -134,78 +236,9 @@ class ProductController extends GetxController {
   double generatePrice(){
     return 10+ Random().nextDouble()*1000;
   }
-
   T getRandomElement<T>(List<T> list) {
     final random = Random();
     return list[random.nextInt(list.length)];
   }
-
-
-  Future<List<ProductModel>> readProductsFromJson(String filePath) async {
-    // Đọc dữ liệu từ file JSON
-    final jsonString = await getFileData(filePath);
-    final List<dynamic> jsonResponse = json.decode(jsonString);
-
-    // Giới hạn số lượng đối tượng đọc từ JSON
-    final limitedJsonResponse = jsonResponse.take(200).toList();
-
-    // Danh sách các màu
-    List<String> colors = ['Green', 'Black', 'Red', 'Blue', 'Yellow'];
-
-    // Chuyển đổi JSON thành danh sách các đối tượng ProductModel
-    return limitedJsonResponse.map((product) {
-    List<String> images =   product['image_urls'] != null ? List<String>.from(product['image_urls']) : [];
-    List<String> defaultSizes = ['EU 30','EU 32','EU 34','EU 36','EU 38'];
-
-
-      // Tạo danh sách các giá trị cho thuộc tính 'Size'
-      List<String> availableSizes = product['available_sizes'] != null ? List<String>.from(product['available_sizes'].length>=5 ? product['available_sizes'].map((size) => 'EU $size' as String): defaultSizes) : defaultSizes;
-
-      // Tạo đối tượng ProductAttributeModel cho 'Size'
-      ProductAttributeModel sizeAttribute = ProductAttributeModel(name: 'Size', values: availableSizes);
-
-      // Tạo đối tượng ProductAttributeModel cho 'Color'
-      ProductAttributeModel colorAttribute = ProductAttributeModel(name: 'Color', values: colors);
-
-      // Tạo danh sách các biến thể sản phẩm với màu và size tương ứng
-      List<ProductVariationModel> productVariations = [];
-      if (product['variants'] != null) {
-        for (String color in colors) {
-          for (String size in availableSizes) {
-            String sku = product['sku'] ;  // Thay bằng logic sinh SKU của bạn
-            productVariations.add(ProductVariationModel(
-              id: sku,
-              stock: generateRandomId(), // Assuming `in_stock` is a boolean
-              price: generatePrice().roundToDouble(), // Giá trị mặc định, bạn có thể thay đổi theo yêu cầu
-              salePrice: (generatePrice() * 0.85).roundToDouble(), // Giá trị mặc định, bạn có thể thay đổi theo yêu cầu
-              image: images[0] , // Assuming `image` field exists
-              description: 'The product has good quality and reasonable price, it is worth trying once', // Mô tả mặc định, bạn có thể thay đổi theo yêu cầu
-              attributeValues: {'Color': color, 'Size': size},
-            ));
-          }
-        }
-      }
-    double price  = generatePrice().roundToDouble();
-      return ProductModel(
-        id: product['objectID'] ?? '',
-        stock: generateRandomId(),
-        sku: product['sku'] ?? '',
-        price:  price ,
-        title: product['name'] ?? '',
-        date: product['created_at'] != null ? DateTime.fromMillisecondsSinceEpoch(product['created_at']) : null,
-        salePrice: (price*0.7).roundToDouble() ,
-        thumbnail: product['image_urls'] != null && product['image_urls'].isNotEmpty ? product['image_urls'][0] : '',
-        isFeatured: true, // Assuming this is not provided in your JSON
-        brand: product['brand'] != null ? BrandModel(name: product['brand'], id:(1+ Random().nextInt(14)).toString(), image: images[0],isFeatured: true,productsCount: generateRandomId()) : null,
-        description: 'The product has good quality and reasonable price, it is worth trying once',
-        categoryId:  (1+ Random().nextInt(16)).toString(),
-        images: product['image_urls'] != null ? List<String>.from(product['image_urls']) : [],
-        productType: ProductType.variable.toString(),
-        productAttributes: [sizeAttribute, colorAttribute],
-        productVariations: productVariations,
-      );
-    }).toList();
-  }
-
 }
 

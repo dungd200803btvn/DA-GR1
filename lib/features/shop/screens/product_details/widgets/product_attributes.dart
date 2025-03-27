@@ -10,6 +10,7 @@ import 'package:t_store/utils/constants/colors.dart';
 import 'package:t_store/utils/constants/sizes.dart';
 import 'package:t_store/utils/formatter/formatter.dart';
 import 'package:t_store/utils/helper/helper_function.dart';
+import 'package:t_store/utils/popups/loader.dart';
 
 import '../../../../../common/widgets/chips/choice_chip.dart';
 import '../../../models/product_model.dart';
@@ -55,7 +56,7 @@ class ProductAttributes extends StatelessWidget {
                                   title: lang.translate('price'), smallSize: true),
                               //Actual price
                               if(salePercentage!=null)
-                              Text(DFormatter.formattedAmount(controller.selectedVariation.value.price*24500),
+                              Text(DFormatter.formattedAmount(controller.selectedVariation.value.price),
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleSmall!
@@ -117,14 +118,13 @@ class ProductAttributes extends StatelessWidget {
                                 return TChoiceChip(
                                   text: val,
                                   selected: isSelected,
-                                  onSelected: available
-                                      ? (selected) {
-                                          if (selected && available) {
-                                            controller.onAttributeSelected(
-                                                product, e.name ?? " ", val);
-                                          }
-                                        }
-                                      : null,
+                                  onSelected: available? (selected) async{
+                                    if( available && selected){
+                                   await   controller.onAttributeSelected(
+                                          product, e.name ?? " ", val);
+                                    }
+                                  }:null,
+
                                 );
                               }).toList()),
                         )

@@ -105,7 +105,7 @@ class TOrderListItems extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Text(
-                      "${lang.translate('total_order_value')}:${DFormatter.formattedAmount(order.totalAmount*24500)}VND",
+                      "${lang.translate('total_order_value')}:${DFormatter.formattedAmount(order.totalAmount)}VND",
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,

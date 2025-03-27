@@ -6,6 +6,7 @@ import 'package:t_store/features/shop/screens/product_reviews/widgets/rating_pro
 import 'package:t_store/l10n/app_localizations.dart';
 import 'package:t_store/utils/constants/sizes.dart';
 import '../../../../common/widgets/products/ratings/rating_indicator.dart';
+import '../../../../utils/helper/event_logger.dart';
 import '../../../review/controller/review_controller.dart';
 
 class ProductReviewScreen extends StatefulWidget {
@@ -91,6 +92,27 @@ class _ProductReviewScreenState extends State<ProductReviewScreen>
                       const RatingTabBar(rating: "2"),
                       const RatingTabBar(rating: "1"),
                     ],
+                    onTap: (index) async {
+                      String tabLabel;
+                      if (index == 0) {
+                        tabLabel = lang.translate('total');
+                      } else if (index == 1) {
+                        tabLabel = lang.translate('has_media');
+                      } else {
+                        // Với các tab đánh giá: tab index 2 đến 6
+                        // Ta tính rating = (7 - index) vì:
+                        // index 2 -> rating "5", index 3 -> rating "4", ...
+                        int rating = 7 - index;
+                        tabLabel = rating.toString();
+                      }
+                      await EventLogger().logEvent(
+                        eventName: 'select_review_tab',
+                        additionalData: {
+                          'tab_label': tabLabel,
+                          'product_id': widget.productId
+                        },
+                      );
+                    },
                   ),
                 ),
                 IconButton(

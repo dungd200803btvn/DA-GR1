@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -17,13 +18,23 @@ class NavigationMenu extends StatelessWidget {
     final controller = Get.put(NavigationController());
     final dark = DHelperFunctions.isDarkMode(context);
     final lang = AppLocalizations.of(context);
+    final FirebaseAnalytics analytics =  FirebaseAnalytics.instance;
+    final List pageNames = [lang.translate('home'),lang.translate('store'),lang.translate('wishlist'),lang.translate('notification'),lang.translate('profile')];
+    analytics.setAnalyticsCollectionEnabled(true);
     return Scaffold(
       bottomNavigationBar: Obx(
         ()=>NavigationBar(
           height: 80,
           elevation: 0,
           selectedIndex: controller.selectedIndex.value,
-          onDestinationSelected: (index)=> controller.selectedIndex.value = index,
+          onDestinationSelected: (index) async{
+            await analytics.logEvent(name: 'pages_tracked',
+            parameters: {
+              "page_name": pageNames[index],
+              "page_index":index
+            });
+            controller.selectedIndex.value = index;
+          },
           backgroundColor: dark? Colors.black:Colors.white,
           indicatorColor: dark? Colors.white.withOpacity(0.1):Colors.black.withOpacity(0.1),
           destinations: [

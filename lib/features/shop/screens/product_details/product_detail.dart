@@ -4,6 +4,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:readmore/readmore.dart';
 import 'package:t_store/common/widgets/texts/section_heading.dart';
 import 'package:t_store/features/review/controller/review_controller.dart';
+import 'package:t_store/features/shop/controllers/product/cart_controller.dart';
 import 'package:t_store/features/shop/screens/product_details/widgets/bottom_add_to_cart_widget.dart';
 import 'package:t_store/features/shop/screens/product_details/widgets/product_attributes.dart';
 import 'package:t_store/features/shop/screens/product_details/widgets/product_detail_image_slider.dart';
@@ -13,24 +14,29 @@ import 'package:t_store/features/shop/screens/product_reviews/product_review.dar
 import 'package:t_store/l10n/app_localizations.dart';
 import 'package:t_store/utils/constants/sizes.dart';
 import 'package:t_store/utils/enum/enum.dart';
+import 'package:t_store/utils/helper/event_logger.dart';
 
 import '../../../../common/widgets/appbar/appbar.dart';
 import '../../../../common/widgets/products/cart/cart_menu_icon.dart';
+import '../../../review/screen/review_screen.dart';
 import '../../models/product_model.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   const ProductDetailScreen({super.key, required this.product, this.salePercentage});
 
   final ProductModel product;
+
   final double? salePercentage;
 
   @override
   Widget build(BuildContext context) {
     final controller = WriteReviewScreenController.instance;
+    final cartController = CartController.instance;
+    final item = cartController.toCartModel(product, 1);
     final lang = AppLocalizations.of(context);
     return Scaffold(
       appBar: TAppBar(
-        title: Text(product.title, style: Theme.of(context).textTheme.headlineMedium),
+        title: Text(product.title, style: Theme.of(context).textTheme.headlineSmall),
         actions: const [
           TCartCounterIcon(),
         ],
@@ -41,7 +47,6 @@ class ProductDetailScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 1. SLIDER ẢNH SẢN PHẨM
-
             TProductImageSlider(product: product),
             // 2. CHI TIẾT SẢN PHẨM
             Padding(
@@ -56,20 +61,7 @@ class ProductDetailScreen extends StatelessWidget {
                   TRatingAndShare(productId: product.id,),
                   // 2.2 Giá, Tiêu đề, Tồn kho, Chi nhánh
                   TProductMetaData(product: product,salePercentage: salePercentage),
-                  // 2.3 Thuộc tính
-                  if (product.productType == ProductType.variable.toString())
-                    ProductAttributes(product: product,salePercentage: salePercentage,),
-                  if (product.productType == ProductType.variable.toString())
-                    const SizedBox(height: DSize.spaceBtwSection),
-                  // 2.4 Nút Thanh toán
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child:  Text( lang.translate('checkout')),
-                    ),
-                  ),
-                  const SizedBox(height: DSize.spaceBtwSection),
+                  const Divider(),
                   // 2.5 Mô tả
                    TSectionHeading(
                     title: lang.translate('description'),
@@ -91,9 +83,30 @@ class ProductDetailScreen extends StatelessWidget {
                       fontWeight: FontWeight.w800,
                     ),
                   ),
+                  const Divider(),
+                  //2.6 Detail
+                  const SizedBox(height: DSize.spaceBtwItem),
+                  TSectionHeading(
+                    title: lang.translate('detail'),
+                    showActionButton: false,
+                  ),
+                  ReadMoreText(
+                    product.details !=null ? product.details!.entries.map((entry)=>"${entry.key}: ${entry.value}").join('\n'):'',
+                    trimLines: 2,
+                    trimMode: TrimMode.Line,
+                    trimCollapsedText: lang.translate('show_more'),
+                    trimExpandedText: lang.translate('less'),
+                    moreStyle: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                    ),
+                    lessStyle: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
                   // 2.6 Đánh giá
                   const Divider(),
-                  const SizedBox(height: DSize.spaceBtwItem),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -112,18 +125,54 @@ class ProductDetailScreen extends StatelessWidget {
                               return Text('${lang.translate('review')}($totalReviews)');
                             },
                           ),
-                          onPressed: () {},
+                          onPressed: () async{
+                            await EventLogger().logEvent(eventName: 'navigate_to_review',
+                                additionalData: {
+                                  'product_id':product.id
+                                });
+                            Get.to(() =>  ProductReviewScreen(productId: product.id,));
+                          },
                           showActionButton: false,
                         ),
                       ),
 
                       IconButton(
-                        onPressed: () => Get.to(() =>  ProductReviewScreen(productId: product.id,)),
+                        onPressed: () async{
+                          await EventLogger().logEvent(eventName: 'navigate_to_review',
+                          additionalData: {
+                            'product_id':product.id
+                          });
+                          Get.to(() =>  ProductReviewScreen(productId: product.id,));
+    },
                         icon: const Icon(Iconsax.arrow_right_3),
                       ),
                     ],
                   ),
-                  const SizedBox(height: DSize.spaceBtwSection),
+                  // 2.4 Nút Review
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await EventLogger().logEvent(eventName: 'write_review',
+                            additionalData: {
+                              'product_id':product.id
+                            });
+                        Get.to(()=> WriteReviewScreen(item: item,) );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.pinkAccent,
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        lang.translate('write_review'),
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
