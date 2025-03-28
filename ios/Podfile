@@ -1,7 +1,6 @@
-# Uncomment this line to define a global platform for your project
-platform :ios, '11.0'
+# Uncomment the next line to define a global platform for your project
+platform :ios, '13.0'
 
-# CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
 project 'Runner', {
@@ -13,14 +12,14 @@ project 'Runner', {
 def flutter_root
   generated_xcode_build_settings_path = File.expand_path(File.join('..', 'Flutter', 'Generated.xcconfig'), __FILE__)
   unless File.exist?(generated_xcode_build_settings_path)
-    raise "#{generated_xcode_build_settings_path} must exist. If you're running pod install manually, make sure flutter pub get is executed first"
+    abort("Unable to locate Flutter engine settings. Try running 'flutter pub get'")
   end
-
   File.foreach(generated_xcode_build_settings_path) do |line|
-    matches = line.match(/FLUTTER_ROOT\=(.*)/)
-    return matches[1].strip if matches
+    if line =~ /FLUTTER_ROOT\=(.*)/
+      return $1.strip
+    end
   end
-  raise "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try deleting Generated.xcconfig, then run flutter pub get"
+  abort("FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try running 'flutter pub get'")
 end
 
 require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
@@ -28,18 +27,14 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 flutter_ios_podfile_setup
 
 target 'Runner' do
-  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
-  # PDFTron Pods
-  use_frameworks!
-  pod 'PDFTron', podspec: 'https://pdftron.com/downloads/ios/flutter/pdftron/latest.podspec'
-  pod 'PDFTronTools', podspec: 'https://pdftron.com/downloads/ios/flutter/pdftron-tools/latest.podspec'
-end
+  # Nếu dự án của bạn không yêu cầu dynamic frameworks, hãy bỏ qua use_frameworks!
+  # Một số plugin có thể yêu cầu use_frameworks! nhưng thường Flutter được phân phối dưới dạng static.
+  # Bạn có thể thử loại bỏ hoặc thêm lại nếu gặp vấn đề khác.
+  # use_frameworks!
 
-post_install do |installer|
-  installer.pods_project.targets.each do |target|
-    flutter_additional_ios_build_settings(target)
-    target.build_configurations.each do |config|
-      config.build_settings['ENABLE_BITCODE'] = 'NO'
-    end
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+
+  target 'RunnerTests' do
+    inherit! :search_paths
   end
 end
