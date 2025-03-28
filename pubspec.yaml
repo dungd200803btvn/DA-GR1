@@ -61,13 +61,14 @@ dependencies:
   flutter_dotenv: ^5.2.1
   firebase_messaging: ^14.9.4
   flutter_local_notifications: ^18.0.1
-  app_settings: ^5.2.0
+
   googleapis_auth: ^1.6.0
   flutter_gen: ^5.9.0
   video_player: ^2.9.3
   video_thumbnail: ^0.5.3
   flutter_stripe: ^11.4.0
   firebase_analytics: ^10.10.7
+
 
 
 
