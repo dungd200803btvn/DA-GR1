@@ -1,7 +1,7 @@
-source 'https://cdn.cocoapods.org/'
-
+# Uncomment the next line to define a global platform for your project
 platform :ios, '13.0'
 
+# CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
 project 'Runner', {
@@ -11,26 +11,20 @@ project 'Runner', {
 }
 
 def flutter_root
-  generated_xcode_build_settings_path = File.expand_path(File.join('..', 'Flutter', 'Generated.xcconfig'), __FILE__)
+  generated_xcode_build_settings_path = File.expand_path(File.join('..', 'Flutter', 'Generated.xcconfig'))
   unless File.exist?(generated_xcode_build_settings_path)
-    abort("Unable to locate Flutter engine settings. Try running 'flutter pub get'")
+    puts "Generated.xcconfig not found. Please run 'flutter pub get'"
+    exit
   end
   File.foreach(generated_xcode_build_settings_path) do |line|
-    if line =~ /FLUTTER_ROOT\=(.*)/
+    if line =~ /FLUTTER_ROOT=(.*)/
       return $1.strip
     end
   end
-  abort("FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try running 'flutter pub get'")
+  puts "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Please ensure that your Flutter environment is set up properly."
+  exit
 end
 
-require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
+require File.expand_path(File.join(flutter_root, 'packages', 'flutter_tools', 'bin', 'podhelper'))
 
 flutter_ios_podfile_setup
-
-target 'Runner' do
-  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
-
-  target 'RunnerTests' do
-    inherit! :search_paths
-  end
-end
