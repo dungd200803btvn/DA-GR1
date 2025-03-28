@@ -11,22 +11,21 @@ project 'Runner', {
 }
 
 def flutter_root
-  generated_xcode_build_settings_path = File.expand_path(File.join('..', 'Flutter', 'Generated.xcconfig'))
-  unless File.exist?(generated_xcode_build_settings_path)
-   unless File.exist?('../.dart_tool/package_config.json')
-     puts "Generated.xcconfig not found. Running 'flutter pub get'..."
-     system('flutter pub get')
-   end
+  generated_xcconfig_path = File.expand_path(File.join('Flutter', 'Generated.xcconfig'))
+  unless File.exist?(generated_xcconfig_path)
+    unless File.exist?('../.dart_tool/package_config.json')
+      puts "Generated.xcconfig not found. Running 'flutter pub get'..."
+      system('flutter pub get')
+    end
   end
-  File.foreach(generated_xcode_build_settings_path) do |line|
+  File.foreach(generated_xcconfig_path) do |line|
     if line =~ /FLUTTER_ROOT=(.*)/
       return $1.strip
     end
   end
-  puts "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Please ensure that your Flutter environment is set up properly."
-  exit
+  puts "FLUTTER_ROOT not found in #{generated_xcconfig_path}. Please ensure that your Flutter environment is set up properly."
+  exit 1
 end
 
 require File.expand_path(File.join(flutter_root, 'packages', 'flutter_tools', 'bin', 'podhelper'))
-
 flutter_ios_podfile_setup
