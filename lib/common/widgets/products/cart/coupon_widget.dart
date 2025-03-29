@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:t_store/features/voucher/widgets/voucher_apply.dart';
-import 'package:t_store/utils/helper/event_logger.dart';
+import 'package:t_store_app/features/voucher/widgets/voucher_apply.dart';
+import 'package:t_store_app/utils/helper/event_logger.dart';
 import '../../../../features/voucher/controllers/voucher_controller.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/constants/colors.dart';

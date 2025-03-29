@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:t_store/data/repositories/authentication/authentication_repository.dart';
-import 'package:t_store/features/authentication/screens/password_configuration/reset_password.dart';
-import 'package:t_store/utils/constants/image_strings.dart';
-import 'package:t_store/utils/popups/full_screen_loader.dart';
-import 'package:t_store/utils/popups/loader.dart';
+import 'package:t_store_app/data/repositories/authentication/authentication_repository.dart';
+import 'package:t_store_app/features/authentication/screens/password_configuration/reset_password.dart';
+import 'package:t_store_app/utils/constants/image_strings.dart';
+import 'package:t_store_app/utils/popups/full_screen_loader.dart';
+import 'package:t_store_app/utils/popups/loader.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/helper/network_manager.dart';

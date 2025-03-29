@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:t_store/common/widgets/appbar/appbar.dart';
-import 'package:t_store/common/widgets/brands/t_brand_cart.dart';
-import 'package:t_store/common/widgets/products/sortable/sortable_product.dart';
-import 'package:t_store/common/widgets/shimmer/vertical_product_shimmer.dart';
-import 'package:t_store/features/shop/controllers/brand_controller.dart';
-import 'package:t_store/utils/constants/sizes.dart';
-import 'package:t_store/utils/helper/cloud_helper_functions.dart';
+import 'package:t_store_app/common/widgets/appbar/appbar.dart';
+import 'package:t_store_app/common/widgets/brands/t_brand_cart.dart';
+import 'package:t_store_app/common/widgets/products/sortable/sortable_product.dart';
+import 'package:t_store_app/common/widgets/shimmer/vertical_product_shimmer.dart';
+import 'package:t_store_app/features/shop/controllers/brand_controller.dart';
+import 'package:t_store_app/utils/constants/sizes.dart';
+import 'package:t_store_app/utils/helper/cloud_helper_functions.dart';
 
 import '../../../../common/widgets/products/cart/cart_menu_icon.dart';
 import '../../../../utils/helper/helper_function.dart';

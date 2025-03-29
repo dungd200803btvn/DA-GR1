@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:t_store/data/repositories/authentication/authentication_repository.dart';
-import 'package:t_store/features/authentication/controller/signup/verify_email_controller.dart';
-import 'package:t_store/utils/constants/image_strings.dart';
-import 'package:t_store/utils/constants/sizes.dart';
-import 'package:t_store/utils/constants/text_string.dart';
-import 'package:t_store/utils/helper/helper_function.dart';
+import 'package:t_store_app/data/repositories/authentication/authentication_repository.dart';
+import 'package:t_store_app/features/authentication/controller/signup/verify_email_controller.dart';
+import 'package:t_store_app/utils/constants/image_strings.dart';
+import 'package:t_store_app/utils/constants/sizes.dart';
+import 'package:t_store_app/utils/constants/text_string.dart';
+import 'package:t_store_app/utils/helper/helper_function.dart';
 
 import '../../../../l10n/app_localizations.dart';
 

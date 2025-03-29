@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:t_store/common/widgets/texts/section_heading.dart';
-import 'package:t_store/data/repositories/authentication/authentication_repository.dart';
-import 'package:t_store/features/personalization/controllers/address_controller.dart';
-import 'package:t_store/utils/constants/colors.dart';
-import 'package:t_store/utils/constants/sizes.dart';
+import 'package:t_store_app/common/widgets/texts/section_heading.dart';
+import 'package:t_store_app/data/repositories/authentication/authentication_repository.dart';
+import 'package:t_store_app/features/personalization/controllers/address_controller.dart';
+import 'package:t_store_app/utils/constants/colors.dart';
+import 'package:t_store_app/utils/constants/sizes.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../utils/helper/helper_function.dart';

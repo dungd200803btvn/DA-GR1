@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:t_store/features/personalization/controllers/address_controller.dart';
-import 'package:t_store/utils/constants/colors.dart';
-import 'package:t_store/utils/constants/sizes.dart';
-import 'package:t_store/utils/helper/helper_function.dart';
+import 'package:t_store_app/features/personalization/controllers/address_controller.dart';
+import 'package:t_store_app/utils/constants/colors.dart';
+import 'package:t_store_app/utils/constants/sizes.dart';
+import 'package:t_store_app/utils/helper/helper_function.dart';
 
 import '../../../../../common/widgets/custom_shapes/containers/rounded_container.dart';
 import '../../../models/address_model.dart';

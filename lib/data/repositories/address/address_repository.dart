@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:t_store/data/repositories/authentication/authentication_repository.dart';
+import 'package:t_store_app/data/repositories/authentication/authentication_repository.dart';
 
 import '../../../features/personalization/models/address_model.dart';
 

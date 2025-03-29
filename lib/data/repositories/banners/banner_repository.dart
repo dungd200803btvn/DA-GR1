@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:t_store/features/shop/models/banner_model.dart';
-import 'package:t_store/utils/exceptions/format_exceptions.dart';
+import 'package:t_store_app/features/shop/models/banner_model.dart';
+import 'package:t_store_app/utils/exceptions/format_exceptions.dart';
 
 import '../../../utils/exceptions/firebase_exceptions.dart';
 import '../../../utils/exceptions/platform_exceptions.dart';

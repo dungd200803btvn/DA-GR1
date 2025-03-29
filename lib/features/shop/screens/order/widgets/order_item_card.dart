@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:t_store/features/shop/controllers/product/cart_controller.dart';
-import 'package:t_store/features/shop/screens/cart/cart.dart';
-import 'package:t_store/l10n/app_localizations.dart';
-import 'package:t_store/utils/formatter/formatter.dart';
-import 'package:t_store/utils/helper/event_logger.dart';
+import 'package:t_store_app/features/shop/controllers/product/cart_controller.dart';
+import 'package:t_store_app/features/shop/screens/cart/cart.dart';
+import 'package:t_store_app/l10n/app_localizations.dart';
+import 'package:t_store_app/utils/formatter/formatter.dart';
+import 'package:t_store_app/utils/helper/event_logger.dart';
 import '../../../../../utils/popups/loader.dart';
 import '../../../../review/screen/review_screen.dart';
 import '../../../models/cart_item_model.dart';

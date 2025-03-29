@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:t_store/utils/constants/colors.dart';
-import 'package:t_store/utils/constants/sizes.dart';
+import 'package:t_store_app/utils/constants/colors.dart';
+import 'package:t_store_app/utils/constants/sizes.dart';
 
 class TRoundedContainer extends StatelessWidget {
   const TRoundedContainer(

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:t_store/features/voucher/controllers/voucher_controller.dart';
-import 'package:t_store/features/voucher/screens/voucher_history.dart';
-import 'package:t_store/features/voucher/widgets/voucher_tab.dart';
-import 'package:t_store/l10n/app_localizations.dart';
-import 'package:t_store/utils/constants/colors.dart';
-import 'package:t_store/utils/helper/event_logger.dart';
+import 'package:t_store_app/features/voucher/controllers/voucher_controller.dart';
+import 'package:t_store_app/features/voucher/screens/voucher_history.dart';
+import 'package:t_store_app/features/voucher/widgets/voucher_tab.dart';
+import 'package:t_store_app/l10n/app_localizations.dart';
+import 'package:t_store_app/utils/constants/colors.dart';
+import 'package:t_store_app/utils/helper/event_logger.dart';
 import '../../../common/widgets/appbar/appbar.dart';
 import '../../../utils/constants/sizes.dart';
 import '../../../utils/helper/cloud_helper_functions.dart';

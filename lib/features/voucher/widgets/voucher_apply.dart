@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:t_store/utils/helper/event_logger.dart';
+import 'package:t_store_app/utils/helper/event_logger.dart';
 import '../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/colors.dart';

@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:t_store/common/widgets/texts/section_heading.dart';
-import 'package:t_store/features/shop/models/payment_method_model.dart';
-import 'package:t_store/features/shop/screens/checkout/widgets/payment_tile.dart';
-import 'package:t_store/utils/constants/image_strings.dart';
-import 'package:t_store/utils/constants/sizes.dart';
+import 'package:t_store_app/common/widgets/texts/section_heading.dart';
+import 'package:t_store_app/features/shop/models/payment_method_model.dart';
+import 'package:t_store_app/features/shop/screens/checkout/widgets/payment_tile.dart';
+import 'package:t_store_app/utils/constants/image_strings.dart';
+import 'package:t_store_app/utils/constants/sizes.dart';
 
 import '../../../../l10n/app_localizations.dart';
 

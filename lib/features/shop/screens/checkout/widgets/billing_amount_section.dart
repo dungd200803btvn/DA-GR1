@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:intl/intl.dart';
-import 'package:t_store/features/shop/controllers/product/cart_controller.dart';
+import 'package:t_store_app/features/shop/controllers/product/cart_controller.dart';
 
-import 'package:t_store/utils/constants/sizes.dart';
-import 'package:t_store/utils/formatter/formatter.dart';
-import 'package:t_store/utils/helper/pricing_calculator.dart';
+import 'package:t_store_app/utils/constants/sizes.dart';
+import 'package:t_store_app/utils/formatter/formatter.dart';
+import 'package:t_store_app/utils/helper/pricing_calculator.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../voucher/controllers/voucher_controller.dart';

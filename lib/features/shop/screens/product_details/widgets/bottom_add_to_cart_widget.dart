@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:t_store/common/widgets/icons/t_circular_icon.dart';
-import 'package:t_store/features/shop/controllers/product/cart_controller.dart';
-import 'package:t_store/features/shop/controllers/product/variation_controller.dart';
-import 'package:t_store/features/shop/models/product_model.dart';
-import 'package:t_store/utils/constants/colors.dart';
-import 'package:t_store/utils/constants/sizes.dart';
-import 'package:t_store/utils/enum/enum.dart';
-import 'package:t_store/utils/helper/helper_function.dart';
+import 'package:t_store_app/common/widgets/icons/t_circular_icon.dart';
+import 'package:t_store_app/features/shop/controllers/product/cart_controller.dart';
+import 'package:t_store_app/features/shop/controllers/product/variation_controller.dart';
+import 'package:t_store_app/features/shop/models/product_model.dart';
+import 'package:t_store_app/utils/constants/colors.dart';
+import 'package:t_store_app/utils/constants/sizes.dart';
+import 'package:t_store_app/utils/enum/enum.dart';
+import 'package:t_store_app/utils/helper/helper_function.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../utils/helper/event_logger.dart';
 class TBottomAddToCart extends StatelessWidget {

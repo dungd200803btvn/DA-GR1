@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:t_store/features/shop/models/product_model.dart';
-import 'package:t_store/utils/constants/api_constants.dart';
+import 'package:t_store_app/features/shop/models/product_model.dart';
+import 'package:t_store_app/utils/constants/api_constants.dart';
 import '../../../utils/local_storage/storage_utility.dart';
 
 class ProductRepository extends GetxController {

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:t_store/common/widgets/appbar/appbar.dart';
-import 'package:t_store/common/widgets/images/t_circular_image.dart';
-import 'package:t_store/common/widgets/shimmer/shimmer.dart';
-import 'package:t_store/common/widgets/texts/section_heading.dart';
-import 'package:t_store/features/personalization/screens/profile/widgets/change_field.dart';
-import 'package:t_store/features/personalization/screens/profile/widgets/change_name.dart';
-import 'package:t_store/features/personalization/screens/profile/widgets/profile_menu.dart';
-import 'package:t_store/utils/constants/image_strings.dart';
-import 'package:t_store/utils/constants/sizes.dart';
-import 'package:t_store/utils/formatter/formatter.dart';
+import 'package:t_store_app/common/widgets/appbar/appbar.dart';
+import 'package:t_store_app/common/widgets/images/t_circular_image.dart';
+import 'package:t_store_app/common/widgets/shimmer/shimmer.dart';
+import 'package:t_store_app/common/widgets/texts/section_heading.dart';
+import 'package:t_store_app/features/personalization/screens/profile/widgets/change_field.dart';
+import 'package:t_store_app/features/personalization/screens/profile/widgets/change_name.dart';
+import 'package:t_store_app/features/personalization/screens/profile/widgets/profile_menu.dart';
+import 'package:t_store_app/utils/constants/image_strings.dart';
+import 'package:t_store_app/utils/constants/sizes.dart';
+import 'package:t_store_app/utils/formatter/formatter.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../controllers/user_controller.dart';

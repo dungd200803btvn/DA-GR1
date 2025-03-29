@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:t_store/data/repositories/product/product_repository.dart';
-import 'package:t_store/features/shop/models/product_model.dart';
-import 'package:t_store/utils/popups/loader.dart';
+import 'package:t_store_app/data/repositories/product/product_repository.dart';
+import 'package:t_store_app/features/shop/models/product_model.dart';
+import 'package:t_store_app/utils/popups/loader.dart';
 import '../../../../common/widgets/products/sortable/sort_option.dart';
 import '../../../../l10n/app_localizations.dart';
 

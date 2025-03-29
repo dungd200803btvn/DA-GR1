@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:t_store/common/widgets/loaders/animation_loader.dart';
-import 'package:t_store/utils/constants/colors.dart';
-import 'package:t_store/utils/helper/helper_function.dart';
+import 'package:t_store_app/common/widgets/loaders/animation_loader.dart';
+import 'package:t_store_app/utils/constants/colors.dart';
+import 'package:t_store_app/utils/helper/helper_function.dart';
 class TFullScreenLoader{
 
   static void openLoadingDialog(String text,String animation){

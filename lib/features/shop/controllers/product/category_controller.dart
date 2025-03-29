@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:t_store/data/repositories/categories/category_repository.dart';
-import 'package:t_store/utils/popups/loader.dart';
+import 'package:t_store_app/data/repositories/categories/category_repository.dart';
+import 'package:t_store_app/utils/popups/loader.dart';
 import '../../../../data/repositories/product/product_repository.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../models/category_model.dart';

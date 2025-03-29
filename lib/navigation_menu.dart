@@ -2,12 +2,12 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:t_store/features/notification/screen/notification_screen.dart';
-import 'package:t_store/features/personalization/screens/setting/setting.dart';
-import 'package:t_store/features/shop/screens/home/home.dart';
-import 'package:t_store/features/shop/screens/wishlist/wishlist.dart';
-import 'package:t_store/l10n/app_localizations.dart';
-import 'package:t_store/utils/helper/helper_function.dart';
+import 'package:t_store_app/features/notification/screen/notification_screen.dart';
+import 'package:t_store_app/features/personalization/screens/setting/setting.dart';
+import 'package:t_store_app/features/shop/screens/home/home.dart';
+import 'package:t_store_app/features/shop/screens/wishlist/wishlist.dart';
+import 'package:t_store_app/l10n/app_localizations.dart';
+import 'package:t_store_app/utils/helper/helper_function.dart';
 import 'features/notification/widget/notification_icon.dart';
 import 'features/shop/screens/store/store.dart';
 

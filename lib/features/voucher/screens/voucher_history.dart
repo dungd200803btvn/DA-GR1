@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:t_store/features/voucher/models/VoucherTabStatus.dart';
-import 'package:t_store/utils/constants/colors.dart';
+import 'package:t_store_app/features/voucher/models/VoucherTabStatus.dart';
+import 'package:t_store_app/utils/constants/colors.dart';
 
 import '../../../common/widgets/appbar/appbar.dart';
 import '../../../l10n/app_localizations.dart';
