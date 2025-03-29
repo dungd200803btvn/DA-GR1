@@ -89,10 +89,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
-  plugin:
-    platforms:
-      ios:
-        pluginClass: AppDelegate
+
   #--------------- LOCAL ASSETS ------------------#
   assets:
     - lib/l10n/app_en.arb
