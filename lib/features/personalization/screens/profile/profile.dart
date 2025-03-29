@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lcd_ecommerce_app/common/widgets/appbar/appbar.dart';
-import 'package:lcd_ecommerce_app/common/widgets/images/t_circular_image.dart';
-import 'package:lcd_ecommerce_app/common/widgets/shimmer/shimmer.dart';
-import 'package:lcd_ecommerce_app/common/widgets/texts/section_heading.dart';
-import 'package:lcd_ecommerce_app/features/personalization/screens/profile/widgets/change_field.dart';
-import 'package:lcd_ecommerce_app/features/personalization/screens/profile/widgets/change_name.dart';
-import 'package:lcd_ecommerce_app/features/personalization/screens/profile/widgets/profile_menu.dart';
-import 'package:lcd_ecommerce_app/utils/constants/image_strings.dart';
-import 'package:lcd_ecommerce_app/utils/constants/sizes.dart';
-import 'package:lcd_ecommerce_app/utils/formatter/formatter.dart';
+import 'package:my_app/common/widgets/appbar/appbar.dart';
+import 'package:my_app/common/widgets/images/t_circular_image.dart';
+import 'package:my_app/common/widgets/shimmer/shimmer.dart';
+import 'package:my_app/common/widgets/texts/section_heading.dart';
+import 'package:my_app/features/personalization/screens/profile/widgets/change_field.dart';
+import 'package:my_app/features/personalization/screens/profile/widgets/change_name.dart';
+import 'package:my_app/features/personalization/screens/profile/widgets/profile_menu.dart';
+import 'package:my_app/utils/constants/image_strings.dart';
+import 'package:my_app/utils/constants/sizes.dart';
+import 'package:my_app/utils/formatter/formatter.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../controllers/user_controller.dart';

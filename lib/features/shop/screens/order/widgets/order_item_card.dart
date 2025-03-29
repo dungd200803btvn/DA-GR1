@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:lcd_ecommerce_app/features/shop/controllers/product/cart_controller.dart';
-import 'package:lcd_ecommerce_app/features/shop/screens/cart/cart.dart';
-import 'package:lcd_ecommerce_app/l10n/app_localizations.dart';
-import 'package:lcd_ecommerce_app/utils/formatter/formatter.dart';
-import 'package:lcd_ecommerce_app/utils/helper/event_logger.dart';
+import 'package:my_app/features/shop/controllers/product/cart_controller.dart';
+import 'package:my_app/features/shop/screens/cart/cart.dart';
+import 'package:my_app/l10n/app_localizations.dart';
+import 'package:my_app/utils/formatter/formatter.dart';
+import 'package:my_app/utils/helper/event_logger.dart';
 import '../../../../../utils/popups/loader.dart';
 import '../../../../review/screen/review_screen.dart';
 import '../../../models/cart_item_model.dart';

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lcd_ecommerce_app/common/widgets/custom_shapes/containers/rounded_container.dart';
-import 'package:lcd_ecommerce_app/common/widgets/texts/product_price_text.dart';
-import 'package:lcd_ecommerce_app/common/widgets/texts/product_title_text.dart';
-import 'package:lcd_ecommerce_app/common/widgets/texts/section_heading.dart';
-import 'package:lcd_ecommerce_app/features/shop/controllers/product/variation_controller.dart';
-import 'package:lcd_ecommerce_app/l10n/app_localizations.dart';
-import 'package:lcd_ecommerce_app/utils/constants/colors.dart';
-import 'package:lcd_ecommerce_app/utils/constants/sizes.dart';
-import 'package:lcd_ecommerce_app/utils/formatter/formatter.dart';
-import 'package:lcd_ecommerce_app/utils/helper/helper_function.dart';
-import 'package:lcd_ecommerce_app/utils/popups/loader.dart';
+import 'package:my_app/common/widgets/custom_shapes/containers/rounded_container.dart';
+import 'package:my_app/common/widgets/texts/product_price_text.dart';
+import 'package:my_app/common/widgets/texts/product_title_text.dart';
+import 'package:my_app/common/widgets/texts/section_heading.dart';
+import 'package:my_app/features/shop/controllers/product/variation_controller.dart';
+import 'package:my_app/l10n/app_localizations.dart';
+import 'package:my_app/utils/constants/colors.dart';
+import 'package:my_app/utils/constants/sizes.dart';
+import 'package:my_app/utils/formatter/formatter.dart';
+import 'package:my_app/utils/helper/helper_function.dart';
+import 'package:my_app/utils/popups/loader.dart';
 
 import '../../../../../common/widgets/chips/choice_chip.dart';
 import '../../../models/product_model.dart';

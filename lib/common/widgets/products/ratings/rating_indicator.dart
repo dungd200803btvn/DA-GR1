@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:lcd_ecommerce_app/features/review/controller/review_controller.dart';
+import 'package:my_app/features/review/controller/review_controller.dart';
 
 import '../../../../utils/constants/colors.dart';
 class TRatingBarIndicator extends StatelessWidget {

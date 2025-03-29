@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lcd_ecommerce_app/l10n/app_localizations.dart';
+import 'package:my_app/l10n/app_localizations.dart';
 import '../../../../../utils/constants/sizes.dart';
 import '../../../../review/controller/review_controller.dart';
 import '../../../../review/model/review_model.dart';

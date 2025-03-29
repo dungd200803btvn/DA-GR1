@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:lcd_ecommerce_app/data/repositories/authentication/authentication_repository.dart';
+import 'package:my_app/data/repositories/authentication/authentication_repository.dart';
 
 import '../../../features/personalization/models/address_model.dart';
 

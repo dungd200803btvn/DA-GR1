@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lcd_ecommerce_app/features/authentication/controller/onboarding/onboard_controller.dart';
-import 'package:lcd_ecommerce_app/features/authentication/screens/onboarding/widgets/onboard_next_button.dart';
-import 'package:lcd_ecommerce_app/features/authentication/screens/onboarding/widgets/onboard_skip.dart';
-import 'package:lcd_ecommerce_app/features/authentication/screens/onboarding/widgets/onboarding_dot_navigation.dart';
-import 'package:lcd_ecommerce_app/features/authentication/screens/onboarding/widgets/onboarding_page.dart';
-import 'package:lcd_ecommerce_app/utils/constants/image_strings.dart';
-import 'package:lcd_ecommerce_app/utils/constants/text_string.dart';
+import 'package:my_app/features/authentication/controller/onboarding/onboard_controller.dart';
+import 'package:my_app/features/authentication/screens/onboarding/widgets/onboard_next_button.dart';
+import 'package:my_app/features/authentication/screens/onboarding/widgets/onboard_skip.dart';
+import 'package:my_app/features/authentication/screens/onboarding/widgets/onboarding_dot_navigation.dart';
+import 'package:my_app/features/authentication/screens/onboarding/widgets/onboarding_page.dart';
+import 'package:my_app/utils/constants/image_strings.dart';
+import 'package:my_app/utils/constants/text_string.dart';
 
 import '../../../../l10n/app_localizations.dart';
 

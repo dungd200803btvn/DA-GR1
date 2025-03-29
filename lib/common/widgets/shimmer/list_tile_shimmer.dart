@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lcd_ecommerce_app/common/widgets/shimmer/shimmer.dart';
-import 'package:lcd_ecommerce_app/utils/constants/sizes.dart';
+import 'package:my_app/common/widgets/shimmer/shimmer.dart';
+import 'package:my_app/utils/constants/sizes.dart';
 class TListTileShimmer extends StatelessWidget {
   const TListTileShimmer({super.key});
 

@@ -4,7 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:lcd_ecommerce_app/data/repositories/notification/notification_repository.dart';
+import 'package:my_app/data/repositories/notification/notification_repository.dart';
 import '../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../main.dart';
 import '../../../utils/popups/loader.dart';

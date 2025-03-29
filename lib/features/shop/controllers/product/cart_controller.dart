@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
-import 'package:lcd_ecommerce_app/features/shop/controllers/product/variation_controller.dart';
-import 'package:lcd_ecommerce_app/features/shop/models/cart_item_model.dart';
-import 'package:lcd_ecommerce_app/features/shop/models/product_model.dart';
-import 'package:lcd_ecommerce_app/l10n/app_localizations.dart';
-import 'package:lcd_ecommerce_app/utils/enum/enum.dart';
-import 'package:lcd_ecommerce_app/utils/local_storage/storage_utility.dart';
-import 'package:lcd_ecommerce_app/utils/popups/loader.dart';
+import 'package:my_app/features/shop/controllers/product/variation_controller.dart';
+import 'package:my_app/features/shop/models/cart_item_model.dart';
+import 'package:my_app/features/shop/models/product_model.dart';
+import 'package:my_app/l10n/app_localizations.dart';
+import 'package:my_app/utils/enum/enum.dart';
+import 'package:my_app/utils/local_storage/storage_utility.dart';
+import 'package:my_app/utils/popups/loader.dart';
 
 class CartController extends GetxController {
   static CartController get instance => Get.find();

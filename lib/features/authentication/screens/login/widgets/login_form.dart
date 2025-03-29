@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:lcd_ecommerce_app/features/authentication/controller/login/login_controller.dart';
-import 'package:lcd_ecommerce_app/features/authentication/screens/password_configuration/forget_password.dart';
-import 'package:lcd_ecommerce_app/features/authentication/screens/signup/signup.dart';
-import 'package:lcd_ecommerce_app/l10n/app_localizations.dart';
-import 'package:lcd_ecommerce_app/utils/validators/validation.dart';
+import 'package:my_app/features/authentication/controller/login/login_controller.dart';
+import 'package:my_app/features/authentication/screens/password_configuration/forget_password.dart';
+import 'package:my_app/features/authentication/screens/signup/signup.dart';
+import 'package:my_app/l10n/app_localizations.dart';
+import 'package:my_app/utils/validators/validation.dart';
 import '../../../../../utils/constants/sizes.dart';
 class TLoginForm extends StatelessWidget {
   const TLoginForm({

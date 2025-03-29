@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/services.dart';
-import 'package:lcd_ecommerce_app/utils/popups/loader.dart';
+import 'package:my_app/utils/popups/loader.dart';
 
 /// Quản lý trạng thái kết nối mạng và cung cấp các phương thức để kiểm tra và xử lý các thay đổi về kết nối.
 class NetworkManager extends GetxController {

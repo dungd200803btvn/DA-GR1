@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lcd_ecommerce_app/common/widgets/shimmer/shimmer.dart';
-import 'package:lcd_ecommerce_app/utils/constants/sizes.dart';
+import 'package:my_app/common/widgets/shimmer/shimmer.dart';
+import 'package:my_app/utils/constants/sizes.dart';
 class TBoxesShimmer extends StatelessWidget {
   const TBoxesShimmer({super.key});
 

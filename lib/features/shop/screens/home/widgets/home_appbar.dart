@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lcd_ecommerce_app/common/widgets/shimmer/shimmer.dart';
-import 'package:lcd_ecommerce_app/features/personalization/controllers/user_controller.dart';
-import 'package:lcd_ecommerce_app/features/shop/screens/cart/cart.dart';
-import 'package:lcd_ecommerce_app/l10n/app_localizations.dart';
+import 'package:my_app/common/widgets/shimmer/shimmer.dart';
+import 'package:my_app/features/personalization/controllers/user_controller.dart';
+import 'package:my_app/features/shop/screens/cart/cart.dart';
+import 'package:my_app/l10n/app_localizations.dart';
 import '../../../../../common/widgets/appbar/appbar.dart';
 import '../../../../../common/widgets/products/cart/cart_menu_icon.dart';
 import '../../../../../utils/constants/colors.dart';

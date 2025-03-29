@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lcd_ecommerce_app/common/widgets/appbar/appbar.dart';
-import 'package:lcd_ecommerce_app/common/widgets/shimmer/vertical_product_shimmer.dart';
-import 'package:lcd_ecommerce_app/features/shop/controllers/product/all_products_controller.dart';
-import 'package:lcd_ecommerce_app/utils/constants/sizes.dart';
-import 'package:lcd_ecommerce_app/utils/helper/cloud_helper_functions.dart';
-import 'package:lcd_ecommerce_app/utils/helper/helper_function.dart';
+import 'package:my_app/common/widgets/appbar/appbar.dart';
+import 'package:my_app/common/widgets/shimmer/vertical_product_shimmer.dart';
+import 'package:my_app/features/shop/controllers/product/all_products_controller.dart';
+import 'package:my_app/utils/constants/sizes.dart';
+import 'package:my_app/utils/helper/cloud_helper_functions.dart';
+import 'package:my_app/utils/helper/helper_function.dart';
 
 import '../../../../common/widgets/products/sortable/sortable_product.dart';
 import '../../models/product_model.dart';

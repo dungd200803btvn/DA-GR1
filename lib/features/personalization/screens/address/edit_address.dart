@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:iconsax/iconsax.dart';
-import 'package:lcd_ecommerce_app/features/personalization/controllers/address_controller.dart';
+import 'package:my_app/features/personalization/controllers/address_controller.dart';
 import '../../../../common/widgets/appbar/appbar.dart';
 import '../../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../../l10n/app_localizations.dart';

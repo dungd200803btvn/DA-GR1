@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lcd_ecommerce_app/common/widgets/texts/section_heading.dart';
-import 'package:lcd_ecommerce_app/features/shop/models/payment_method_model.dart';
-import 'package:lcd_ecommerce_app/features/shop/screens/checkout/widgets/payment_tile.dart';
-import 'package:lcd_ecommerce_app/utils/constants/image_strings.dart';
-import 'package:lcd_ecommerce_app/utils/constants/sizes.dart';
+import 'package:my_app/common/widgets/texts/section_heading.dart';
+import 'package:my_app/features/shop/models/payment_method_model.dart';
+import 'package:my_app/features/shop/screens/checkout/widgets/payment_tile.dart';
+import 'package:my_app/utils/constants/image_strings.dart';
+import 'package:my_app/utils/constants/sizes.dart';
 
 import '../../../../l10n/app_localizations.dart';
 

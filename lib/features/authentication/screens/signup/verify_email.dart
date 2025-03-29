@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lcd_ecommerce_app/data/repositories/authentication/authentication_repository.dart';
-import 'package:lcd_ecommerce_app/features/authentication/controller/signup/verify_email_controller.dart';
-import 'package:lcd_ecommerce_app/utils/constants/image_strings.dart';
-import 'package:lcd_ecommerce_app/utils/constants/sizes.dart';
-import 'package:lcd_ecommerce_app/utils/constants/text_string.dart';
-import 'package:lcd_ecommerce_app/utils/helper/helper_function.dart';
+import 'package:my_app/data/repositories/authentication/authentication_repository.dart';
+import 'package:my_app/features/authentication/controller/signup/verify_email_controller.dart';
+import 'package:my_app/utils/constants/image_strings.dart';
+import 'package:my_app/utils/constants/sizes.dart';
+import 'package:my_app/utils/constants/text_string.dart';
+import 'package:my_app/utils/helper/helper_function.dart';
 
 import '../../../../l10n/app_localizations.dart';
 

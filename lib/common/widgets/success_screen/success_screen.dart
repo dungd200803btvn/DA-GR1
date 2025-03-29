@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:lcd_ecommerce_app/common/styles/spacing_styles.dart';
-import 'package:lcd_ecommerce_app/l10n/app_localizations.dart';
+import 'package:my_app/common/styles/spacing_styles.dart';
+import 'package:my_app/l10n/app_localizations.dart';
 import '../../../utils/constants/sizes.dart';
 import '../../../utils/constants/text_string.dart';
 import '../../../utils/helper/helper_function.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:lcd_ecommerce_app/features/shop/models/cart_item_model.dart';
-import 'package:lcd_ecommerce_app/utils/popups/loader.dart';
+import 'package:my_app/features/shop/models/cart_item_model.dart';
+import 'package:my_app/utils/popups/loader.dart';
 import '../../../common/widgets/appbar/appbar.dart';
 import '../../../l10n/app_localizations.dart';
 import '../controller/review_controller.dart';

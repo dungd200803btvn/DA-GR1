@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lcd_ecommerce_app/features/shop/models/product_model.dart';
-import 'package:lcd_ecommerce_app/utils/constants/sizes.dart';
+import 'package:my_app/features/shop/models/product_model.dart';
+import 'package:my_app/utils/constants/sizes.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/constants/colors.dart';

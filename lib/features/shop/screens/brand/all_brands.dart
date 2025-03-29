@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lcd_ecommerce_app/common/widgets/appbar/appbar.dart';
-import 'package:lcd_ecommerce_app/common/widgets/brands/t_brand_cart.dart';
-import 'package:lcd_ecommerce_app/common/widgets/layouts/grid_layout.dart';
-import 'package:lcd_ecommerce_app/common/widgets/texts/section_heading.dart';
-import 'package:lcd_ecommerce_app/features/shop/controllers/brand_controller.dart';
-import 'package:lcd_ecommerce_app/features/shop/screens/brand/brand_products.dart';
-import 'package:lcd_ecommerce_app/l10n/app_localizations.dart';
-import 'package:lcd_ecommerce_app/utils/constants/sizes.dart';
+import 'package:my_app/common/widgets/appbar/appbar.dart';
+import 'package:my_app/common/widgets/brands/t_brand_cart.dart';
+import 'package:my_app/common/widgets/layouts/grid_layout.dart';
+import 'package:my_app/common/widgets/texts/section_heading.dart';
+import 'package:my_app/features/shop/controllers/brand_controller.dart';
+import 'package:my_app/features/shop/screens/brand/brand_products.dart';
+import 'package:my_app/l10n/app_localizations.dart';
+import 'package:my_app/utils/constants/sizes.dart';
 
 import '../../../../common/widgets/shimmer/brands_shimmer.dart';
 import '../../../../utils/helper/helper_function.dart';

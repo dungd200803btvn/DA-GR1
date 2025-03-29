@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lcd_ecommerce_app/utils/constants/colors.dart';
-import 'package:lcd_ecommerce_app/utils/constants/sizes.dart';
+import 'package:my_app/utils/constants/colors.dart';
+import 'package:my_app/utils/constants/sizes.dart';
 
 class TRoundedContainer extends StatelessWidget {
   const TRoundedContainer(

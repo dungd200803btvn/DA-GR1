@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lcd_ecommerce_app/utils/constants/colors.dart';
+import 'package:my_app/utils/constants/colors.dart';
 class TShadowStyle{
   static final verticalProductShadow = BoxShadow(
     color: DColor.darkGrey.withOpacity(0.1),//do mo 10 %

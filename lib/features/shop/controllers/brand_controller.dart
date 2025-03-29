@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:lcd_ecommerce_app/data/repositories/brands/brand_repository.dart';
-import 'package:lcd_ecommerce_app/data/repositories/product/product_repository.dart';
-import 'package:lcd_ecommerce_app/features/shop/models/brand_model.dart';
-import 'package:lcd_ecommerce_app/features/shop/models/product_model.dart';
-import 'package:lcd_ecommerce_app/utils/popups/loader.dart';
+import 'package:my_app/data/repositories/brands/brand_repository.dart';
+import 'package:my_app/data/repositories/product/product_repository.dart';
+import 'package:my_app/features/shop/models/brand_model.dart';
+import 'package:my_app/features/shop/models/product_model.dart';
+import 'package:my_app/utils/popups/loader.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/api_constants.dart';
 
