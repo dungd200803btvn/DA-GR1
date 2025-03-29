@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
-import 'package:my_app/features/notification/controller/get_token.dart';
-import 'package:my_app/features/notification/model/notification_model.dart';
+import 'package:app_my_app/features/notification/controller/get_token.dart';
+import 'package:app_my_app/features/notification/model/notification_model.dart';
 import 'package:http/http.dart' as http;
 
 class NotificationService {

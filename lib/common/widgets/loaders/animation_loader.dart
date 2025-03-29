@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import 'package:my_app/utils/constants/colors.dart';
-import 'package:my_app/utils/constants/sizes.dart';
+import 'package:app_my_app/utils/constants/colors.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
 
 import '../../../navigation_menu.dart';
 

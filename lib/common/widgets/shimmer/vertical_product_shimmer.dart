@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/common/widgets/layouts/grid_layout.dart';
-import 'package:my_app/common/widgets/shimmer/shimmer.dart';
-import 'package:my_app/utils/constants/sizes.dart';
+import 'package:app_my_app/common/widgets/layouts/grid_layout.dart';
+import 'package:app_my_app/common/widgets/shimmer/shimmer.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
 
 
 

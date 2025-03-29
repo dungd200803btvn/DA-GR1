@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:my_app/common/widgets/texts/section_heading.dart';
-import 'package:my_app/data/repositories/address/address_repository.dart';
-import 'package:my_app/features/personalization/screens/address/add_new_address.dart';
-import 'package:my_app/features/personalization/screens/address/address.dart';
-import 'package:my_app/features/personalization/screens/address/widgets/single_address.dart';
-import 'package:my_app/l10n/app_localizations.dart';
-import 'package:my_app/utils/constants/image_strings.dart';
-import 'package:my_app/utils/constants/sizes.dart';
-import 'package:my_app/utils/helper/cloud_helper_functions.dart';
-import 'package:my_app/utils/popups/full_screen_loader.dart';
-import 'package:my_app/utils/popups/loader.dart';
+import 'package:app_my_app/common/widgets/texts/section_heading.dart';
+import 'package:app_my_app/data/repositories/address/address_repository.dart';
+import 'package:app_my_app/features/personalization/screens/address/add_new_address.dart';
+import 'package:app_my_app/features/personalization/screens/address/address.dart';
+import 'package:app_my_app/features/personalization/screens/address/widgets/single_address.dart';
+import 'package:app_my_app/l10n/app_localizations.dart';
+import 'package:app_my_app/utils/constants/image_strings.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
+import 'package:app_my_app/utils/helper/cloud_helper_functions.dart';
+import 'package:app_my_app/utils/popups/full_screen_loader.dart';
+import 'package:app_my_app/utils/popups/loader.dart';
 import '../../../utils/helper/network_manager.dart';
 import '../models/address_model.dart';
 

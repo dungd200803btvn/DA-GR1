@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/utils/constants/sizes.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
 class TSpacingStyle{
   static const EdgeInsetsGeometry paddingWithAppbarHeight  = EdgeInsets.only(
     top:DSize.appbarHeight,

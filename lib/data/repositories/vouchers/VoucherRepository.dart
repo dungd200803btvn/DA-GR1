@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:my_app/features/voucher/models/UserClaimedVoucher.dart';
+import 'package:app_my_app/features/voucher/models/UserClaimedVoucher.dart';
 import '../../../features/personalization/controllers/user_controller.dart';
 import '../../../features/voucher/models/VoucherModel.dart';
 

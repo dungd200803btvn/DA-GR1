@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:my_app/data/repositories/authentication/authentication_repository.dart';
+import 'package:app_my_app/data/repositories/authentication/authentication_repository.dart';
 
 import '../../../features/shop/models/order_model.dart';
 

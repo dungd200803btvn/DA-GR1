@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:my_app/features/authentication/controller/login/login_controller.dart';
+import 'package:app_my_app/features/authentication/controller/login/login_controller.dart';
 
 import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/image_strings.dart';

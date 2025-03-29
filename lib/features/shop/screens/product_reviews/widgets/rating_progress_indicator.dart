@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/features/review/controller/review_controller.dart';
-import 'package:my_app/features/shop/screens/product_reviews/widgets/progress_indicator_and_rating.dart';
+import 'package:app_my_app/features/review/controller/review_controller.dart';
+import 'package:app_my_app/features/shop/screens/product_reviews/widgets/progress_indicator_and_rating.dart';
 class TOverallProductRating extends StatelessWidget {
   const TOverallProductRating({
     super.key, required this.productId,

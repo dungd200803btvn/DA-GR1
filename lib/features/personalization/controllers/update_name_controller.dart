@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:my_app/data/repositories/user/user_repository.dart';
-import 'package:my_app/features/personalization/controllers/user_controller.dart';
-import 'package:my_app/features/personalization/screens/profile/profile.dart';
-import 'package:my_app/utils/popups/loader.dart';
+import 'package:app_my_app/data/repositories/user/user_repository.dart';
+import 'package:app_my_app/features/personalization/controllers/user_controller.dart';
+import 'package:app_my_app/features/personalization/screens/profile/profile.dart';
+import 'package:app_my_app/utils/popups/loader.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/image_strings.dart';

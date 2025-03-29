@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:my_app/features/personalization/controllers/user_controller.dart';
-import 'package:my_app/features/personalization/screens/profile/profile.dart';
+import 'package:app_my_app/features/personalization/controllers/user_controller.dart';
+import 'package:app_my_app/features/personalization/screens/profile/profile.dart';
 import '../../../utils/constants/colors.dart';
 import '../images/t_circular_image.dart';
 class TUserProfileTile extends StatelessWidget {

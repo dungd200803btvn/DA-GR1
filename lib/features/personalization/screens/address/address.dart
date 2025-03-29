@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:my_app/features/personalization/controllers/address_controller.dart';
-import 'package:my_app/features/personalization/screens/address/widgets/single_address.dart';
-import 'package:my_app/features/personalization/screens/setting/setting.dart';
-import 'package:my_app/utils/constants/sizes.dart';
-import 'package:my_app/utils/helper/cloud_helper_functions.dart';
+import 'package:app_my_app/features/personalization/controllers/address_controller.dart';
+import 'package:app_my_app/features/personalization/screens/address/widgets/single_address.dart';
+import 'package:app_my_app/features/personalization/screens/setting/setting.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
+import 'package:app_my_app/utils/helper/cloud_helper_functions.dart';
 
 import '../../../../common/widgets/appbar/appbar.dart';
 import '../../../../l10n/app_localizations.dart';

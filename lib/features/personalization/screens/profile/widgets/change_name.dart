@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:my_app/common/widgets/appbar/appbar.dart';
-import 'package:my_app/features/personalization/controllers/update_name_controller.dart';
-import 'package:my_app/utils/constants/sizes.dart';
-import 'package:my_app/utils/constants/text_string.dart';
-import 'package:my_app/utils/validators/validation.dart';
+import 'package:app_my_app/common/widgets/appbar/appbar.dart';
+import 'package:app_my_app/features/personalization/controllers/update_name_controller.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
+import 'package:app_my_app/utils/constants/text_string.dart';
+import 'package:app_my_app/utils/validators/validation.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 class ChangeName extends StatelessWidget {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/l10n/app_localizations.dart';
+import 'package:app_my_app/l10n/app_localizations.dart';
 class TSectionHeading extends StatelessWidget {
   const TSectionHeading({
     super.key,

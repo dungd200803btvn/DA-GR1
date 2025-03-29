@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:my_app/common/styles/spacing_styles.dart';
-import 'package:my_app/common/widgets/login_signup/login_divider.dart';
-import 'package:my_app/features/authentication/screens/login/widgets/login_form.dart';
-import 'package:my_app/features/authentication/screens/login/widgets/login_header.dart';
-import 'package:my_app/common/widgets/login_signup/login_social_buttons.dart';
-import 'package:my_app/utils/constants/text_string.dart';
+import 'package:app_my_app/common/styles/spacing_styles.dart';
+import 'package:app_my_app/common/widgets/login_signup/login_divider.dart';
+import 'package:app_my_app/features/authentication/screens/login/widgets/login_form.dart';
+import 'package:app_my_app/features/authentication/screens/login/widgets/login_header.dart';
+import 'package:app_my_app/common/widgets/login_signup/login_social_buttons.dart';
+import 'package:app_my_app/utils/constants/text_string.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../controller/login/login_controller.dart';

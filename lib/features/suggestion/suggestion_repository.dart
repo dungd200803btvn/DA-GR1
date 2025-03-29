@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:my_app/features/suggestion/suggest_item_model.dart';
-import 'package:my_app/features/suggestion/suggestion_model.dart';
+import 'package:app_my_app/features/suggestion/suggest_item_model.dart';
+import 'package:app_my_app/features/suggestion/suggestion_model.dart';
 import '../shop/models/order_model.dart';
 
 class ProductSuggestionRepository  extends GetxController{

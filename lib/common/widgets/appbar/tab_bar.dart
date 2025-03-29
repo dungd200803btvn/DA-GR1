@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/utils/constants/colors.dart';
-import 'package:my_app/utils/device/device_utility.dart';
-import 'package:my_app/utils/helper/helper_function.dart';
+import 'package:app_my_app/utils/constants/colors.dart';
+import 'package:app_my_app/utils/device/device_utility.dart';
+import 'package:app_my_app/utils/helper/helper_function.dart';
 class TTabBar extends StatelessWidget implements PreferredSizeWidget {
   const TTabBar({super.key, required this.tabs});
 final List<Widget> tabs;

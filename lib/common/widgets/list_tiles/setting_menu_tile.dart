@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/utils/constants/colors.dart';
+import 'package:app_my_app/utils/constants/colors.dart';
 class TSettingMenuTile extends StatelessWidget {
   const TSettingMenuTile({super.key,
     required this.icon,

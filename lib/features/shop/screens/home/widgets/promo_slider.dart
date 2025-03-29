@@ -3,13 +3,13 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:my_app/common/widgets/shimmer/shimmer.dart';
-import 'package:my_app/features/shop/controllers/banner_controller.dart';
-import 'package:my_app/l10n/app_localizations.dart';
-import 'package:my_app/utils/constants/colors.dart';
-import 'package:my_app/utils/constants/image_strings.dart';
-import 'package:my_app/utils/constants/sizes.dart';
-import 'package:my_app/common/widgets/custom_shapes/containers/circular_container.dart';
+import 'package:app_my_app/common/widgets/shimmer/shimmer.dart';
+import 'package:app_my_app/features/shop/controllers/banner_controller.dart';
+import 'package:app_my_app/l10n/app_localizations.dart';
+import 'package:app_my_app/utils/constants/colors.dart';
+import 'package:app_my_app/utils/constants/image_strings.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
+import 'package:app_my_app/common/widgets/custom_shapes/containers/circular_container.dart';
 
 class TPromoSlider extends StatelessWidget {
   const TPromoSlider({super.key});

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:my_app/features/shop/controllers/product/cart_controller.dart';
-import 'package:my_app/features/shop/models/product_model.dart';
-import 'package:my_app/features/shop/screens/product_details/product_detail.dart';
-import 'package:my_app/utils/enum/enum.dart';
-import 'package:my_app/utils/helper/event_logger.dart';
+import 'package:app_my_app/features/shop/controllers/product/cart_controller.dart';
+import 'package:app_my_app/features/shop/models/product_model.dart';
+import 'package:app_my_app/features/shop/screens/product_details/product_detail.dart';
+import 'package:app_my_app/utils/enum/enum.dart';
+import 'package:app_my_app/utils/helper/event_logger.dart';
 
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';

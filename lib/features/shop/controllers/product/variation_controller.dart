@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:my_app/features/shop/controllers/product/cart_controller.dart';
-import 'package:my_app/features/shop/controllers/product/images_controller.dart';
-import 'package:my_app/features/shop/models/product_model.dart';
-import 'package:my_app/features/shop/models/product_variation_model.dart';
-import 'package:my_app/utils/formatter/formatter.dart';
+import 'package:app_my_app/features/shop/controllers/product/cart_controller.dart';
+import 'package:app_my_app/features/shop/controllers/product/images_controller.dart';
+import 'package:app_my_app/features/shop/models/product_model.dart';
+import 'package:app_my_app/features/shop/models/product_variation_model.dart';
+import 'package:app_my_app/utils/formatter/formatter.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/helper/event_logger.dart';
 

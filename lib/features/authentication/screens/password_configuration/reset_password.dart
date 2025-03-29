@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:my_app/features/authentication/controller/forget_password/forget_password_controller.dart';
-import 'package:my_app/features/authentication/screens/login/login.dart';
-import 'package:my_app/utils/constants/image_strings.dart';
-import 'package:my_app/utils/constants/sizes.dart';
-import 'package:my_app/utils/constants/text_string.dart';
+import 'package:app_my_app/features/authentication/controller/forget_password/forget_password_controller.dart';
+import 'package:app_my_app/features/authentication/screens/login/login.dart';
+import 'package:app_my_app/utils/constants/image_strings.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
+import 'package:app_my_app/utils/constants/text_string.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/helper/helper_function.dart';

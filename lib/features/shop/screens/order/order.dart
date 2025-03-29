@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/common/widgets/appbar/appbar.dart';
-import 'package:my_app/features/shop/screens/order/widgets/orders_list.dart';
-import 'package:my_app/utils/constants/sizes.dart';
+import 'package:app_my_app/common/widgets/appbar/appbar.dart';
+import 'package:app_my_app/features/shop/screens/order/widgets/orders_list.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
 
 import '../../../../l10n/app_localizations.dart';
 class OrderScreen extends StatelessWidget {

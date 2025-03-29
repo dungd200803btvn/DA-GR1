@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:my_app/data/repositories/bonus_point/daily_checkin_repository.dart';
-import 'package:my_app/data/repositories/user/user_repository.dart';
+import 'package:app_my_app/data/repositories/bonus_point/daily_checkin_repository.dart';
+import 'package:app_my_app/data/repositories/user/user_repository.dart';
 
 class DailyCheckinController extends GetxController{
   static DailyCheckinController get instance => Get.find();

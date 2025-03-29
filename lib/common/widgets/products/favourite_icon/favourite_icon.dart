@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:my_app/features/shop/controllers/product/favourite_controller.dart';
-import 'package:my_app/utils/constants/colors.dart';
+import 'package:app_my_app/features/shop/controllers/product/favourite_controller.dart';
+import 'package:app_my_app/utils/constants/colors.dart';
 import '../../../../utils/helper/event_logger.dart';
 import '../../icons/t_circular_icon.dart';
 

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:my_app/common/widgets/appbar/appbar.dart';
-import 'package:my_app/features/personalization/controllers/address_controller.dart';
-import 'package:my_app/l10n/app_localizations.dart';
-import 'package:my_app/utils/constants/sizes.dart';
-import 'package:my_app/utils/validators/validation.dart';
+import 'package:app_my_app/common/widgets/appbar/appbar.dart';
+import 'package:app_my_app/features/personalization/controllers/address_controller.dart';
+import 'package:app_my_app/l10n/app_localizations.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
+import 'package:app_my_app/utils/validators/validation.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 

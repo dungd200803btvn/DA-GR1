@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:my_app/common/widgets/shimmer/category_shimmer.dart';
-import 'package:my_app/features/shop/controllers/product/category_controller.dart';
-import 'package:my_app/features/shop/screens/all_products/all_product_screen.dart';
-import 'package:my_app/features/shop/screens/sub_category/sub_categories.dart';
-import 'package:my_app/utils/helper/event_logger.dart';
+import 'package:app_my_app/common/widgets/shimmer/category_shimmer.dart';
+import 'package:app_my_app/features/shop/controllers/product/category_controller.dart';
+import 'package:app_my_app/features/shop/screens/all_products/all_product_screen.dart';
+import 'package:app_my_app/features/shop/screens/sub_category/sub_categories.dart';
+import 'package:app_my_app/utils/helper/event_logger.dart';
 import '../../../../../common/widgets/image_text_widgets/vertical_image_text.dart';
 import '../../../../../utils/constants/sizes.dart';
 class THomeCategories extends StatelessWidget {

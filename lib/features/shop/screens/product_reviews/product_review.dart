@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/common/widgets/appbar/appbar.dart';
-import 'package:my_app/features/review/widget/rating_tab_bar.dart';
-import 'package:my_app/features/shop/screens/product_reviews/widgets/list_review.dart';
-import 'package:my_app/features/shop/screens/product_reviews/widgets/rating_progress_indicator.dart';
-import 'package:my_app/l10n/app_localizations.dart';
-import 'package:my_app/utils/constants/sizes.dart';
+import 'package:app_my_app/common/widgets/appbar/appbar.dart';
+import 'package:app_my_app/features/review/widget/rating_tab_bar.dart';
+import 'package:app_my_app/features/shop/screens/product_reviews/widgets/list_review.dart';
+import 'package:app_my_app/features/shop/screens/product_reviews/widgets/rating_progress_indicator.dart';
+import 'package:app_my_app/l10n/app_localizations.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
 import '../../../../common/widgets/products/ratings/rating_indicator.dart';
 import '../../../../utils/helper/event_logger.dart';
 import '../../../review/controller/review_controller.dart';

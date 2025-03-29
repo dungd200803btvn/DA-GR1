@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:my_app/common/widgets/appbar/appbar.dart';
-import 'package:my_app/common/widgets/icons/t_circular_icon.dart';
-import 'package:my_app/common/widgets/layouts/grid_layout.dart';
-import 'package:my_app/common/widgets/loaders/animation_loader.dart';
-import 'package:my_app/common/widgets/products/product_cards/product_card_vertical.dart';
-import 'package:my_app/common/widgets/shimmer/vertical_product_shimmer.dart';
-import 'package:my_app/features/shop/controllers/product/favourite_controller.dart';
-import 'package:my_app/navigation_menu.dart';
-import 'package:my_app/utils/constants/image_strings.dart';
-import 'package:my_app/utils/constants/sizes.dart';
-import 'package:my_app/utils/helper/cloud_helper_functions.dart';
+import 'package:app_my_app/common/widgets/appbar/appbar.dart';
+import 'package:app_my_app/common/widgets/icons/t_circular_icon.dart';
+import 'package:app_my_app/common/widgets/layouts/grid_layout.dart';
+import 'package:app_my_app/common/widgets/loaders/animation_loader.dart';
+import 'package:app_my_app/common/widgets/products/product_cards/product_card_vertical.dart';
+import 'package:app_my_app/common/widgets/shimmer/vertical_product_shimmer.dart';
+import 'package:app_my_app/features/shop/controllers/product/favourite_controller.dart';
+import 'package:app_my_app/navigation_menu.dart';
+import 'package:app_my_app/utils/constants/image_strings.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
+import 'package:app_my_app/utils/helper/cloud_helper_functions.dart';
 
 import '../../../../l10n/app_localizations.dart';
 

@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:my_app/common/widgets/texts/section_heading.dart';
-import 'package:my_app/features/shop/models/payment_method_model.dart';
-import 'package:my_app/features/shop/screens/checkout/widgets/payment_tile.dart';
-import 'package:my_app/utils/constants/image_strings.dart';
-import 'package:my_app/utils/constants/sizes.dart';
+import 'package:app_my_app/common/widgets/texts/section_heading.dart';
+import 'package:app_my_app/features/shop/models/payment_method_model.dart';
+import 'package:app_my_app/features/shop/screens/checkout/widgets/payment_tile.dart';
+import 'package:app_my_app/utils/constants/image_strings.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
 
 import '../../../../l10n/app_localizations.dart';
 

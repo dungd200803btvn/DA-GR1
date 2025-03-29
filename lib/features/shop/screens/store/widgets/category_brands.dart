@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/common/widgets/brands/branch_show_case.dart';
-import 'package:my_app/common/widgets/shimmer/list_tile_shimmer.dart';
-import 'package:my_app/features/shop/controllers/brand_controller.dart';
-import 'package:my_app/features/shop/models/category_model.dart';
-import 'package:my_app/utils/constants/sizes.dart';
-import 'package:my_app/utils/helper/cloud_helper_functions.dart';
+import 'package:app_my_app/common/widgets/brands/branch_show_case.dart';
+import 'package:app_my_app/common/widgets/shimmer/list_tile_shimmer.dart';
+import 'package:app_my_app/features/shop/controllers/brand_controller.dart';
+import 'package:app_my_app/features/shop/models/category_model.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
+import 'package:app_my_app/utils/helper/cloud_helper_functions.dart';
 
 class CategoryBrands extends StatelessWidget {
   const CategoryBrands({super.key, required this.category});

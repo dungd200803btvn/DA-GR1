@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:my_app/common/widgets/products/sortable/sort_option.dart';
-import 'package:my_app/features/shop/controllers/product/all_products_controller.dart';
-import 'package:my_app/features/shop/models/product_model.dart';
+import 'package:app_my_app/common/widgets/products/sortable/sort_option.dart';
+import 'package:app_my_app/features/shop/controllers/product/all_products_controller.dart';
+import 'package:app_my_app/features/shop/models/product_model.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../layouts/grid_layout.dart';

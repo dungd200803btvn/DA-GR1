@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:my_app/features/authentication/controller/signup/signup_controller.dart';
-import 'package:my_app/features/authentication/screens/signup/widgets/term_condition_checkbox.dart';
-import 'package:my_app/utils/validators/validation.dart';
+import 'package:app_my_app/features/authentication/controller/signup/signup_controller.dart';
+import 'package:app_my_app/features/authentication/screens/signup/widgets/term_condition_checkbox.dart';
+import 'package:app_my_app/utils/validators/validation.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../utils/constants/sizes.dart';
 import '../../../../../utils/constants/text_string.dart';

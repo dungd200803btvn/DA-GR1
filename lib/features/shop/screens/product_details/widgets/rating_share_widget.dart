@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:my_app/features/review/controller/review_controller.dart';
+import 'package:app_my_app/features/review/controller/review_controller.dart';
 import '../../../../../utils/constants/sizes.dart';
 class TRatingAndShare extends StatelessWidget {
   const TRatingAndShare({

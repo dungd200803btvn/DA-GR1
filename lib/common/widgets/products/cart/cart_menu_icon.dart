@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:my_app/features/shop/controllers/product/cart_controller.dart';
-import 'package:my_app/features/shop/screens/cart/cart.dart';
-import 'package:my_app/utils/helper/event_logger.dart';
-import 'package:my_app/utils/helper/helper_function.dart';
+import 'package:app_my_app/features/shop/controllers/product/cart_controller.dart';
+import 'package:app_my_app/features/shop/screens/cart/cart.dart';
+import 'package:app_my_app/utils/helper/event_logger.dart';
+import 'package:app_my_app/utils/helper/helper_function.dart';
 import '../../../../utils/constants/colors.dart';
 class TCartCounterIcon extends StatelessWidget {
   const TCartCounterIcon({

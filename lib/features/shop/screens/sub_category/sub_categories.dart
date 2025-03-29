@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
-import 'package:my_app/common/widgets/appbar/appbar.dart';
-import 'package:my_app/common/widgets/images/t_rounded_image.dart';
-import 'package:my_app/common/widgets/products/product_cards/product_card_horizontal.dart';
-import 'package:my_app/common/widgets/shimmer/horizontal_product_shimmer.dart';
-import 'package:my_app/common/widgets/texts/section_heading.dart';
-import 'package:my_app/features/shop/controllers/product/category_controller.dart';
-import 'package:my_app/features/shop/models/category_model.dart';
-import 'package:my_app/features/shop/screens/all_products/all_products.dart';
-import 'package:my_app/utils/constants/image_strings.dart';
-import 'package:my_app/utils/constants/sizes.dart';
-import 'package:my_app/utils/helper/cloud_helper_functions.dart';
+import 'package:app_my_app/common/widgets/appbar/appbar.dart';
+import 'package:app_my_app/common/widgets/images/t_rounded_image.dart';
+import 'package:app_my_app/common/widgets/products/product_cards/product_card_horizontal.dart';
+import 'package:app_my_app/common/widgets/shimmer/horizontal_product_shimmer.dart';
+import 'package:app_my_app/common/widgets/texts/section_heading.dart';
+import 'package:app_my_app/features/shop/controllers/product/category_controller.dart';
+import 'package:app_my_app/features/shop/models/category_model.dart';
+import 'package:app_my_app/features/shop/screens/all_products/all_products.dart';
+import 'package:app_my_app/utils/constants/image_strings.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
+import 'package:app_my_app/utils/helper/cloud_helper_functions.dart';
 
 import '../../../../utils/helper/event_logger.dart';
 
