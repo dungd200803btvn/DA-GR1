@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:t_store_app/l10n/app_localizations.dart';
+import 'package:lcd_ecommerce_app/l10n/app_localizations.dart';
 import '../../../common/widgets/appbar/appbar.dart';
 import '../../../utils/constants/colors.dart';
 import '../../../utils/helper/helper_function.dart';

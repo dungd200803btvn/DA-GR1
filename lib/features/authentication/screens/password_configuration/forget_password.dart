@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:t_store_app/features/authentication/controller/forget_password/forget_password_controller.dart';
-import 'package:t_store_app/utils/constants/sizes.dart';
-import 'package:t_store_app/utils/constants/text_string.dart';
-import 'package:t_store_app/utils/validators/validation.dart';
+import 'package:lcd_ecommerce_app/features/authentication/controller/forget_password/forget_password_controller.dart';
+import 'package:lcd_ecommerce_app/utils/constants/sizes.dart';
+import 'package:lcd_ecommerce_app/utils/constants/text_string.dart';
+import 'package:lcd_ecommerce_app/utils/validators/validation.dart';
 
 import '../../../../l10n/app_localizations.dart';
 class ForgetPassword extends StatelessWidget {

@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:t_store_app/features/shop/controllers/product/cart_controller.dart';
-import 'package:t_store_app/features/shop/controllers/product/images_controller.dart';
-import 'package:t_store_app/features/shop/models/product_model.dart';
-import 'package:t_store_app/features/shop/models/product_variation_model.dart';
-import 'package:t_store_app/utils/formatter/formatter.dart';
+import 'package:lcd_ecommerce_app/features/shop/controllers/product/cart_controller.dart';
+import 'package:lcd_ecommerce_app/features/shop/controllers/product/images_controller.dart';
+import 'package:lcd_ecommerce_app/features/shop/models/product_model.dart';
+import 'package:lcd_ecommerce_app/features/shop/models/product_variation_model.dart';
+import 'package:lcd_ecommerce_app/utils/formatter/formatter.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/helper/event_logger.dart';
 

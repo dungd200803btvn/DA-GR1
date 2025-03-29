@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:t_store_app/common/widgets/success_screen/success_screen.dart';
-import 'package:t_store_app/data/repositories/authentication/authentication_repository.dart';
-import 'package:t_store_app/utils/constants/image_strings.dart';
-import 'package:t_store_app/utils/popups/loader.dart';
+import 'package:lcd_ecommerce_app/common/widgets/success_screen/success_screen.dart';
+import 'package:lcd_ecommerce_app/data/repositories/authentication/authentication_repository.dart';
+import 'package:lcd_ecommerce_app/utils/constants/image_strings.dart';
+import 'package:lcd_ecommerce_app/utils/popups/loader.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class VerifyEmailController extends GetxController {

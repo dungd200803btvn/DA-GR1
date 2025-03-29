@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:t_store_app/features/payment/services/stripe_service.dart';
+import 'package:lcd_ecommerce_app/features/payment/services/stripe_service.dart';
 
 class PaymentTest extends StatefulWidget {
   const PaymentTest({super.key});

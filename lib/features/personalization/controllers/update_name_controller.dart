@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:t_store_app/data/repositories/user/user_repository.dart';
-import 'package:t_store_app/features/personalization/controllers/user_controller.dart';
-import 'package:t_store_app/features/personalization/screens/profile/profile.dart';
-import 'package:t_store_app/utils/popups/loader.dart';
+import 'package:lcd_ecommerce_app/data/repositories/user/user_repository.dart';
+import 'package:lcd_ecommerce_app/features/personalization/controllers/user_controller.dart';
+import 'package:lcd_ecommerce_app/features/personalization/screens/profile/profile.dart';
+import 'package:lcd_ecommerce_app/utils/popups/loader.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/image_strings.dart';

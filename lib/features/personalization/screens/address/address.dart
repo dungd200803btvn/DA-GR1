@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:t_store_app/features/personalization/controllers/address_controller.dart';
-import 'package:t_store_app/features/personalization/screens/address/widgets/single_address.dart';
-import 'package:t_store_app/features/personalization/screens/setting/setting.dart';
-import 'package:t_store_app/utils/constants/sizes.dart';
-import 'package:t_store_app/utils/helper/cloud_helper_functions.dart';
+import 'package:lcd_ecommerce_app/features/personalization/controllers/address_controller.dart';
+import 'package:lcd_ecommerce_app/features/personalization/screens/address/widgets/single_address.dart';
+import 'package:lcd_ecommerce_app/features/personalization/screens/setting/setting.dart';
+import 'package:lcd_ecommerce_app/utils/constants/sizes.dart';
+import 'package:lcd_ecommerce_app/utils/helper/cloud_helper_functions.dart';
 
 import '../../../../common/widgets/appbar/appbar.dart';
 import '../../../../l10n/app_localizations.dart';

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:t_store_app/common/widgets/custom_shapes/containers/rounded_container.dart';
-import 'package:t_store_app/common/widgets/texts/section_heading.dart';
-import 'package:t_store_app/features/shop/controllers/product/checkout_controller.dart';
-import 'package:t_store_app/utils/constants/colors.dart';
-import 'package:t_store_app/utils/constants/image_strings.dart';
-import 'package:t_store_app/utils/constants/sizes.dart';
+import 'package:lcd_ecommerce_app/common/widgets/custom_shapes/containers/rounded_container.dart';
+import 'package:lcd_ecommerce_app/common/widgets/texts/section_heading.dart';
+import 'package:lcd_ecommerce_app/features/shop/controllers/product/checkout_controller.dart';
+import 'package:lcd_ecommerce_app/utils/constants/colors.dart';
+import 'package:lcd_ecommerce_app/utils/constants/image_strings.dart';
+import 'package:lcd_ecommerce_app/utils/constants/sizes.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../utils/helper/helper_function.dart';

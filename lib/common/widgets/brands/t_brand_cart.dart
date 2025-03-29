@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:t_store_app/features/shop/models/brand_model.dart';
-import 'package:t_store_app/utils/helper/helper_function.dart';
+import 'package:lcd_ecommerce_app/features/shop/models/brand_model.dart';
+import 'package:lcd_ecommerce_app/utils/helper/helper_function.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/enums.dart';

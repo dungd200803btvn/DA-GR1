@@ -1,20 +1,20 @@
 import 'package:get/get.dart';
-import 'package:t_store_app/features/authentication/screens/login/login.dart';
-import 'package:t_store_app/features/authentication/screens/onboarding/onboard_screen.dart';
-import 'package:t_store_app/features/authentication/screens/password_configuration/forget_password.dart';
-import 'package:t_store_app/features/authentication/screens/signup/signup.dart';
-import 'package:t_store_app/features/authentication/screens/signup/verify_email.dart';
-import 'package:t_store_app/features/personalization/screens/address/address.dart';
-import 'package:t_store_app/features/personalization/screens/profile/profile.dart';
-import 'package:t_store_app/features/personalization/screens/setting/setting.dart';
-import 'package:t_store_app/features/shop/screens/cart/cart.dart';
-import 'package:t_store_app/features/shop/screens/checkout/checkout.dart';
-import 'package:t_store_app/features/shop/screens/home/home.dart';
-import 'package:t_store_app/features/shop/screens/order/order.dart';
-import 'package:t_store_app/features/shop/screens/product_reviews/product_review.dart';
-import 'package:t_store_app/features/shop/screens/store/store.dart';
-import 'package:t_store_app/features/shop/screens/wishlist/wishlist.dart';
-import 'package:t_store_app/routes/routes.dart';
+import 'package:lcd_ecommerce_app/features/authentication/screens/login/login.dart';
+import 'package:lcd_ecommerce_app/features/authentication/screens/onboarding/onboard_screen.dart';
+import 'package:lcd_ecommerce_app/features/authentication/screens/password_configuration/forget_password.dart';
+import 'package:lcd_ecommerce_app/features/authentication/screens/signup/signup.dart';
+import 'package:lcd_ecommerce_app/features/authentication/screens/signup/verify_email.dart';
+import 'package:lcd_ecommerce_app/features/personalization/screens/address/address.dart';
+import 'package:lcd_ecommerce_app/features/personalization/screens/profile/profile.dart';
+import 'package:lcd_ecommerce_app/features/personalization/screens/setting/setting.dart';
+import 'package:lcd_ecommerce_app/features/shop/screens/cart/cart.dart';
+import 'package:lcd_ecommerce_app/features/shop/screens/checkout/checkout.dart';
+import 'package:lcd_ecommerce_app/features/shop/screens/home/home.dart';
+import 'package:lcd_ecommerce_app/features/shop/screens/order/order.dart';
+import 'package:lcd_ecommerce_app/features/shop/screens/product_reviews/product_review.dart';
+import 'package:lcd_ecommerce_app/features/shop/screens/store/store.dart';
+import 'package:lcd_ecommerce_app/features/shop/screens/wishlist/wishlist.dart';
+import 'package:lcd_ecommerce_app/routes/routes.dart';
 
 class AppRoutes{
   static final  pages = [

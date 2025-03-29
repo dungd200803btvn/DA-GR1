@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:t_store_app/common/widgets/texts/section_heading.dart';
-import 'package:t_store_app/data/repositories/address/address_repository.dart';
-import 'package:t_store_app/features/personalization/screens/address/add_new_address.dart';
-import 'package:t_store_app/features/personalization/screens/address/address.dart';
-import 'package:t_store_app/features/personalization/screens/address/widgets/single_address.dart';
-import 'package:t_store_app/l10n/app_localizations.dart';
-import 'package:t_store_app/utils/constants/image_strings.dart';
-import 'package:t_store_app/utils/constants/sizes.dart';
-import 'package:t_store_app/utils/helper/cloud_helper_functions.dart';
-import 'package:t_store_app/utils/popups/full_screen_loader.dart';
-import 'package:t_store_app/utils/popups/loader.dart';
+import 'package:lcd_ecommerce_app/common/widgets/texts/section_heading.dart';
+import 'package:lcd_ecommerce_app/data/repositories/address/address_repository.dart';
+import 'package:lcd_ecommerce_app/features/personalization/screens/address/add_new_address.dart';
+import 'package:lcd_ecommerce_app/features/personalization/screens/address/address.dart';
+import 'package:lcd_ecommerce_app/features/personalization/screens/address/widgets/single_address.dart';
+import 'package:lcd_ecommerce_app/l10n/app_localizations.dart';
+import 'package:lcd_ecommerce_app/utils/constants/image_strings.dart';
+import 'package:lcd_ecommerce_app/utils/constants/sizes.dart';
+import 'package:lcd_ecommerce_app/utils/helper/cloud_helper_functions.dart';
+import 'package:lcd_ecommerce_app/utils/popups/full_screen_loader.dart';
+import 'package:lcd_ecommerce_app/utils/popups/loader.dart';
 import '../../../utils/helper/network_manager.dart';
 import '../models/address_model.dart';
 

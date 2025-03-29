@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:t_store_app/data/repositories/product/product_repository.dart';
-import 'package:t_store_app/data/repositories/shop/shop_repository.dart';
+import 'package:lcd_ecommerce_app/data/repositories/product/product_repository.dart';
+import 'package:lcd_ecommerce_app/data/repositories/shop/shop_repository.dart';
 import '../../models/shop_model.dart';
 
 class ShopController extends GetxController{

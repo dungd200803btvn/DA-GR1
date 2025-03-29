@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:t_store_app/utils/constants/colors.dart';
-import 'package:t_store_app/utils/device/device_utility.dart';
-import 'package:t_store_app/utils/helper/helper_function.dart';
+import 'package:lcd_ecommerce_app/utils/constants/colors.dart';
+import 'package:lcd_ecommerce_app/utils/device/device_utility.dart';
+import 'package:lcd_ecommerce_app/utils/helper/helper_function.dart';
 class TTabBar extends StatelessWidget implements PreferredSizeWidget {
   const TTabBar({super.key, required this.tabs});
 final List<Widget> tabs;

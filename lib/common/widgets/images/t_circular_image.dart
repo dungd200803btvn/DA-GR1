@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:t_store_app/common/widgets/shimmer/shimmer.dart';
-import 'package:t_store_app/utils/helper/helper_function.dart';
+import 'package:lcd_ecommerce_app/common/widgets/shimmer/shimmer.dart';
+import 'package:lcd_ecommerce_app/utils/helper/helper_function.dart';
 import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/sizes.dart';
 

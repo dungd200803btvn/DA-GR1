@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:t_store_app/features/authentication/controller/signup/signup_controller.dart';
+import 'package:lcd_ecommerce_app/features/authentication/controller/signup/signup_controller.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../utils/constants/colors.dart';
 import '../../../../../utils/constants/sizes.dart';

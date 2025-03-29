@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:t_store_app/features/personalization/models/address_model.dart';
-import 'package:t_store_app/utils/constants/enums.dart';
-import 'package:t_store_app/utils/formatter/formatter.dart';
-import 'package:t_store_app/utils/helper/helper_function.dart';
+import 'package:lcd_ecommerce_app/features/personalization/models/address_model.dart';
+import 'package:lcd_ecommerce_app/utils/constants/enums.dart';
+import 'package:lcd_ecommerce_app/utils/formatter/formatter.dart';
+import 'package:lcd_ecommerce_app/utils/helper/helper_function.dart';
 import '../../../data/model/OrderDetailResponseModel.dart';
 import 'cart_item_model.dart';
 

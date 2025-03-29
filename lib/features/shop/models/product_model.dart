@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:t_store_app/data/repositories/brands/brand_repository.dart';
-import 'package:t_store_app/data/repositories/categories/category_repository.dart';
-import 'package:t_store_app/data/repositories/shop/shop_repository.dart';
-import 'package:t_store_app/features/shop/models/brand_model.dart';
-import 'package:t_store_app/features/shop/models/category_model.dart';
-import 'package:t_store_app/features/shop/models/product_attribute_model.dart';
-import 'package:t_store_app/features/shop/models/product_variation_model.dart';
-import 'package:t_store_app/features/shop/models/shop_model.dart';
+import 'package:lcd_ecommerce_app/data/repositories/brands/brand_repository.dart';
+import 'package:lcd_ecommerce_app/data/repositories/categories/category_repository.dart';
+import 'package:lcd_ecommerce_app/data/repositories/shop/shop_repository.dart';
+import 'package:lcd_ecommerce_app/features/shop/models/brand_model.dart';
+import 'package:lcd_ecommerce_app/features/shop/models/category_model.dart';
+import 'package:lcd_ecommerce_app/features/shop/models/product_attribute_model.dart';
+import 'package:lcd_ecommerce_app/features/shop/models/product_variation_model.dart';
+import 'package:lcd_ecommerce_app/features/shop/models/shop_model.dart';
 
 class ProductModel {
   String id;

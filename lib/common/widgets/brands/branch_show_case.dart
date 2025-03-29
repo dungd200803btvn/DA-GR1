@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:t_store_app/common/widgets/brands/t_brand_cart.dart';
-import 'package:t_store_app/common/widgets/shimmer/shimmer.dart';
-import 'package:t_store_app/features/shop/models/brand_model.dart';
-import 'package:t_store_app/features/shop/screens/brand/brand_products.dart';
-import 'package:t_store_app/utils/helper/event_logger.dart';
+import 'package:lcd_ecommerce_app/common/widgets/brands/t_brand_cart.dart';
+import 'package:lcd_ecommerce_app/common/widgets/shimmer/shimmer.dart';
+import 'package:lcd_ecommerce_app/features/shop/models/brand_model.dart';
+import 'package:lcd_ecommerce_app/features/shop/screens/brand/brand_products.dart';
+import 'package:lcd_ecommerce_app/utils/helper/event_logger.dart';
 import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/sizes.dart';
 import '../../../utils/helper/helper_function.dart';

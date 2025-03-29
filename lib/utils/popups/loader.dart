@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:t_store_app/utils/constants/colors.dart';
-import 'package:t_store_app/utils/helper/helper_function.dart';
+import 'package:lcd_ecommerce_app/utils/constants/colors.dart';
+import 'package:lcd_ecommerce_app/utils/helper/helper_function.dart';
 
 class TLoader {
   static hideSnackBar() =>

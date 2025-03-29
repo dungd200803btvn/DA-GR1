@@ -1,13 +1,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:t_store_app/common/widgets/login_signup/login_divider.dart';
-import 'package:t_store_app/common/widgets/login_signup/login_social_buttons.dart';
-import 'package:t_store_app/features/authentication/screens/signup/widgets/signup_form.dart';
-import 'package:t_store_app/l10n/app_localizations.dart';
-import 'package:t_store_app/utils/constants/sizes.dart';
-import 'package:t_store_app/utils/constants/text_string.dart';
-import 'package:t_store_app/utils/helper/helper_function.dart';
+import 'package:lcd_ecommerce_app/common/widgets/login_signup/login_divider.dart';
+import 'package:lcd_ecommerce_app/common/widgets/login_signup/login_social_buttons.dart';
+import 'package:lcd_ecommerce_app/features/authentication/screens/signup/widgets/signup_form.dart';
+import 'package:lcd_ecommerce_app/l10n/app_localizations.dart';
+import 'package:lcd_ecommerce_app/utils/constants/sizes.dart';
+import 'package:lcd_ecommerce_app/utils/constants/text_string.dart';
+import 'package:lcd_ecommerce_app/utils/helper/helper_function.dart';
 class Signup extends StatelessWidget {
   const Signup({super.key});
   @override

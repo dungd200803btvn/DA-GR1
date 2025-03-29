@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:t_store_app/common/widgets/texts/t_branch_title_text.dart';
+import 'package:lcd_ecommerce_app/common/widgets/texts/t_branch_title_text.dart';
 
 import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/enums.dart';

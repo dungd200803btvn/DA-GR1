@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:t_store_app/common/widgets/appbar/appbar.dart';
-import 'package:t_store_app/features/personalization/controllers/address_controller.dart';
-import 'package:t_store_app/l10n/app_localizations.dart';
-import 'package:t_store_app/utils/constants/sizes.dart';
-import 'package:t_store_app/utils/validators/validation.dart';
+import 'package:lcd_ecommerce_app/common/widgets/appbar/appbar.dart';
+import 'package:lcd_ecommerce_app/features/personalization/controllers/address_controller.dart';
+import 'package:lcd_ecommerce_app/l10n/app_localizations.dart';
+import 'package:lcd_ecommerce_app/utils/constants/sizes.dart';
+import 'package:lcd_ecommerce_app/utils/validators/validation.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 

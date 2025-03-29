@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:t_store_app/common/widgets/appbar/appbar.dart';
-import 'package:t_store_app/common/widgets/brands/t_brand_cart.dart';
-import 'package:t_store_app/common/widgets/products/sortable/sortable_product.dart';
-import 'package:t_store_app/common/widgets/shimmer/vertical_product_shimmer.dart';
-import 'package:t_store_app/features/shop/controllers/brand_controller.dart';
-import 'package:t_store_app/utils/constants/sizes.dart';
-import 'package:t_store_app/utils/helper/cloud_helper_functions.dart';
+import 'package:lcd_ecommerce_app/common/widgets/appbar/appbar.dart';
+import 'package:lcd_ecommerce_app/common/widgets/brands/t_brand_cart.dart';
+import 'package:lcd_ecommerce_app/common/widgets/products/sortable/sortable_product.dart';
+import 'package:lcd_ecommerce_app/common/widgets/shimmer/vertical_product_shimmer.dart';
+import 'package:lcd_ecommerce_app/features/shop/controllers/brand_controller.dart';
+import 'package:lcd_ecommerce_app/utils/constants/sizes.dart';
+import 'package:lcd_ecommerce_app/utils/helper/cloud_helper_functions.dart';
 
 import '../../../../common/widgets/products/cart/cart_menu_icon.dart';
 import '../../../../utils/helper/helper_function.dart';
