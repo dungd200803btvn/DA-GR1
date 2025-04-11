@@ -34,68 +34,8 @@ final _db = FirebaseFirestore.instance;
     }
   }
 
-  Future<List<BrandModel>> fetchTopBrands(int top) async {
-    print('Fetch brands:');
-    final storage = DLocalStorage.instance();
-    const String cacheKey = 'top_brands_cache';
-    const String cacheTimeKey = 'top_brands_cache_timestamp';
-    const cacheDuration = Duration(hours: 24);
-    // Kiểm tra xem đã có dữ liệu cache chưa
-    final String? cachedData = storage.readData<String>(cacheKey);
-    final String? cachedTimeString = storage.readData<String>(cacheTimeKey);
-    if (cachedData != null && cachedTimeString != null) {
-      final cachedTime = DateTime.tryParse(cachedTimeString);
-      if (cachedTime != null && DateTime.now().difference(cachedTime) < cacheDuration) {
-        // Nếu dữ liệu cache còn hợp lệ, parse và trả về
-        print('difference(cachedTime): ${DateTime.now().difference(cachedTime)}');
-        print('Fetch brand tu local:');
-        print('cachedData Brands: $cachedData');
-        final Map<String, dynamic> data = jsonDecode(cachedData);
-        final List<dynamic> brandJson = data['topBrands'];
-        final List<BrandModel> brands = brandJson
-            .map((jsonItem) => BrandModel.fromJson(jsonItem))
-            .toList();
-        print('brands:${brands.length}');
-        return brands;
-      }
-    }
-    final url = Uri.parse('$baseUrl/top-brands?limit=$top');
-    try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        // Lưu dữ liệu và timestamp vào cache
-        await storage.writeData(cacheKey, response.body);
-        await storage.writeData(cacheTimeKey, DateTime.now().toIso8601String());
-        final Map<String, dynamic> data = jsonDecode(response.body);
-        final List<dynamic> brandsJson = data['topBrands'];
-        final List<BrandModel> brands = brandsJson
-            .map((jsonItem) => BrandModel.fromJson(jsonItem))
-            .toList();
-        print('Gọi API thành công:');
-        return brands;
-      } else {
-        // Nếu status code không phải 200, có thể xử lý ở đây
-        print('Lỗi API, statusCode: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Lỗi khi gọi API: $e');
-      print('Cached data: $cachedData');
-      if (cachedData != null) {
-        print('Sử dụng cache khi API call thất bại.');
-        final Map<String, dynamic> data = jsonDecode(cachedData);
-        final List<dynamic> brandsJson = data['topBrands'];
-        final List<BrandModel> brands = brandsJson
-            .map((jsonItem) => BrandModel.fromJson(jsonItem))
-            .toList();
-        return brands;
-      }
-    }
-    // Nếu API call thất bại, cố gắng trả về cache nếu có
-    return [];
-  }
-
   /// Lấy top brands theo giới hạn truyền vào (mặc định 20)
-  Future<List<BrandModel>> fetchTopBrands1( {int limit = 20}) async {
+  Future<List<BrandModel>> fetchTopBrands( {int limit = 20}) async {
     try {
       // 1. Lấy toàn bộ products
       QuerySnapshot productSnapshot =

@@ -109,9 +109,7 @@ class _DailyCheckInScreenState extends State<DailyCheckInScreen> {
       );
       String finalMessage = baseMessage.replaceAll(RegExp(r'[{}]'), '');
         String url = await  TCloudHelperFunctions.uploadAssetImage("assets/images/content/daily_checkin_success.png", "daily_checkin_success");
-        final NotificationService notificationService =
-        NotificationService(userId: AuthenticationRepository.instance.authUser!.uid);
-        await notificationService.createAndSendNotification(
+        await NotificationService.instance.createAndSendNotification(
           title: lang.translate('get_point_success'),
           message: finalMessage,
           type: "points",

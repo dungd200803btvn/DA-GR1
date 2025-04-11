@@ -32,65 +32,67 @@ class CategoryRepository extends GetxController {
     }
   }
 
-  Future<List<CategoryModel>> fetchTopCategories() async {
-    print('Fetch category:');
-    final storage = DLocalStorage.instance();
-    const String cacheKey = 'top_categories_cache';
-    const String cacheTimeKey = 'top_categories_cache_timestamp';
-    const cacheDuration = Duration(hours: 24);
-    // Kiểm tra xem đã có dữ liệu cache chưa
-    final String? cachedData = storage.readData<String>(cacheKey);
-    final String? cachedTimeString = storage.readData<String>(cacheTimeKey);
-    if (cachedData != null && cachedTimeString != null) {
-      final cachedTime = DateTime.tryParse(cachedTimeString);
-      if (cachedTime != null && DateTime.now().difference(cachedTime) < cacheDuration) {
-        // Nếu dữ liệu cache còn hợp lệ, parse và trả về
-        print('difference(cachedTime): ${DateTime.now().difference(cachedTime)}');
-        print('Fetch category tu local:');
-        print('cachedData: $cachedData');
-        final Map<String, dynamic> data = jsonDecode(cachedData);
-        final List<dynamic> categoriesJson = data['topCategories'];
-        final List<CategoryModel> categories = categoriesJson
-            .map((jsonItem) => CategoryModel.fromJson(jsonItem))
-            .toList();
-        print('categories:${categories.length}');
-        return categories;
-      }
-    }
-    final url = Uri.parse('$baseUrl/top-categories');
+  Future<List<CategoryModel>> fetchTopCategories({int limit = 20}) async {
     try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        // Lưu dữ liệu và timestamp vào cache
-        await storage.writeData(cacheKey, response.body);
-        await storage.writeData(cacheTimeKey, DateTime.now().toIso8601String());
-        final Map<String, dynamic> data = jsonDecode(response.body);
-        final List<dynamic> categoriesJson = data['topCategories'];
-        final List<CategoryModel> categories = categoriesJson
-            .map((jsonItem) => CategoryModel.fromJson(jsonItem))
-            .toList();
-        print('Gọi API thành công:');
-        print('categories: $categories');
-        return categories;
-      } else {
-        // Nếu status code không phải 200, có thể xử lý ở đây
-        print('Lỗi API, statusCode: ${response.statusCode}');
+      // 1. Lấy toàn bộ Products
+      QuerySnapshot productSnapshot = await _db.collection('Products').get();
+      // 2. Đếm số lượng sản phẩm cho mỗi category và lưu hình ảnh đại diện (nếu có)
+      final Map<String, int> categoryCount = {};
+      final Map<String, String> categoryImages = {};
+
+      for (var doc in productSnapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        if (data['category_ids'] != null && data['category_ids'] is List) {
+          List<dynamic> catIds = data['category_ids'];
+          for (var catId in catIds) {
+            if (catId != null) {
+              categoryCount[catId] = (categoryCount[catId] ?? 0) + 1;
+              // Nếu chưa có hình đại diện cho category và có trường images
+              if (!categoryImages.containsKey(catId) &&
+                  data['images'] != null &&
+                  data['images'] is List &&
+                  (data['images'] as List).isNotEmpty) {
+                categoryImages[catId] = (data['images'] as List)[0];
+              }
+            }
+          }
+        }
       }
-    } catch (e) {
-      print('Lỗi khi gọi API: $e');
-      print('Cached data: $cachedData');
-      if (cachedData != null) {
-        print('Sử dụng cache khi API call thất bại.');
-        final Map<String, dynamic> data = jsonDecode(cachedData);
-        final List<dynamic> categoriesJson = data['topCategories'];
-        final List<CategoryModel> categories = categoriesJson
-            .map((jsonItem) => CategoryModel.fromJson(jsonItem))
-            .toList();
-        return categories;
+
+      // 3. Sắp xếp các category theo số lượng sản phẩm giảm dần và lấy top limit
+      List<String> sortedCategoryIds = categoryCount.keys.toList();
+      sortedCategoryIds.sort((a, b) => categoryCount[b]!.compareTo(categoryCount[a]!));
+      sortedCategoryIds = sortedCategoryIds.take(limit).toList();
+
+      // 4. Truy vấn bảng Categories theo batch (mỗi batch tối đa 10 phần tử)
+      List<CategoryModel> categories = [];
+      const int batchSize = 10;
+      for (int i = 0; i < sortedCategoryIds.length; i += batchSize) {
+        final int endIndex = (i + batchSize > sortedCategoryIds.length) ? sortedCategoryIds.length : i + batchSize;
+        final List<String> batchIds = sortedCategoryIds.sublist(i, endIndex);
+
+        QuerySnapshot categorySnapshot = await _db
+            .collection('Categories')
+            .where(FieldPath.documentId, whereIn: batchIds)
+            .get();
+
+        for (var doc in categorySnapshot.docs) {
+          final data = doc.data() as Map<String, dynamic>;
+          final String catId = doc.id;
+          final String? image = categoryImages[catId];
+          final int? count = categoryCount[catId];
+          final categoryModel = CategoryModel.fromMap(catId, data, image,count);
+          categories.add(categoryModel);
+        }
       }
+
+      // 5. Sắp xếp lại danh sách theo số lượng sản phẩm giảm dần (nếu cần)
+      categories.sort((a, b) => b.productCount!.compareTo(a.productCount!));
+      return categories;
+    } catch (error) {
+      print("Error retrieving top categories: $error");
+      throw Exception(error);
     }
-    // Nếu API call thất bại, cố gắng trả về cache nếu có
-    return [];
   }
 
 //get sub categories

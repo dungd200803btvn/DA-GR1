@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:app_my_app/features/shop/models/cart_item_model.dart';
 import 'package:app_my_app/utils/popups/loader.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import '../../../common/widgets/appbar/appbar.dart';
 import '../../../l10n/app_localizations.dart';
 import '../controller/review_controller.dart';
@@ -13,7 +15,17 @@ class WriteReviewScreen extends StatefulWidget {
   State<WriteReviewScreen> createState() => _WriteReviewScreenState();
 }
 class _WriteReviewScreenState extends State<WriteReviewScreen> {
-   final controller = WriteReviewScreenController.instance;
+   late final WriteReviewScreenController controller;
+   @override
+   void initState() {
+     super.initState();
+     // Xóa controller cũ nếu tồn tại
+     if (Get.isRegistered<WriteReviewScreenController>()) {
+       Get.delete<WriteReviewScreenController>();
+     }
+     controller = Get.put(WriteReviewScreenController());
+
+   }
   @override
   Widget build(BuildContext context) {
     var lang = AppLocalizations.of(context);

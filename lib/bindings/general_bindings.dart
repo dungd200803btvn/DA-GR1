@@ -1,3 +1,5 @@
+import 'package:app_my_app/data/repositories/sale_group/sale_group_repository.dart';
+import 'package:app_my_app/features/sale_group/controller/sale_group_controller.dart';
 import 'package:get/get.dart';
 import 'package:app_my_app/data/repositories/bonus_point/daily_checkin_repository.dart';
 import 'package:app_my_app/data/repositories/brands/brand_repository.dart';
@@ -24,6 +26,11 @@ import '../data/repositories/vouchers/VoucherRepository.dart';
 import '../features/notification/controller/notification_controller.dart';
 import '../features/personalization/controllers/update_name_controller.dart';
 import '../features/review/controller/review_controller.dart';
+import '../features/sale_group/controller/group_request_controller.dart';
+import '../features/sale_group/controller/invite_group_controller.dart';
+import '../features/setting/controllers/friend_list_controller.dart';
+import '../features/setting/controllers/friend_requests_controller.dart';
+import '../features/setting/controllers/user_list_controller.dart';
 import '../features/shop/controllers/product/all_products_controller.dart';
 import '../features/shop/controllers/product_controller.dart';
 import '../features/shop/screens/all_products/all_product_controller.dart';
@@ -62,5 +69,49 @@ class GeneralBindings extends Bindings{
     Get.put(WriteReviewScreenController());
     Get.put(DailyCheckInRepository());
     Get.put(DailyCheckinController());
+    Get.put(SaleGroupRepository());
+    Get.put(SaleGroupController());
+    Get.put(UserListController());
+    Get.put(FriendRequestsController());
+    Get.put(FriendListController());
+    Get.put(InviteGroupController());
+    Get.put(GroupRequestController());
   }
+ static void deleteAllControllers() {
+    // Các controller
+    Get.delete<UserRepository>();
+    Get.delete<UserController>();
+    Get.delete<ProductRepository>();
+    Get.delete<ProductSuggestionRepository>();
+    Get.delete<ProductController>();
+    Get.delete<AllProductsController>();
+    Get.delete<BrandRepository>();
+    Get.delete<BrandController>();
+    Get.delete<CategoryRepository>();
+    Get.delete<ShopRepository>();
+    Get.delete<ShopController>();
+    Get.delete<FavouritesController>();
+    Get.delete<VariationController>();
+    Get.delete<CartController>();
+    Get.delete<UpdateNameController>();
+    Get.delete<CheckoutController>();
+    Get.delete<AddressController>();
+    Get.delete<VoucherRepository>();
+    Get.delete<VoucherController>();
+    Get.delete<ClaimedVoucherRepository>();
+    Get.delete<NotificationRepository>();
+    Get.delete<NotificationController>();
+    Get.delete<ReviewRepository>();
+    Get.delete<WriteReviewScreenController>();
+    Get.delete<DailyCheckInRepository>();
+    Get.delete<DailyCheckinController>();
+    Get.delete<SaleGroupRepository>();
+    Get.delete<SaleGroupController>();
+    Get.delete<UserListController>();
+    Get.delete<FriendRequestsController>();
+    Get.delete<FriendListController>();
+    Get.delete<InviteGroupController>();
+    Get.delete<GroupRequestController>();
+  }
+
 }

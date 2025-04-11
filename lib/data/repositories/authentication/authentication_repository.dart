@@ -1,3 +1,5 @@
+import 'package:app_my_app/bindings/general_bindings.dart';
+import 'package:app_my_app/utils/singleton/user_singleton.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -169,8 +171,10 @@ class AuthenticationRepository extends GetxController {
     try {
       await GoogleSignIn().signOut();
       await _auth.signOut();
-      NotificationService.resetInstance();
+      NotificationService.instance.resetInstance();
+      UserSession.instance.clear();
       UserController.instance.user.value = UserModel.empty();
+      GeneralBindings.deleteAllControllers();
       Get.offAll(()=> const LoginScreen());
     } on FirebaseAuthException catch (e) {
       throw TFirebaseAuthException(e.code).message;

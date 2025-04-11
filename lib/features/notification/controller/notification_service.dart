@@ -7,20 +7,18 @@ import 'package:app_my_app/features/notification/model/notification_model.dart';
 import 'package:http/http.dart' as http;
 
 class NotificationService {
-  static NotificationService? _instance;
+  static final NotificationService instance = NotificationService._internal();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
-  final String userId; // Giả sử bạn có userId của người dùng hiện tại
-  NotificationService._internal({required this.userId});
-  factory NotificationService({required String userId}) {
-    // Nếu instance chưa tồn tại, khởi tạo với userId được truyền vào
-    _instance ??= NotificationService._internal(userId: userId);
-    // Nếu cần cập nhật userId (ví dụ user mới đăng nhập), bạn có thể xử lý thêm ở đây
-    return _instance!;
-  }
+  String? _userId; // Giả sử bạn có userId của người dùng hiện tại
+  NotificationService._internal();
 
+  /// Gọi hàm này sau khi user đăng nhập
+  void initialize(String userId) {
+    _userId = userId;
+  }
   /// Lưu thông báo vào Firestore
-  Future<void> saveNotification(NotificationModel notification) async {
+  Future<void> saveNotification(NotificationModel notification, String userId) async {
    DocumentReference documentReference =  await _firestore
         .collection('User')
         .doc(userId)
@@ -51,7 +49,7 @@ class NotificationService {
       imageUrl: imageUrl,
     );
     // Lưu thông báo vào Firestore
-    await saveNotification(notification);
+    await saveNotification(notification,_userId!);
     // Gửi push notification qua FCM (LƯU Ý: Thông thường phải thực hiện từ phía server/Cloud Functions)
     await _sendPushNotification(notification);
   }
@@ -106,7 +104,69 @@ class NotificationService {
       }
     }
   }
-  static void resetInstance() {
-    _instance = null;
+   void resetInstance() {
+    _userId = null;
   }
+  /// Gửi thông báo đến thiết bị cụ thể thông qua FCM token
+  Future<void> sendNotificationToDeviceToken({
+    required String deviceToken,
+    required String title,
+    required String message,
+    required String type,
+    String? orderId,
+    String? imageUrl,
+    required String friendId,
+  }) async {
+    final now = DateTime.now();
+    final notification = NotificationModel(
+      id: '', // Sẽ được gán khi lưu vào Firestore
+      title: title,
+      message: message,
+      timestamp: now,
+      type: type,
+      orderId: orderId,
+      imageUrl: imageUrl,
+    );
+
+    // Lưu thông báo vào Firestore của người dùng hiện tại
+    await saveNotification(notification,friendId);
+    final accessToken = await getAccessToken();
+    const String projectId = "da-gr1"; // Project ID của bạn
+    final payload = {
+      "message": {
+        "token": deviceToken,
+        "notification": {
+          "title": title,
+          "body": message,
+        },
+        "data": {
+          "type": type,
+          "orderId": orderId ?? "",
+          "imageUrl": imageUrl ?? "",
+        }
+      }
+    };
+
+    final url = "https://fcm.googleapis.com/v1/projects/$projectId/messages:send";
+
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $accessToken",
+      },
+      body: jsonEncode(payload),
+    );
+
+    if (response.statusCode == 200) {
+      if (kDebugMode) {
+        print("✅ Push notification sent to deviceToken: $deviceToken");
+      }
+    } else {
+      if (kDebugMode) {
+        print("❌ Failed to send push notification: ${response.body}");
+      }
+    }
+  }
+
 }

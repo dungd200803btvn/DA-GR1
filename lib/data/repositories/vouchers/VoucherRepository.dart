@@ -60,6 +60,7 @@ class VoucherRepository {
           .collection('User')
           .doc(userId)
           .collection('claimed_vouchers')
+          .where('is_used',isEqualTo: false)
           .get();
 
       final claimedVoucherIds = claimedVouchersResult.docs
@@ -367,6 +368,4 @@ class VoucherRepository {
       }
     }
   }
-
-
 }

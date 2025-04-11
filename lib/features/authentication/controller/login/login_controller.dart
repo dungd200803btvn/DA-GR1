@@ -1,3 +1,4 @@
+import 'package:app_my_app/features/notification/controller/notification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +14,7 @@ import 'package:app_my_app/utils/constants/image_strings.dart';
 import 'package:app_my_app/utils/popups/full_screen_loader.dart';
 import 'package:app_my_app/utils/popups/loader.dart';
 import 'package:uuid/uuid.dart';
+import '../../../../bindings/auth_bindings.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/exceptions/firebase_auth_exceptions.dart';
 import '../../../../utils/exceptions/firebase_exceptions.dart';
@@ -20,6 +22,7 @@ import '../../../../utils/exceptions/format_exceptions.dart';
 import '../../../../utils/exceptions/platform_exceptions.dart';
 import '../../../../utils/helper/event_logger.dart';
 import '../../../../utils/helper/network_manager.dart';
+import '../../../../utils/singleton/user_singleton.dart';
 
 class LoginController extends GetxController {
   static LoginController get instance => Get.find();
@@ -29,13 +32,13 @@ class LoginController extends GetxController {
   final localStorage = GetStorage();
   final email = TextEditingController();
   final password = TextEditingController();
-  GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
-  final userController = UserController.instance;
-  final userRepository = UserRepository.instance;
+  final userController = Get.put(UserController());
+  final userRepository =  Get.put(UserRepository());
   AppLocalizations get lang => AppLocalizations.of(Get.context!);
 
 //Email and password login
   Future<void> init() async {
+    AuthBindings().dependencies();
     //Start loading
     TFullScreenLoader.openLoadingDialog(
         lang.translate('login_process'), TImages.docerAnimation);
@@ -49,10 +52,6 @@ class LoginController extends GetxController {
   Future<void> emailAndPasswordLogin() async {
     try {
       init();
-      if (!loginFormKey.currentState!.validate()) {
-        TFullScreenLoader.stopLoading();
-        return;
-      }
       //Save data if remember me is selected
       if (rememberMe.value) {
         localStorage.write("REMEMBER_ME_EMAIL", email.text.trim());
@@ -71,6 +70,7 @@ class LoginController extends GetxController {
         // Existing account: Fetch updated user data (optional)
         await  userController.fetchUserRecord();
       }
+      await UserController.instance.fetchUserRecord();
       // Fetch updated user record after sign-i
       // await UserController.instance.fetchUserRecord();
       // Remove loader
@@ -80,6 +80,9 @@ class LoginController extends GetxController {
         userId: AuthenticationRepository.instance.authUser!.uid,
         sessionId: const Uuid().v4(), // hoặc tạo từ Uuid().v4()
       );
+      UserSession.instance.initialize(AuthenticationRepository.instance.authUser!.uid,UserController.instance.user.value.fullname);
+      NotificationService.instance.initialize(AuthenticationRepository.instance.authUser!.uid);
+      UserRepository.instance.updateUserPointsAndFcmToken(AuthenticationRepository.instance.authUser!.uid);
       // Navigate to NavigationMenu
       Get.to(() => const NavigationMenu());
     } on FirebaseAuthException catch (e) {
@@ -122,10 +125,12 @@ class LoginController extends GetxController {
       // Remove loader
       TFullScreenLoader.stopLoading();
       GeneralBindings().dependencies();
-     EventLogger().initialize(
+      EventLogger().initialize(
        userId: AuthenticationRepository.instance.authUser!.uid,
        sessionId: const Uuid().v4(), // hoặc tạo từ Uuid().v4()
      );
+     UserSession.instance.initialize(AuthenticationRepository.instance.authUser!.uid,UserController.instance.user.value.fullname);
+     NotificationService.instance.initialize(AuthenticationRepository.instance.authUser!.uid);
       // Navigate to NavigationMenu
       Get.to(() => const NavigationMenu());
     } catch (e) {

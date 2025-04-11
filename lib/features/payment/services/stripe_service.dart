@@ -45,9 +45,9 @@ class StripeService{
           }
       ));
       final formattedTime = DFormatter.FormattedDate(DateTime.now());
-      final NotificationService notificationService = NotificationService(userId: userId);
+
       String url =  await TCloudHelperFunctions.uploadAssetImage("assets/images/content/order_success.png", "order_success");
-      await notificationService.createAndSendNotification(
+      await NotificationService.instance.createAndSendNotification(
         title: lang.translate('order_success'),
         message: "${lang.translate('order_success_msg')} $formattedTime",
         type: "order",

@@ -5,9 +5,25 @@ class ClaimedVoucherRepository {
   static ClaimedVoucherRepository get instance => ClaimedVoucherRepository();
   final _db = FirebaseFirestore.instance;
   // Fetch all claimed vouchers for a user
+  Future<List<ClaimedVoucherModel>> fetchAllClaimedVouchers(String userId) async {
+    try {
+      final result = await _db.collection('User')
+          .doc(userId)
+          .collection('claimed_vouchers')
+          .get();
+      return result.docs.map((doc) => ClaimedVoucherModel.fromSnapshot(doc)).toList();
+    } catch (e) {
+      throw 'Error fetching claimed vouchers: $e';
+    }
+  }
+
   Future<List<ClaimedVoucherModel>> fetchUserClaimedVouchers(String userId) async {
     try {
-      final result = await _db.collection('User').doc(userId).collection('claimed_vouchers').get();
+      final result = await _db.collection('User')
+          .doc(userId)
+          .collection('claimed_vouchers')
+          .where('is_used',isEqualTo: false)
+          .get();
       return result.docs.map((doc) => ClaimedVoucherModel.fromSnapshot(doc)).toList();
     } catch (e) {
       throw 'Error fetching claimed vouchers: $e';

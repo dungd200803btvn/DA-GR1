@@ -33,9 +33,9 @@ class BrandController extends GetxController{
   Future<void> getFeaturedBrands() async{
     try{
       isLoading.value = true;
-      final brands = await brandRepository.fetchTopBrands1(limit: feature_brand);
+      final brands = await brandRepository.fetchTopBrands(limit: feature_brand);
       featuredBrands.assignAll(brands);
-      final allBrand = await brandRepository.fetchTopBrands1(limit: all_brand);
+      final allBrand = await brandRepository.fetchTopBrands(limit: all_brand);
       // final allBrand = await brandRepository.fetchTopItems(all_brand, fetchType: 'brands');
       print("All Brand co so luong: ${allBrand.length}");
       allBrands.assignAll(allBrand);

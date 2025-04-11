@@ -11,7 +11,10 @@ class VoucherModel {
   final num? requiredPoints;//gia tri don hang toi thieu co the ap dung
   final List<String>? applicableUsers; // null = Áp dụng cho tất cả user
   final List<String>? applicableProducts; // null = Áp dụng cho tất cả sản phẩm
-  final List<String>? applicableCategories; // null = Áp dụng cho tất cả danh mục
+  final List<String>? applicableCategories;
+  final String? shopId;
+  final String? brandId;
+  final String? categoryId;
   final Timestamp startDate;
   final Timestamp endDate;
   final int quantity; //so luong phat hanh
@@ -33,6 +36,9 @@ class VoucherModel {
     this.applicableUsers,
     this.applicableProducts,
     this.applicableCategories,
+    this.shopId,
+    this.brandId,
+    this.categoryId,
     required this.startDate,
     required this.endDate,
     required this.quantity,
@@ -56,6 +62,9 @@ class VoucherModel {
       'applicable_users': applicableUsers,
       'applicable_products': applicableProducts,
       'applicable_categories': applicableCategories,
+      'shopId': shopId,
+      'brandId': brandId,
+      'categoryId': categoryId,
       'start_date': startDate,
       'end_date': endDate,
       'quantity': quantity,
@@ -81,6 +90,9 @@ class VoucherModel {
       applicableUsers: (data['applicable_users'] as List<dynamic>?)?.cast<String>(),
       applicableProducts: (data['applicable_products'] as List<dynamic>?)?.cast<String>(),
       applicableCategories: (data['applicable_categories'] as List<dynamic>?)?.cast<String>(),
+      shopId: data['shopId'] as String?,
+      brandId: data['brandId'] as String?,
+      categoryId: data['categoryId'] as String?,
       startDate: data['start_date'] as Timestamp,
       endDate: data['end_date'] as Timestamp,
       quantity: data['quantity'] as int,
@@ -105,6 +117,9 @@ class VoucherModel {
     List<String>? applicableUsers,
     List<String>? applicableProducts,
     List<String>? applicableCategories,
+    String? shopId,
+    String? brandId,
+    String? categoryId,
     Timestamp? startDate,
     Timestamp? endDate,
     int? quantity,
@@ -126,6 +141,9 @@ class VoucherModel {
       applicableUsers: applicableUsers ?? this.applicableUsers,
       applicableProducts: applicableProducts ?? this.applicableProducts,
       applicableCategories: applicableCategories ?? this.applicableCategories,
+      shopId: shopId?? this.shopId,
+      brandId: brandId?? this.brandId,
+      categoryId: categoryId?? this.categoryId,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       quantity: quantity ?? this.quantity,

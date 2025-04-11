@@ -47,4 +47,10 @@ class DFormatter{
     return calculatedAmount.round().toString();
   }
 
+  static String formatVoucherType(String input) {
+    return input
+        .split('_') // tách theo dấu _
+        .map((word) => word[0].toUpperCase() + word.substring(1)) // viết hoa chữ đầu
+        .join(' '); // ghép lại bằng khoảng trắng
+  }
 }

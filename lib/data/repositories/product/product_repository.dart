@@ -144,84 +144,56 @@ class ProductRepository extends GetxController {
     return {'products': products, 'nextPageToken': nextPageToken};
   }
 
-  Future<Map<String, dynamic>> getProducts({
+  Future<List<ProductModel>> getProducts({
     String? categoryId,
     String? brandId,
     String? shopId,
-    int limit = 20,
-    String? startAfter,
   }) async {
-    final localStorage = DLocalStorage.instance();
-
-    // Xác định cacheKey dựa vào tham số truyền vào
-    String type = categoryId != null
-        ? 'category'
-        : brandId != null
-        ? 'brand'
-        : 'shop';
-    String id = categoryId ?? brandId ?? shopId ?? '';
-    final cacheKey = 'products_cache_${type}_$id';
-    final timestampKey = 'products_cache_timestamp_${type}_$id';
-
-    // Chỉ cache trang đầu tiên
-    if (startAfter == null) {
-      final cachedDataStr = localStorage.readData<String>(cacheKey);
-      final cachedTimeStr = localStorage.readData<String>(timestampKey);
-      if (cachedDataStr != null && cachedTimeStr != null) {
-        final cachedTime = DateTime.tryParse(cachedTimeStr);
-        if (cachedTime != null &&
-            DateTime.now().difference(cachedTime) < Duration(hours: 24)) {
-          return jsonDecode(cachedDataStr);
-        }
-      }
-    }
-
-    // Xây dựng URL API động dựa trên tham số truyền vào
-    final url = Uri.parse(
-        '$baseUrl/products-by-$type/$id?limit=$limit${startAfter != null ? '&startAfter=$startAfter' : ''}');
-
+    QuerySnapshot snapshot;
     try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        final apiResult = jsonDecode(response.body);
-
-        // Nếu đây là trang đầu tiên, lưu cache
-        if (startAfter == null) {
-          await localStorage.writeData(cacheKey, jsonEncode(apiResult));
-          await localStorage.writeData(
-              timestampKey, DateTime.now().toIso8601String());
-        }
-        return apiResult;
+      if (categoryId != null) {
+        snapshot = await _db
+            .collection('Products')
+            .where('category_ids', arrayContains: categoryId)
+            .orderBy('created_at', descending: true)
+            .get();
+      } else if (brandId != null) {
+        snapshot = await _db
+            .collection('Products')
+            .where('brand_id', isEqualTo: brandId)
+            .orderBy('created_at', descending: true)
+            .get();
+      } else if (shopId != null) {
+        snapshot = await _db
+            .collection('Products')
+            .where('shop_id', isEqualTo: shopId)
+            .orderBy('created_at', descending: true)
+            .get();
       } else {
-        throw Exception('Failed to load products from API');
+        throw Exception(
+            'Phải truyền ít nhất một bộ lọc: categoryId, brandId hoặc shopId');
       }
 
-      // Gọi Firestore thay vì gọi API Node.js
-      // final firestoreResult = await fetchProductsFromFirestore(
-      //   categoryId: categoryId,
-      //   brandId: brandId,
-      //   shopId: shopId,
-      //   limit: limit,
-      //   startAfter: startAfter,
-      // );
-      // // Nếu đây là trang đầu tiên, cập nhật cache
-      // if (startAfter == null) {
-      //   await localStorage.writeData(cacheKey, jsonEncode(firestoreResult));
-      //   await localStorage.writeData(
-      //       timestampKey, DateTime.now().toIso8601String());
-      // }
-      // return firestoreResult;
+      // Sử dụng Future.wait với generic type <ProductModel>
+      final products = await Future.wait(
+          snapshot.docs.map((doc) => ProductModel.fromSnapshotAsync(doc as DocumentSnapshot<Map<String, dynamic>>))
+      );
+      // Lọc các product có images khác null và không rỗng
+      final filteredProducts = products
+          .where((product) => product.images != null && product.images!.isNotEmpty)
+          .toList();
+      return filteredProducts;
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } on PlatformException catch (e) {
+      throw e.message!;
     } catch (e) {
-      // Nếu API lỗi, sử dụng cache nếu có
-      final cachedDataStr = localStorage.readData<String>(cacheKey);
-      if (cachedDataStr != null) {
-        return jsonDecode(cachedDataStr);
-      } else {
-        rethrow;
+      if (kDebugMode) {
+        print("Loi : getProducts() in Product Repository: ${e.toString()}");
       }
+      throw "message: $e";
     }
   }
-
 
   // Hàm tổng hợp: nếu API hoạt động, cập nhật cache, nếu không, trả về cache (nếu hợp lệ)
   Future<Map<String, dynamic>> getProductsByCategory(String categoryId,
@@ -540,6 +512,19 @@ class ProductRepository extends GetxController {
     try {
       final snapshot = await _db.collection("Products").where(FieldPath.documentId,whereIn: productIds).get();
       return await Future.wait( snapshot.docs.map((e) => ProductModel.fromSnapshotAsync(e)).toList());
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } on PlatformException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      throw "message: $e";
+    }
+  }
+
+  Future<ProductModel> getProductById(String productId) async {
+    try {
+      final snapshot = await _db.collection("Products").doc(productId).get();
+      return ProductModel.fromSnapshotAsync(snapshot);
     } on FirebaseException catch (e) {
       throw e.message!;
     } on PlatformException catch (e) {

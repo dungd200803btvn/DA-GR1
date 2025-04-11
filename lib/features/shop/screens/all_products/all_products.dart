@@ -2,24 +2,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:app_my_app/common/widgets/appbar/appbar.dart';
-import 'package:app_my_app/common/widgets/shimmer/vertical_product_shimmer.dart';
 import 'package:app_my_app/features/shop/controllers/product/all_products_controller.dart';
 import 'package:app_my_app/utils/constants/sizes.dart';
-import 'package:app_my_app/utils/helper/cloud_helper_functions.dart';
 import 'package:app_my_app/utils/helper/helper_function.dart';
-
 import '../../../../common/widgets/products/sortable/sortable_product.dart';
+import '../../../../utils/constants/image_strings.dart';
+import '../../../../utils/popups/full_screen_loader.dart';
 import '../../models/product_model.dart';
 
 class AllProducts extends StatelessWidget {
-  const AllProducts({
-    super.key,
-    required this.title,
-    this.query,
-    this.futureMethod,
-    this.products,
-    this.applyDiscount = false
-  });
+  const AllProducts(
+      {super.key,
+      required this.title,
+      this.query,
+      this.futureMethod,
+      this.products,
+      this.applyDiscount = false});
+
   final bool applyDiscount;
   final String title;
   final Query? query;
@@ -41,15 +40,30 @@ class AllProducts extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(DSize.defaultspace),
-          child: FutureBuilder(future:futureMethod ?? controller.fetchProductsByQuery(query) ,
-          builder: ( context,  snapshot) {
-            const loader = TVerticalProductShimmer();
-            final widget =TCloudHelperFunctions.checkMultiRecordState(snapshot: snapshot ,loader: loader);
-            if(widget!=null) return widget;
-            final products = snapshot.data!;
-            return TSortableProducts(products: products,applyDiscount: applyDiscount,);
-          },
-           ),
+          child: FutureBuilder(
+            future: futureMethod ?? controller.fetchProductsByQuery(query),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  TFullScreenLoader.openLoadingDialog(
+                    'Loading products now...',
+                    TImages.loaderAnimation,
+                  );
+                });
+                return const SizedBox(); // Không hiển thị gì khi đang loading
+              } else {
+                // Khi dữ liệu có sẵn, đóng dialog loading
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  TFullScreenLoader.stopLoading();
+                });
+              }
+              final products = snapshot.data!;
+              return TSortableProducts(
+                products: products,
+                applyDiscount: applyDiscount,
+              );
+            },
+          ),
         ),
       ),
     );

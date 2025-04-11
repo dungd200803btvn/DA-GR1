@@ -62,7 +62,6 @@ class ShopRepository extends GetxController{
           shops.add(data);
         }
       }
-
       // 5. Sắp xếp lại các shop theo số lượng sản phẩm giảm dần
       shops.sort((a, b) =>
           (b['productCount'] as int).compareTo(a['productCount'] as int));

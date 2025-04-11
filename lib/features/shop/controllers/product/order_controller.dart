@@ -124,11 +124,11 @@ class OrderController extends GetxController {
 
   //add methods for order processing
   Future<void > processOrder(double subTotal,BuildContext context) async {
-    try {
-      //start loader
-      final lang = AppLocalizations.of(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       TFullScreenLoader.openLoadingDialog(
           lang.translate('process_order'), TImages.pencilAnimation);
+    });
+    try {
       ShippingOrderService shippingService  =  ShippingOrderService();
       try {
         if (kDebugMode) {
@@ -157,11 +157,13 @@ class OrderController extends GetxController {
         if (kDebugMode) {
           print('Failed to create order: $e');
         }
-      }finally{
-        TFullScreenLoader.stopLoading();
       }
     } catch (e) {
       TLoader.errorSnackbar(title: lang.translate('snap'), message: e.toString());
+    }finally{
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        TFullScreenLoader.stopLoading();
+      });
     }
   }
 

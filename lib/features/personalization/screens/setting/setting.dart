@@ -1,3 +1,7 @@
+import 'package:app_my_app/features/sale_group/screen/all_groups_screen.dart';
+import 'package:app_my_app/features/sale_group/screen/create_group_screen.dart';
+import 'package:app_my_app/features/setting/screen/friend_requests_screen.dart';
+import 'package:app_my_app/navigation_menu.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -24,7 +28,9 @@ import '../../../../data/repositories/vouchers/VoucherRepository.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../notification/controller/notification_controller.dart';
 import '../../../notification/screen/notification_screen.dart';
+import '../../../setting/screen/friend_list_screen.dart';
 import '../../../setting/screen/language_settings.dart';
+import '../../../setting/screen/user_list_screen.dart';
 import '../../../voucher/screens/voucher.dart';
 import '../../controllers/user_controller.dart';
 
@@ -44,11 +50,13 @@ class SettingScreen extends StatelessWidget {
               child: Column(
             children: [
               TAppBar(
+                showBackArrow: true,
                 title: Text(lang.translate('account'),
                     style: Theme.of(context)
                         .textTheme
                         .headlineMedium!
                         .apply(color: DColor.white)),
+                leadingOnPressed: ()=> Get.to(const NavigationMenu()),
               ),
               //UserProfile card
               const TUserProfileTile(),
@@ -88,16 +96,22 @@ class SettingScreen extends StatelessWidget {
                 ),
 
                 TSettingMenuTile(
-                    icon: Iconsax.notification,
-                  title: lang.translate('my_notification'),
-                  subTitle: lang.translate('my_notification_msg'),
-                  onTap: ()=> Get.to(()=>const NotificationScreen( )) ,),
-
-                TSettingMenuTile(
                   icon: Icons.monetization_on,
                   title: lang.translate('my_bonus_point'),
                   subTitle: lang.translate('my_bonus_point_msg'),
                   onTap: ()=> Get.to(()=>DailyCheckInScreen(currentUser: user, )) ,),
+
+                TSettingMenuTile(
+                  icon: Icons.groups,
+                  title: lang.translate('my_sale_group'),
+                  subTitle: lang.translate('my_sale_group_msg'),
+                  onTap: ()=> Get.to(()=> const AllGroupsScreen()) ,),
+
+                TSettingMenuTile(
+                  icon: Icons.people_alt_outlined,
+                  title: lang.translate('my_friends'),
+                  subTitle: lang.translate('my_friends_msg'),
+                  onTap: ()=> Get.to(()=> const FriendListScreen()) ,),
                 //App Settings
                 const SizedBox(height: DSize.spaceBtwSection),
                 TSectionHeading(

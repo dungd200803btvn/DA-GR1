@@ -1,15 +1,15 @@
+import 'package:app_my_app/features/voucher/widgets/search_and_filter.dart';
+import 'package:app_my_app/features/voucher/widgets/voucher_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:app_my_app/l10n/app_localizations.dart';
-import 'package:app_my_app/utils/helper/event_logger.dart';
 import '../../../data/repositories/authentication/authentication_repository.dart';
-import '../../../utils/constants/colors.dart';
-import '../../../utils/popups/loader.dart';
+import '../../../utils/constants/api_constants.dart';
 import '../controllers/voucher_controller.dart';
 import '../models/VoucherModel.dart';
 import '../models/VoucherTabStatus.dart';
 
-class DVoucherTab extends StatelessWidget {
+class DVoucherTab extends StatefulWidget {
   const DVoucherTab({
     super.key,
     required this.voucherFuture,
@@ -24,203 +24,158 @@ class DVoucherTab extends StatelessWidget {
   final VoucherTabStatus voucherTabStatus;
 
   @override
+  State<DVoucherTab> createState() => _DVoucherTabState();
+}
+
+class _DVoucherTabState extends State<DVoucherTab> {
+  String searchQuery = '';
+  String selectedType = 'All';
+
+  @override
   Widget build(BuildContext context) {
     final lang = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: FutureBuilder<List<VoucherModel>>(
-        future: voucherFuture,
+        future: widget.voucherFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return  Center(child: Text(lang.translate('err_load_voucher')));
+            return Center(child: Text(lang.translate('err_load_voucher')));
           }
 
           final vouchers = snapshot.data ?? [];
           final controller = VoucherController.instance;
           final userId = AuthenticationRepository.instance.authUser!.uid;
 
-          // Di chuyển phần lọc dựa vào biến Rx vào bên trong Obx
           return Obx(() {
-            // Ép GetX theo dõi biến Rx (dummy read)
             final _ = controller.claimedVouchers.length;
-            // Lọc danh sách voucher dựa trên trạng thái của tab
             List<VoucherModel> filteredVouchers;
-            switch (voucherTabStatus) {
+            switch (widget.voucherTabStatus) {
               case VoucherTabStatus.available:
-                filteredVouchers = vouchers
-                    .where((voucher) =>
-                !controller.claimedVouchers.contains(voucher.id))
-                    .toList();
+                filteredVouchers = vouchers.where((v) => !controller.allClaimedVouchers.contains(v.id)).toList();
                 break;
               case VoucherTabStatus.claimed:
-                filteredVouchers = vouchers
-                    .where((voucher) =>
-                    controller.claimedVouchers.contains(voucher.id))
-                    .toList();
+                filteredVouchers = vouchers.where((v) => controller.claimedVouchers.contains(v.id)).toList();
                 break;
               case VoucherTabStatus.used:
-              // Giả sử bạn có danh sách used vouchers trong controller (ví dụ: controller.usedVouchers)
-                filteredVouchers = vouchers;
-                break;
               case VoucherTabStatus.expired:
                 filteredVouchers = vouchers;
                 break;
             }
-            // Lấy ra danh sách cần hiển thị dựa vào showAllVouchers
-            final displayedVouchers = showAllVouchers
+
+            // Apply filters
+            if (selectedType != 'All') {
+              filteredVouchers = filteredVouchers.where((v) => v.type.toLowerCase() == selectedType.toLowerCase()).toList();
+            }
+
+            if (searchQuery.isNotEmpty) {
+              filteredVouchers = filteredVouchers.where((v) {
+                return v.title.toLowerCase().contains(searchQuery) ||
+                    v.description.toLowerCase().contains(searchQuery);
+              }).toList();
+            }
+
+            final displayedVouchers = widget.showAllVouchers
                 ? filteredVouchers
-                : filteredVouchers.take(5).toList();
+                : filteredVouchers.take(page_voucher).toList();
 
-            // Nếu không còn voucher nào, hiển thị thông báo
-            if (displayedVouchers.isEmpty) {
-              return  Center(child: Text(lang.translate('no_available_voucher')));
-            }
-
-            // Xác định nội dung nút dựa trên trạng thái của tab
-            String buttonText;
-            String warningMessage;
-            Color buttonColor;
-            switch (voucherTabStatus) {
-              case VoucherTabStatus.available:
-                buttonText = lang.translate('claim');
-                warningMessage =  lang.translate('claim_voucher_msg');
-                buttonColor = Colors.blue;
-                break;
-              case VoucherTabStatus.claimed:
-                buttonText = lang.translate('claimed');
-                warningMessage =  lang.translate('claimed_voucher_msg');
-                buttonColor = DColor.grey;
-                break;
-              case VoucherTabStatus.used:
-                buttonText = lang.translate('used');
-                warningMessage =  lang.translate('used_voucher_msg');
-                buttonColor = DColor.grey;
-                break;
-              case VoucherTabStatus.expired:
-                buttonText = lang.translate('expired');
-                warningMessage =  lang.translate('expired_voucher_msg');
-                buttonColor = DColor.grey;
-                break;
-            }
-
-            // Sử dụng LayoutBuilder để đảm bảo Column có ràng buộc chiều cao
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                return Column(
-                  children: [
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: displayedVouchers.length,
-                        itemBuilder: (_, index) {
-                          final voucher = displayedVouchers[index];
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              elevation: 6,
-                              shadowColor: Colors.black26,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16),
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.white,
-                                      Colors.blue.shade50, // Màu gradient nhẹ nhàng
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
-                                ),
-                                child: ListTile(
-                                  contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                                  title: Text(
-                                    voucher.title,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 18,
-                                      color: Colors.black87,
-                                    ),
-                                  ),
-                                  subtitle: Padding(
-                                    padding: const EdgeInsets.only(top: 6.0),
-                                    child: Text(
-                                      voucher.description,
-                                      style: const TextStyle(
-                                        color: Colors.black54,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ),
-                                  trailing: ElevatedButton(
-                                    onPressed: () async {
-                                      await EventLogger().logEvent(
-                                        eventName: 'claim_voucher',
-                                        additionalData: {'voucher_id': voucher.id},
-                                      );
-                                      if (voucherTabStatus == VoucherTabStatus.available) {
-                                        controller.claimVoucher(voucher.id, userId);
-                                      } else {
-                                        TLoader.warningSnackbar(title: warningMessage);
-                                      }
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: buttonColor, // Màu sắc đã định nghĩa của bạn
-                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      elevation: 4,
-                                    ),
-                                    child: Text(
-                                      buttonText,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+            return Column(
+              children: [
+                SearchAndFilterSection(
+                  searchQuery: searchQuery,
+                  onSearchChanged: (value) => setState(() => searchQuery = value),
+                  selectedType: selectedType,
+                  onTypeChanged: (value) => setState(() => selectedType = value),
+                  voucherTypes: voucherTypes,
+                  voucherCount: filteredVouchers.length,
+                ),
+                const SizedBox(height: 12),
+                Expanded(
+                  child: displayedVouchers.isEmpty
+                      ? Center(
+                    child: Text(
+                      lang.translate('no_available_voucher'),
+                      style: const TextStyle(fontSize: 16, color: Colors.grey),
                     ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: onToggleShowAll,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                        backgroundColor: Colors.deepPurple,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        elevation: 4,
+                  )
+                      :  ListView.builder(
+                    itemCount: displayedVouchers.length,
+                    itemBuilder: (_, index) {
+                      final voucher = displayedVouchers[index];
+                      return VoucherCard(
+                        voucher: voucher,
+                        buttonText: _getButtonText(lang),
+                        buttonColor: _getButtonColor(),
+                        warningMessage: _getWarningMessage(lang),
+                        tabStatus: widget.voucherTabStatus,
+                        userId: userId,
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 8),
+                ...filteredVouchers.length > page_voucher
+                    ? [
+                  ElevatedButton(
+                    onPressed: widget.onToggleShowAll,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                      backgroundColor: Colors.deepPurple,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Text(
-                        !showAllVouchers && filteredVouchers.length > 5
-                            ? lang.translate('show_more')
-                            : lang.translate('less'),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
+                      elevation: 4,
                     ),
-                    const SizedBox(height: 16),
-                  ],
-                );
-              },
+                    child: Text(
+                      !widget.showAllVouchers
+                          ? lang.translate('show_more')
+                          : lang.translate('less'),
+                      style: const TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                ]
+                    : [],
+              ],
             );
           });
         },
       ),
     );
   }
-}
 
+  String _getButtonText(AppLocalizations lang) {
+    switch (widget.voucherTabStatus) {
+      case VoucherTabStatus.available:
+        return lang.translate('claim');
+      case VoucherTabStatus.claimed:
+        return lang.translate('claimed');
+      case VoucherTabStatus.used:
+        return lang.translate('used');
+      case VoucherTabStatus.expired:
+        return lang.translate('expired');
+    }
+  }
+
+  Color _getButtonColor() {
+    return widget.voucherTabStatus == VoucherTabStatus.available
+        ? Colors.blue
+        : Colors.grey;
+  }
+
+  String _getWarningMessage(AppLocalizations lang) {
+    switch (widget.voucherTabStatus) {
+      case VoucherTabStatus.available:
+        return lang.translate('claim_voucher_msg');
+      case VoucherTabStatus.claimed:
+        return lang.translate('claimed_voucher_msg');
+      case VoucherTabStatus.used:
+        return lang.translate('used_voucher_msg');
+      case VoucherTabStatus.expired:
+        return lang.translate('expired_voucher_msg');
+    }
+  }
+}

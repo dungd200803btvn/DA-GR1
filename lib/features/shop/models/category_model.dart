@@ -6,6 +6,7 @@ class CategoryModel {
   String image;
   String parentId;
   bool isFeatured;
+  int? productCount;
 
   CategoryModel({
     required this.id,
@@ -13,6 +14,7 @@ class CategoryModel {
     required this.image,
     this.parentId = '',
     required this.isFeatured,
+    this.productCount
   });
   static CategoryModel empty() => CategoryModel(id: "", name: "", image: "", isFeatured: false);
   //convert to Json
@@ -32,6 +34,17 @@ class CategoryModel {
       image: json['categoryImage'] ?? '', // Nếu API không trả về Image, có thể gán chuỗi rỗng
       isFeatured: json['IsFeatured'] ?? false,
       parentId: json['ParentId'] ?? '',
+    );
+  }
+
+  factory CategoryModel.fromMap(String catId,Map<String, dynamic> json,String? image, int? productCount) {
+    return CategoryModel(
+      id: catId,
+      name: json['Name'] ?? '',
+      image: image ?? '', // Nếu API không trả về Image, có thể gán chuỗi rỗng
+      isFeatured: json['IsFeatured'] ?? false,
+      parentId: json['ParentId'] ?? '',
+      productCount: productCount
     );
   }
 

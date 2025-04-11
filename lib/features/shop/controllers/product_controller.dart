@@ -7,7 +7,9 @@ import 'package:app_my_app/data/repositories/product/product_repository.dart';
 import 'package:app_my_app/features/shop/models/product_model.dart';
 import 'package:app_my_app/utils/enum/enum.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../utils/constants/image_strings.dart';
 import '../../../utils/formatter/formatter.dart';
+import '../../../utils/popups/full_screen_loader.dart';
 import '../../../utils/popups/loader.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import '../../suggestion/suggestion_repository.dart';
@@ -141,6 +143,12 @@ class ProductController extends GetxController {
   void fetchFeaturedProducts() async {
     try {
       isLoading.value = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        TFullScreenLoader.openLoadingDialog(
+          'Loading products now...',
+          TImages.loaderAnimation,
+        );
+      });
       //fetch products
       final products = await productRepository.getFeaturedProducts();
       final products1 = await productRepository.getAllProducts();
@@ -154,6 +162,9 @@ class ProductController extends GetxController {
       }
     } finally {
       isLoading.value = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        TFullScreenLoader.stopLoading();
+      });
     }
   }
 

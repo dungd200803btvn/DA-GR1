@@ -190,9 +190,7 @@ class WriteReviewScreenController extends GetxController{
       finalMessage = finalMessage.replaceAll(RegExp(r'[{}]'), '');
       // Upload ảnh bonus để dùng cho thông báo
       String url = await  TCloudHelperFunctions.uploadAssetImage( "assets/images/content/bonus_point.jpg", "bonus_point");
-      final NotificationService notificationService =
-      NotificationService(userId: AuthenticationRepository.instance.authUser!.uid);
-      await notificationService.createAndSendNotification(
+      await NotificationService.instance.createAndSendNotification(
         title: lang.translate('get_point_success'),
         message: finalMessage,
         type: "points",
