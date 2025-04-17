@@ -617,6 +617,8 @@ class ProductRepository extends GetxController {
     return filteredProducts;
   }
 
+
+
 }
 
 

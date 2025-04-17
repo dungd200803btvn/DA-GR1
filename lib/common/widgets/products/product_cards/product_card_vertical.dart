@@ -57,111 +57,120 @@ class TProductCardVertical extends StatelessWidget {
       },
       child: Container(
         width: 180,
+        height: 300,
         padding: const EdgeInsets.all(1),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(DSize.productImageRadius),
             color: dark ? DColor.darkerGrey : DColor.white,
             boxShadow: [TShadowStyle.verticalProductShadow]),
-        child: Column(
-          children: [
-            //Thumbnail,wishlist,discount tag
-            TRoundedContainer(
-              height: 180,
-              width: 180,
-              padding: const EdgeInsets.all(DSize.sm),
-              backgroundColor: dark ? DColor.light : DColor.light,
-              child: Stack(
-                children: [
-                  //Thumbnail Image
-                  Center(
-                    child: TRoundedImage(
-                      imageUrl: imageUrl,
-                      applyImageRadius: true,
-                      isNetWorkImage: isNetWorkImage,
-                    ),
-                  ),
-                  //Sale Tag
-                  if (salePercentage != null)
-                    Positioned(
-                      top: 12,
-                      child: TRoundedContainer(
-                        radius: DSize.sm,
-                        backgroundColor: DColor.secondary.withOpacity(0.8),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: DSize.sm, vertical: DSize.xs),
-                        child: Text(
-                            '${controller.calculateSalePercentage(salePercentage)}%',
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelLarge!
-                                .apply(color: DColor.black)),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxHeight: 300,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              //Thumbnail,wishlist,discount tag
+              TRoundedContainer(
+                height: 180,
+                width: 180,
+                padding: const EdgeInsets.all(DSize.sm),
+                backgroundColor: dark ? DColor.light : DColor.light,
+                child: Stack(
+                  children: [
+                    //Thumbnail Image
+                    Center(
+                      child: TRoundedImage(
+                        imageUrl: imageUrl,
+                        applyImageRadius: true,
+                        isNetWorkImage: isNetWorkImage,
                       ),
                     ),
-
-                  ///Favourite Button
-                  Positioned(
-                      top: 0,
-                      right: 0,
-                      child: TFavouriteIcon(
-                        productId: product.id,
-                      )),
-                ],
+                    //Sale Tag
+                    if (salePercentage != null)
+                      Positioned(
+                        top: 12,
+                        child: TRoundedContainer(
+                          radius: DSize.sm,
+                          backgroundColor: DColor.secondary.withOpacity(0.8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: DSize.sm, vertical: DSize.xs),
+                          child: Text(
+                              '${controller.calculateSalePercentage(salePercentage)}%',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge!
+                                  .apply(color: DColor.black)),
+                        ),
+                      ),
+          
+                    ///Favourite Button
+                    Positioned(
+                        top: 0,
+                        right: 0,
+                        child: TFavouriteIcon(
+                          productId: product.id,
+                        )),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: DSize.spaceBtwItem / 2),
-            //Detail
-            Padding(
-              padding: const EdgeInsets.only(left: DSize.sm),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              const SizedBox(height: DSize.spaceBtwItem / 2),
+              //Detail
+              Padding(
+                padding: const EdgeInsets.only(left: DSize.sm),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TProductTitleText(title: product.title, smallSize: true),
+                    const SizedBox(height: DSize.spaceBtwItem / 4),
+                    TBrandTitleWithVerifiedIcon(
+                        title: product.brand != null ? product.brand!.name : " "),
+                  ],
+                ),
+              ),
+              Flexible(
+                child: SizedBox(height: 8), // hoặc dùng khoảng trắng nhỏ
+              ),
+              //Price Row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  TProductTitleText(title: product.title, smallSize: true),
-                  const SizedBox(height: DSize.spaceBtwItem / 4),
-                  TBrandTitleWithVerifiedIcon(
-                      title: product.brand != null ? product.brand!.name : " "),
-                ],
-              ),
-            ),
-            const Spacer(),
-            //Price Row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                //Price
-                Flexible(
-                  child: Column(
-                    children: [
-                      if (product.productType ==
-                              ProductType.single.toString() &&
-                          salePercentage != null)
-                        //gia cu bi gach di
+                  //Price
+                  Flexible(
+                    child: Column(
+                      children: [
+                        if (product.productType ==
+                                ProductType.single.toString() &&
+                            salePercentage != null)
+                          //gia cu bi gach di
+                          Padding(
+                            padding: const EdgeInsets.only(left: DSize.sm),
+                            child: Text(
+                              DFormatter.formattedAmount(product.price),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelMedium!
+                                  .apply(decoration: TextDecoration.lineThrough),
+                            ),
+                          ),
+                        //Gia moi sau khi ap dung chinh sach khuyen mai
                         Padding(
                           padding: const EdgeInsets.only(left: DSize.sm),
-                          child: Text(
-                            DFormatter.formattedAmount(product.price),
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelMedium!
-                                .apply(decoration: TextDecoration.lineThrough),
-                          ),
+                          child: TProductPriceText(
+                              price: controller.getProductPrice(
+                                  product, salePercentage)),
                         ),
-                      //Gia moi sau khi ap dung chinh sach khuyen mai
-                      Padding(
-                        padding: const EdgeInsets.only(left: DSize.sm),
-                        child: TProductPriceText(
-                            price: controller.getProductPrice(
-                                product, salePercentage)),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                ProductCardAddtoCartButton(
-                  product: product,
-                  salePercentage: salePercentage,
-                )
-              ],
-            ),
-          ],
+                  ProductCardAddtoCartButton(
+                    product: product,
+                    salePercentage: salePercentage,
+                  )
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

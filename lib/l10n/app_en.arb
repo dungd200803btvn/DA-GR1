@@ -334,5 +334,7 @@
   "confirm_delete_group": "Are you sure you want to delete this group?",
   "search_voucher": "Search voucher",
   "voucher_count": "Number of vouchers",
-  "filter": "Filter"
+  "filter": "Filter",
+  "personalized_recommendation": "Personalized Recommend",
+  "suggest_product": "Suggest for you"
 }
