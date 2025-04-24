@@ -10,7 +10,7 @@ class VoucherRepository {
   // Fetch all vouchers
   Future<List<VoucherModel>> fetchAllVouchers() async {
     try {
-      final result = await _db.collection('voucher').get();
+      final result = await _db.collection('voucher').where('isRedeemableByPoint',isEqualTo:false).get();
       return result.docs.map((doc) => VoucherModel.fromSnapshot(doc)).toList();
     } catch (e) {
       throw 'Error fetching vouchers: $e';
@@ -50,6 +50,16 @@ class VoucherRepository {
       return result.docs.map((doc) => VoucherModel.fromSnapshot(doc)).toList();
     } catch (e) {
       throw 'Error fetching vouchers: $e';
+    }
+  }
+
+  Future<List<VoucherModel>> fetchRedeemableByPointVouchers() async {
+    try {
+      final result = await _db.collection('voucher').where('isRedeemableByPoint',isEqualTo:true)
+          .get();
+      return result.docs.map((doc) => VoucherModel.fromSnapshot(doc)).toList();
+    } catch (e) {
+      throw 'Error fetchRedeemableByPointVouchers(): $e';
     }
   }
 
@@ -94,6 +104,62 @@ class VoucherRepository {
       throw 'Error fetching vouchers: $e';
     }
   }
+
+  Future<List<VoucherModel>> fetchUserClaimedVouchersDuplicated(String userId) async {
+    try {
+      final claimedSnapshot = await _db
+          .collection('User')
+          .doc(userId)
+          .collection('claimed_vouchers')
+          .where('is_used', isEqualTo: false)
+          .get();
+
+      if (claimedSnapshot.docs.isEmpty) return [];
+
+      // Map đếm số lần mỗi voucherId được claim
+      Map<String, int> claimCountMap = {};
+      for (var doc in claimedSnapshot.docs) {
+        final claimed = ClaimedVoucherModel.fromSnapshot(doc);
+        claimCountMap.update(claimed.voucherId, (value) => value + 1, ifAbsent: () => 1);
+      }
+
+      // Truy vấn tất cả các voucher gốc
+      final voucherIds = claimCountMap.keys.toList();
+      Map<String, VoucherModel> voucherMap = {};
+
+      const batchSize = 30;
+      for (int i = 0; i < voucherIds.length; i += batchSize) {
+        final subList = voucherIds.sublist(
+          i,
+          i + batchSize > voucherIds.length ? voucherIds.length : i + batchSize,
+        );
+
+        final voucherSnapshot = await _db
+            .collection('voucher')
+            .where('id', whereIn: subList)
+            .get();
+
+        for (var doc in voucherSnapshot.docs) {
+          final voucher = VoucherModel.fromSnapshot(doc);
+          voucherMap[voucher.id] = voucher;
+        }
+      }
+
+      // Nhân bản từng voucher tương ứng với số lần được claim
+      List<VoucherModel> result = [];
+      for (var entry in claimCountMap.entries) {
+        final voucher = voucherMap[entry.key];
+        if (voucher != null) {
+          result.addAll(List.generate(entry.value, (_) => voucher));
+        }
+      }
+
+      return result;
+    } catch (e) {
+      throw 'Error fetching claimed vouchers with duplicates: $e';
+    }
+  }
+
 
   Future<List<VoucherModel>> fetchUsedVoucher(String userId) async {
     try {

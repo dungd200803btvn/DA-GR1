@@ -5,6 +5,7 @@ import 'package:app_my_app/utils/constants/enums.dart';
 import 'package:app_my_app/utils/formatter/formatter.dart';
 import 'package:app_my_app/utils/helper/helper_function.dart';
 import '../../../data/model/OrderDetailResponseModel.dart';
+import '../../../utils/enum/enum.dart';
 import 'cart_item_model.dart';
 
 class OrderModel {

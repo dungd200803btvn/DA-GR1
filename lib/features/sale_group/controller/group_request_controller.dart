@@ -159,6 +159,7 @@ class GroupRequestController extends GetxController {
             isActive: true,
             createdAt: now,
             updatedAt: now,
+            isRedeemableByPoint: false
           );
           await FirebaseFirestore.instance
               .collection('voucher')

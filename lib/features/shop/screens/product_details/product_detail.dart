@@ -6,16 +6,13 @@ import 'package:app_my_app/common/widgets/texts/section_heading.dart';
 import 'package:app_my_app/features/review/controller/review_controller.dart';
 import 'package:app_my_app/features/shop/controllers/product/cart_controller.dart';
 import 'package:app_my_app/features/shop/screens/product_details/widgets/bottom_add_to_cart_widget.dart';
-import 'package:app_my_app/features/shop/screens/product_details/widgets/product_attributes.dart';
 import 'package:app_my_app/features/shop/screens/product_details/widgets/product_detail_image_slider.dart';
 import 'package:app_my_app/features/shop/screens/product_details/widgets/product_meta_data.dart';
 import 'package:app_my_app/features/shop/screens/product_details/widgets/rating_share_widget.dart';
 import 'package:app_my_app/features/shop/screens/product_reviews/product_review.dart';
 import 'package:app_my_app/l10n/app_localizations.dart';
 import 'package:app_my_app/utils/constants/sizes.dart';
-import 'package:app_my_app/utils/enum/enum.dart';
 import 'package:app_my_app/utils/helper/event_logger.dart';
-
 import '../../../../common/widgets/appbar/appbar.dart';
 import '../../../../common/widgets/products/cart/cart_menu_icon.dart';
 import '../../../review/screen/review_screen.dart';
@@ -30,7 +27,7 @@ class ProductDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = WriteReviewScreenController.instance;
+    final controller = Get.put(WriteReviewScreenController());
     final cartController = CartController.instance;
     final item = cartController.toCartModel(product, 1);
     final lang = AppLocalizations.of(context);

@@ -34,19 +34,15 @@ class DVoucherApply extends StatelessWidget {
           final vouchers = snapshot.data ?? [];
           final controller = VoucherController.instance;
           final userId = AuthenticationRepository.instance.authUser!.uid;
-          return Obx((){
-            // Lọc ra danh sách voucher chưa được áp dụng
-            final availableVouchers = vouchers
-                .where((voucher) => !controller.appliedVouchers.contains(voucher.id))
-                .toList();
+
             // Nếu không còn voucher nào, hiển thị thông báo
-            if (availableVouchers.isEmpty) {
+            if (vouchers.isEmpty) {
               return  Center(child: Text(lang.translate('no_available_voucher')));
             }
             return ListView.builder(
-              itemCount: availableVouchers.length,
+              itemCount: vouchers.length,
               itemBuilder: (_, index) {
-                final voucher = availableVouchers[index];
+                final voucher = vouchers[index];
                 return Card(
                   margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   shape: RoundedRectangleBorder(
@@ -76,41 +72,35 @@ class DVoucherApply extends StatelessWidget {
                         voucher.description,
                         style: const TextStyle(color: Colors.black54),
                       ),
-                      trailing: Obx(() {
-                        final isUsed = controller.appliedVouchers.contains(voucher.id);
-                        return ElevatedButton(
-                          onPressed: isUsed
-                              ? () {
-                            TLoader.warningSnackbar(
-                              title: lang.translate('voucher_has_been_used'),
-                            );
-                          }
-                              : () async{
+                      trailing:
+                        ElevatedButton(
+                          onPressed: () async{
                             final discount = await controller.applyVoucher(voucher.id, userId);
                             await EventLogger().logEvent(eventName: 'apply_voucher',
-                            additionalData: {
-                              'voucher_id' :voucher.id,
-                              'discount_value':discount
-                            });
+                                additionalData: {
+                                  'voucher_id' :voucher.id,
+                                  'discount_value':discount
+                                });
+                            Navigator.of(context).pop();
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: isUsed ? DColor.grey : Colors.green,
+                            backgroundColor:  Colors.green,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
                           child: Text(
-                            isUsed ? lang.translate('applied') : lang.translate('apply'),
+                            lang.translate('apply'),
                             style: const TextStyle(color: Colors.white),
                           ),
-                        );
-                      }),
+                        )
+
                     ),
                   ),
                 );
               },
             );
-          });
+
         },
       ),
     );

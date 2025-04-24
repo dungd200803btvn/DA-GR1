@@ -1,3 +1,4 @@
+import 'package:app_my_app/data/repositories/bonus_point/mission_repository.dart';
 import 'package:app_my_app/features/notification/controller/notification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -83,6 +84,7 @@ class LoginController extends GetxController {
       UserSession.instance.initialize(AuthenticationRepository.instance.authUser!.uid,UserController.instance.user.value.fullname);
       NotificationService.instance.initialize(AuthenticationRepository.instance.authUser!.uid);
       UserRepository.instance.updateUserPointsAndFcmToken(AuthenticationRepository.instance.authUser!.uid);
+      await MissionRepository.instance.createMissionsBulk();
       // Navigate to NavigationMenu
       Get.to(() => const NavigationMenu());
     } on FirebaseAuthException catch (e) {

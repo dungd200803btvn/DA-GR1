@@ -22,44 +22,23 @@ class StripeService{
   StripeService._();
   static final StripeService instance =  StripeService._();
   final reviewRepository = ReviewRepository.instance;
-  Future<void> makePayment(double amount, String currency,String userId,String orderId,BuildContext context)async{
-    final lang = AppLocalizations.of(context);
+  Future<bool> makePayment(double amount, String currency,String userId,String orderId,BuildContext context)async{
     try{
-
       String? result = await _createPaymentIntent(amount,
           currency);
-        if(result== null) return;
+        if(result== null) return false;
         await Stripe.instance.initPaymentSheet(
             paymentSheetParameters: SetupPaymentSheetParameters(
               paymentIntentClientSecret: result,
               merchantDisplayName: "Le Chi Dung"
             ));
         await processPayment();
-      TFullScreenLoader.stopLoading();
-      Get.off(() => SuccessScreen(
-          image: TImages.orderCompletedAnimation,
-          title: lang.translate('payment_success'),
-          subTitle: lang.translate('ship_soon'),
-          onPressed: () async {
-            Get.offAll(() => const NavigationMenu());
-          }
-      ));
-      final formattedTime = DFormatter.FormattedDate(DateTime.now());
-
-      String url =  await TCloudHelperFunctions.uploadAssetImage("assets/images/content/order_success.png", "order_success");
-      await NotificationService.instance.createAndSendNotification(
-        title: lang.translate('order_success'),
-        message: "${lang.translate('order_success_msg')} $formattedTime",
-        type: "order",
-        orderId: orderId,
-        imageUrl: url// nếu có
-      );
+     return true;
     }catch(e){
       if (kDebugMode) {
         print(e);
       }
-      TFullScreenLoader.stopLoading();
-      TLoader.warningSnackbar(title: lang.translate('warning_payment_cancel'));
+      return false;
     }
   }
 

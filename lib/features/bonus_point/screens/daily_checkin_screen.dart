@@ -1,3 +1,6 @@
+import 'package:app_my_app/features/bonus_point/screens/mission_list_screen.dart';
+import 'package:app_my_app/features/bonus_point/screens/reward_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -135,6 +138,28 @@ class _DailyCheckInScreenState extends State<DailyCheckInScreen> {
         showBackArrow: true,
         title: Text(lang.translate('get_bonus_points'),style: Theme.of(context).textTheme.headlineSmall, ),
         leadingOnPressed: ()=> Get.to(const SettingScreen()),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'mission_list_screen') {
+                Get.to(() => const MissionListScreen());
+              } else if (value == 'exchange_rewards') {
+                Get.to(() => RewardsScreen());
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              PopupMenuItem<String>(
+                value: 'mission_list_screen',
+                child: Text(lang.translate('mission_list_screen')),
+              ),
+              PopupMenuItem<String>(
+                value: 'exchange_rewards',
+                child: Text(lang.translate('exchange_rewards')),
+              ),
+            ],
+            icon: const Icon(Icons.more_vert),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -168,12 +193,36 @@ class _DailyCheckInScreenState extends State<DailyCheckInScreen> {
                       ),
                     ),
                     SizedBox(height: 8),
-                    Text(
-                      "${lang.translate('current_bonus_points')}: ${widget.currentUser.points}",
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black87,
-                      ),
+                    StreamBuilder<DocumentSnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('User')
+                          .doc(widget.currentUser.id)
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return CircularProgressIndicator();
+                        }
+
+                        if (snapshot.hasError) {
+                          return Text("Error: ${snapshot.error}");
+                        }
+
+                        if (!snapshot.hasData || !snapshot.data!.exists) {
+                          return Text("User data not found.");
+                        }
+
+                        // Cập nhật điểm thưởng từ dữ liệu Firestore
+                        final userData = snapshot.data!.data() as Map<String, dynamic>;
+                        final points = userData['Points'] ?? 0;
+
+                        return Text(
+                          "${lang.translate('current_bonus_points')}: $points",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black87,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),

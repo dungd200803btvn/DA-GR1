@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:app_my_app/data/repositories/product/product_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -92,7 +94,7 @@ class VoucherController extends GetxController{
 
   Future<List<VoucherModel>> getUserClaimedVoucher(String userId) async {
     try {
-      final vouchers = await voucherRepository.fetchUserClaimedVoucher(userId);
+      final vouchers = await voucherRepository.fetchUserClaimedVouchersDuplicated(userId);
       return vouchers;
     } catch (e) {
       TLoader.errorSnackbar(title: 'getUserClaimedVoucher() not found', message: e.toString());
@@ -114,6 +116,9 @@ class VoucherController extends GetxController{
       }
       return [];
     }
+  }
+  Future<bool> isUsed(String userId, String voucherId) async {
+    return await claimedVoucherRepository.isUsed(userId, voucherId);
   }
 
   Future<List<VoucherModel>> getApplicableVouchers() async {
@@ -256,7 +261,7 @@ class VoucherController extends GetxController{
             break;
         }
       }
-      return applicableVouchers;
+      return vouchers;
     } catch (e) {
       throw 'Error checking applicable vouchers: $e';
     }
@@ -418,7 +423,8 @@ class VoucherController extends GetxController{
           }
           break;
         case 'percentage_discount':
-          discountValue = OrderController.instance.totalAmount.value * (voucher.discountValue/100).clamp(0, voucher.maxDiscount!);
+          final calculatedDiscount = OrderController.instance.totalAmount.value * (voucher.discountValue / 100);
+          discountValue = min(calculatedDiscount, voucher.maxDiscount!);
           appliedVouchersInfo.add(
             VoucherAppliedInfo(
               type: voucher.type,

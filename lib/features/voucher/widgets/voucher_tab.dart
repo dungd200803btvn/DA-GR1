@@ -58,7 +58,7 @@ class _DVoucherTabState extends State<DVoucherTab> {
                 filteredVouchers = vouchers.where((v) => !controller.allClaimedVouchers.contains(v.id)).toList();
                 break;
               case VoucherTabStatus.claimed:
-                filteredVouchers = vouchers.where((v) => controller.claimedVouchers.contains(v.id)).toList();
+                filteredVouchers = vouchers;
                 break;
               case VoucherTabStatus.used:
               case VoucherTabStatus.expired:

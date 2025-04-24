@@ -1,3 +1,5 @@
+import 'package:app_my_app/features/bonus_point/handlers/mission_tracker.dart';
+import 'package:app_my_app/utils/enum/enum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
@@ -20,6 +22,8 @@ import '../../../../api/ApiService.dart';
 import '../../../../data/model/OrderDetailResponseModel.dart';
 import '../../../../data/model/OrderResponseModel.dart';
 import '../../../../data/repositories/authentication/authentication_repository.dart';
+import '../../../../utils/formatter/formatter.dart';
+import '../../../../utils/helper/cloud_helper_functions.dart';
 import '../../../notification/controller/notification_service.dart';
 import '../../../payment/services/stripe_service.dart';
 import '../../../personalization/models/address_model.dart';
@@ -130,6 +134,19 @@ class OrderController extends GetxController {
     });
     try {
       ShippingOrderService shippingService  =  ShippingOrderService();
+      final userId = AuthenticationRepository.instance.authUser!.uid;
+      final orderCode = shippingOrder!.orderCode;
+      // 👉 Gọi makePayment trước để UI phản hồi nhanh
+      final result =  await StripeService.instance.makePayment(
+        netAmount.value / 24500,
+        "usd",
+        userId,
+        orderCode,
+        context,
+      );
+      if (!result) {
+        throw Exception("Payment failed or cancelled.");
+      }
       try {
         if (kDebugMode) {
           final detailOrder = await shippingService.getOrderDetail(shippingOrder!.orderCode);
@@ -148,22 +165,41 @@ class OrderController extends GetxController {
               items: cartController.cartItems.toList(),
               orderDetail: shippingDetailOrder);
           await orderRepository.saveOrder(order, userId);
-          final userOrders = await orderRepository.fetchUserOrders();
-          await suggestionRepository.generateAndSaveSuggestions(userOrders);
           cartController.clearCart();
-          StripeService.instance.makePayment(netAmount.value/24500,"usd",userId,order.id,context);
+          await MissionTracker.instance.track(MissionType.quickOrder, context);
+          await MissionTracker.instance.track(
+            MissionType.highValueOrder,
+            context,
+            extraData: netAmount.value, // Giá trị đơn hàng
+          );
+          // Gửi thông báo
+          final formattedTime = DFormatter.FormattedDate(DateTime.now());
+          String url = await TCloudHelperFunctions.uploadAssetImage(
+              "assets/images/content/order_success.png",
+              "order_success"
+          );
+
+          await NotificationService.instance.createAndSendNotification(
+            title: lang.translate('order_success'),
+            message: "${lang.translate('order_success_msg')} $formattedTime",
+            type: "order",
+            orderId: orderCode,
+            imageUrl: url,
+          );
         }
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          TFullScreenLoader.stopLoading();
+        });
+
+        // ✅ Sau khi tất cả xử lý xong thì mới điều hướng
       } catch (e) {
         if (kDebugMode) {
           print('Failed to create order: $e');
         }
       }
+
     } catch (e) {
       TLoader.errorSnackbar(title: lang.translate('snap'), message: e.toString());
-    }finally{
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        TFullScreenLoader.stopLoading();
-      });
     }
   }
 

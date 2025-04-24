@@ -22,7 +22,10 @@ class VoucherModel {
   final List<String>? claimedUsers; //nguoi da nhan
   final bool isActive; //trang thai hoat dong
   final Timestamp createdAt; //thoi diem tao
-  final Timestamp updatedAt; //thoi diem update lan cuoi
+  final Timestamp updatedAt;
+  final bool isRedeemableByPoint;
+  final num? pointsToRedeem;
+  //thoi diem update lan cuoi
 
   VoucherModel({
     required this.id,
@@ -47,6 +50,8 @@ class VoucherModel {
     required this.isActive,
     required this.createdAt,
     required this.updatedAt,
+    required this.isRedeemableByPoint,
+    this.pointsToRedeem
   });
 
   Map<String, dynamic> toJson() {
@@ -73,6 +78,8 @@ class VoucherModel {
       'is_active': isActive,
       'created_at': createdAt,
       'updated_at': updatedAt,
+      'isRedeemableByPoint':isRedeemableByPoint,
+      'pointsToRedeem':pointsToRedeem
     };
   }
 
@@ -101,6 +108,8 @@ class VoucherModel {
       isActive: data['is_active'] as bool,
       createdAt: data['created_at'] as Timestamp,
       updatedAt: data['updated_at'] as Timestamp,
+      isRedeemableByPoint: data['isRedeemableByPoint'] as bool,
+      pointsToRedeem: data['pointsToRedeem'] as num?
     );
   }
 
@@ -152,6 +161,8 @@ class VoucherModel {
       isActive: isActive ?? this.isActive,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      isRedeemableByPoint:  this.isRedeemableByPoint,
+        pointsToRedeem: this.pointsToRedeem
     );
   }
 }

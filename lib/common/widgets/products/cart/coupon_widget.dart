@@ -77,7 +77,7 @@ class _TCouponCodeState extends State<TCouponCode> {
                     ),
                     builder: (context) {
                       return DVoucherApply(
-                        voucherFuture: controller.getApplicableVouchers(),
+                        voucherFuture: controller.getUserClaimedVoucher(widget.userId),
                       );
                     },
                   );
@@ -91,7 +91,7 @@ class _TCouponCodeState extends State<TCouponCode> {
                     ),
                     builder: (context) {
                       return DVoucherApply(
-                        voucherFuture: controller.getApplicableVouchers(),
+                        voucherFuture: controller.getUserClaimedVoucher(widget.userId),
                       );
                     },
                   );

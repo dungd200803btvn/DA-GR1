@@ -63,16 +63,22 @@ class ClaimedVoucherRepository {
         .get();
     return querySnapshot.docs.isNotEmpty;
   }
+
   Future<bool> isUsed(String userId, String voucherId) async {
     final querySnapshot = await _db
         .collection('User')
         .doc(userId)
         .collection('claimed_vouchers')
         .where('voucher_id', isEqualTo: voucherId)
-        .where('is_used', isEqualTo: true)
         .get();
-    return querySnapshot.docs.isNotEmpty;
+
+    // Nếu không có document nào thì chắc chắn chưa dùng
+    if (querySnapshot.docs.isEmpty) return false;
+
+    // Trả về true nếu tất cả đều có is_used == true
+    return querySnapshot.docs.every((doc) => doc['is_used'] == true);
   }
+
 
   Future<void> applyVoucher(String userId, String voucherId) async {
     final querySnapshot = await _db
@@ -80,12 +86,20 @@ class ClaimedVoucherRepository {
         .doc(userId)
         .collection('claimed_vouchers')
         .where('voucher_id', isEqualTo: voucherId)
+        .where('is_used', isEqualTo: false)
+        .limit(1) // chỉ lấy 1 bản ghi chưa dùng
         .get();
 
-    for (var doc in querySnapshot.docs) {
+    if (querySnapshot.docs.isNotEmpty) {
+      final doc = querySnapshot.docs.first;
       await doc.reference.update({
         'is_used': true,
-        'used_at': FieldValue.serverTimestamp(), });
+        'used_at': FieldValue.serverTimestamp(),
+      });
+    } else {
+      // Optional: throw hoặc log nếu không tìm thấy voucher chưa dùng
+      print('No unused voucher found to apply.');
     }
   }
+
 }

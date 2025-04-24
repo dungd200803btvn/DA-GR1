@@ -1,3 +1,4 @@
+import 'package:app_my_app/navigation_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:app_my_app/common/widgets/appbar/appbar.dart';
@@ -15,7 +16,10 @@ import 'package:app_my_app/utils/popups/loader.dart';
 import '../../../../common/widgets/products/cart/coupon_widget.dart';
 import '../../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/formatter/formatter.dart';
+import '../../../../utils/popups/full_screen_loader.dart';
+import '../../../payment/services/stripe_service.dart';
 import '../cart/widgets/cart_items.dart';
 
 class CheckoutScreen extends StatelessWidget {
@@ -91,14 +95,18 @@ class CheckoutScreen extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () async {
             if (subTotal > 0) {
-              orderController.processOrder(subTotal, context);
+              // ✅ Xử lý logic nặng trong microtask để không chặn frame UI
+              await orderController.processOrder(subTotal, context);
               await EventLogger().logEvent(eventName: 'navigate_payment');
+              Get.to(const NavigationMenu());
             } else {
               TLoader.warningSnackbar(
-                  title: lang.translate('empty_cart'),
-                  message: lang.translate('add_cart_warning'));
+                title: lang.translate('empty_cart'),
+                message: lang.translate('add_cart_warning'),
+              );
             }
           },
+
           child: Obx(() => Text(
               '${lang.translate('checkout')}: ${DFormatter.formattedAmount(orderController.netAmount.value)} VND')),
         ),

@@ -17,15 +17,9 @@ class CreateSaleGroupScreen extends StatefulWidget {
 class _CreateSaleGroupScreenState extends State<CreateSaleGroupScreen> {
   final _formKey = GlobalKey<FormState>();
   final controller = SaleGroupController.instance;
-  // late final SaleGroupController controller;
   @override
   void initState() {
     super.initState();
-    // Xóa controller cũ nếu tồn tại
-    // if (Get.isRegistered<SaleGroupController>()) {
-    //   Get.delete<SaleGroupController>();
-    // }
-    // controller = Get.put(SaleGroupController());
   }
   @override
   Widget build(BuildContext context) {

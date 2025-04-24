@@ -26,6 +26,7 @@ import '../../../../api/ShippingService.dart';
 import '../../../../common/widgets/list_tiles/user_profile_tile.dart';
 import '../../../../data/repositories/vouchers/VoucherRepository.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../bonus_point/screens/mission_list_screen.dart';
 import '../../../notification/controller/notification_controller.dart';
 import '../../../notification/screen/notification_screen.dart';
 import '../../../setting/screen/friend_list_screen.dart';
@@ -97,9 +98,15 @@ class SettingScreen extends StatelessWidget {
 
                 TSettingMenuTile(
                   icon: Icons.monetization_on,
-                  title: lang.translate('my_bonus_point'),
-                  subTitle: lang.translate('my_bonus_point_msg'),
+                  title: lang.translate('my_daily_checkin'),
+                  subTitle: lang.translate('my_daily_checkin_msg'),
                   onTap: ()=> Get.to(()=>DailyCheckInScreen(currentUser: user, )) ,),
+
+                TSettingMenuTile(
+                  icon: Icons.task,
+                  title: lang.translate('my_mission'),
+                  subTitle: lang.translate('my_mission_msg'),
+                  onTap: ()=> Get.to(()=>const MissionListScreen()) ,),
 
                 TSettingMenuTile(
                   icon: Icons.groups,

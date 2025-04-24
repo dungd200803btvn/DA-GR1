@@ -20,9 +20,12 @@ import 'package:app_my_app/features/shop/controllers/product/variation_controlle
 import 'package:app_my_app/features/voucher/controllers/voucher_controller.dart';
 import 'package:app_my_app/utils/helper/network_manager.dart';
 import '../data/repositories/authentication/authentication_repository.dart';
+import '../data/repositories/bonus_point/mission_repository.dart';
 import '../data/repositories/notification/notification_repository.dart';
 import '../data/repositories/review/review_repository.dart';
 import '../data/repositories/vouchers/VoucherRepository.dart';
+import '../features/bonus_point/controller/mission_controller.dart';
+import '../features/bonus_point/controller/reward_controller.dart';
 import '../features/notification/controller/notification_controller.dart';
 import '../features/personalization/controllers/update_name_controller.dart';
 import '../features/review/controller/review_controller.dart';
@@ -76,6 +79,9 @@ class GeneralBindings extends Bindings{
     Get.put(FriendListController());
     Get.put(InviteGroupController());
     Get.put(GroupRequestController());
+    Get.put(MissionRepository());
+    Get.put(MissionController());
+    Get.put(RewardController());
   }
  static void deleteAllControllers() {
     // Các controller
@@ -112,6 +118,8 @@ class GeneralBindings extends Bindings{
     Get.delete<FriendListController>();
     Get.delete<InviteGroupController>();
     Get.delete<GroupRequestController>();
+    Get.delete<MissionController>();
+    Get.delete<RewardController>();
   }
 
 }

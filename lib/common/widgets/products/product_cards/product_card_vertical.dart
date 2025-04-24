@@ -12,6 +12,7 @@ import 'package:app_my_app/utils/constants/sizes.dart';
 import 'package:app_my_app/utils/enum/enum.dart';
 import 'package:app_my_app/utils/helper/event_logger.dart';
 import 'package:app_my_app/utils/helper/helper_function.dart';
+import '../../../../features/bonus_point/handlers/mission_tracker.dart';
 import '../../../../utils/formatter/formatter.dart';
 import '../../texts/product_price_text.dart';
 import '../../texts/product_title_text.dart';
@@ -44,17 +45,33 @@ class TProductCardVertical extends StatelessWidget {
     }
 
     return GestureDetector(
-      onTap: () async {
-        await EventLogger()
-            .logEvent(eventName: 'navigate_to_product_detail', additionalData: {
-          'product_id': product.id,
-          'product_type': product.productType,
-        });
+      onTap: () {
+        // Điều hướng NGAY LẬP TỨC
         Get.to(ProductDetailScreen(
           product: product,
           salePercentage: salePercentage,
         ));
-      },
+
+        // Thực hiện log + track ở background (không cần await)
+        Future.microtask(() async {
+          final start = DateTime.now();
+
+          await EventLogger().logEvent(
+            eventName: 'navigate_to_product_detail',
+            additionalData: {
+              'product_id': product.id,
+              'product_type': product.productType,
+            },
+          );
+
+          await MissionTracker.instance.track(MissionType.viewProduct, context);
+
+          final end = DateTime.now();
+          final duration = end.difference(start).inMilliseconds;
+          debugPrint('⚡ Track + Log mất $duration ms');
+        });
+      }
+      ,
       child: Container(
         width: 180,
         height: 300,

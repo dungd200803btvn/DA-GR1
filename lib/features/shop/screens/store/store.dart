@@ -21,172 +21,14 @@ import '../../../../common/widgets/appbar/appbar.dart';
 import '../../../../common/widgets/brands/t_brand_cart.dart';
 import '../../../../common/widgets/shimmer/brands_shimmer.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../utils/enum/enum.dart';
+import '../../../bonus_point/handlers/mission_tracker.dart';
 import '../../controllers/product/shop_controller.dart';
 import '../../models/category_model.dart';
 import '../../models/shop_model.dart';
 import '../all_products/all_product_screen.dart';
 import '../brand/brand_products.dart';
 import 'all_shop.dart';
-
-// class StoreScreen extends StatelessWidget {
-//   const StoreScreen({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final dark = DHelperFunctions.isDarkMode(context);
-//     final categories = CategoryController.instance.allCategories;
-//     final controller = Get.put(BrandController());
-//     final brandController = BrandController.instance;
-//     final lang = AppLocalizations.of(context);
-//     // Tạo danh sách các Future<CategoryModel?>
-//     List<Future<CategoryModel?>> futures = categories.map((category) async {
-//       final brands = await brandController.getBrandsForCategory(category.id);
-//       if (brands.isNotEmpty) {
-//         return category;
-//       }
-//       return null;
-//     }).toList();
-//
-//     // Sử dụng FutureBuilder với Future.wait
-//     return FutureBuilder<List<CategoryModel?>>(
-//       future: Future.wait(futures),
-//       builder: (BuildContext context, AsyncSnapshot<List<CategoryModel?>> snapshot) {
-//         if (snapshot.connectionState == ConnectionState.waiting) {
-//           return const Center(child: CircularProgressIndicator());
-//         } else if (snapshot.hasError) {
-//           print('Error: ${snapshot.error}');
-//           return Center(child: Text('${lang.translate('error')}: ${snapshot.error}'));
-//         } else if (!snapshot.hasData || snapshot.data == null) {
-//           return Center(child: Text(lang.translate('error')));
-//         } else {
-//           // Lọc bỏ các giá trị null khỏi kết quả
-//           final validCategories = snapshot.data!.where((category) => category != null).toList();
-//           // Chuyển đổi các giá trị CategoryModel? sang CategoryModel
-//           final nonNullCategories = validCategories.map((category) => category!).toList();
-//           return  DefaultTabController(
-//             length: nonNullCategories.length,
-//             child: Scaffold(
-//               appBar: TAppBar(
-//                 title: Text(lang.translate('store'), style: Theme.of(context).textTheme.headlineMedium),
-//                 actions: const [
-//                   TCartCounterIcon(),
-//                 ],
-//                 showBackArrow: false,
-//               ),
-//               body: NestedScrollView(
-//                 headerSliverBuilder: (_, innerBoxIsScrolled) {
-//                   return [
-//                     SliverAppBar(
-//                       automaticallyImplyLeading: false,
-//                       pinned: true,
-//                       floating: true,
-//                       backgroundColor: dark ? DColor.black : DColor.white,
-//                       expandedHeight: 540,
-//                       flexibleSpace: Padding(
-//                         padding: const EdgeInsets.all(DSize.defaultspace),
-//                         child: ListView(
-//                           shrinkWrap: true,
-//                           physics: const NeverScrollableScrollPhysics(),
-//                           children: [
-//                             // Feature Brands
-//                             TSectionHeading(
-//                                 title: lang.translate('feature_brands'),
-//                                 showActionButton: true,
-//                                 onPressed: ()=> Get.to(()=> const AllBrandsScreen())),
-//                             const SizedBox(height: DSize.spaceBtwItem / 1.5),
-//                             Obx((){
-//                                 if(controller.isLoading.value) return const TBrandsShimmer();
-//                                 if(controller.featuredBrands.isEmpty) return Center(child: Text("",style: Theme.of(context).textTheme.bodyMedium!.apply(color: Colors.white),),);
-//                                 return TGridLayout(
-//                                     itemCount: controller.featuredBrands.length,
-//                                     mainAxisExtent: 80,
-//                                     itemBuilder: (_, index) {
-//                                       final brand = controller.featuredBrands[index];
-//                                       return  TBrandCard(showBorder: true,
-//                                         brand: brand,
-//                                         onTap: () async{
-//                                         await EventLogger().logEvent(eventName: 'view_brand',
-//                                         additionalData: {
-//                                           'brand_name':brand.name
-//                                         });
-//                                         Get.to(() => AllProductScreen(title: brand.name, filterId: brand.id, filterType: 'brand',));
-//                                         } ,);
-//                                     });
-//                               } ,
-//                             )
-//                           ],
-//                         ),
-//                       ),
-//                       bottom: PreferredSize(
-//                         preferredSize: const Size.fromHeight(kToolbarHeight), // Adjust height as needed
-//                         child: Obx(() {
-//                           return FutureBuilder<List<ShopModel>>(
-//                             future:  ,
-//                             builder: (context, snapshot) {
-//                               if (snapshot.connectionState == ConnectionState.waiting) {
-//                                 return const Center(child: CircularProgressIndicator());
-//                               } else if (snapshot.hasError) {
-//                                 return Center(child: Text('${lang.translate('error')}: ${snapshot.error}'));
-//                               } else {
-//                                 final validCategories = snapshot.data?.where((category) => category != null).toList() ?? [];
-//                                 return TabBar(
-//                                   onTap: (index) async{
-//                                     final selectedCategory =  validCategories[index];
-//                                     if(selectedCategory!=null){
-//                                       await EventLogger().logEvent(eventName: 'select_category_tab',
-//                                       additionalData: {
-//                                         'category_name': selectedCategory.name,
-//                                       });
-//                                     }
-//                                   },
-//                                   tabs: validCategories.map((category) => Tab(child: Text(category!.name))).toList(),
-//                                   isScrollable: true,
-//                                   indicatorColor: DColor.primary,
-//                                   unselectedLabelColor: DColor.darkGrey,
-//                                   labelColor: DHelperFunctions.isDarkMode(context)
-//                                       ? DColor.white
-//                                       : DColor.primary,
-//                                 );
-//                               }
-//                             },
-//                           );
-//                         }),
-//                       ),
-//                     )
-//                   ];
-//                 },
-//                 //
-//                 body: Obx(() {
-//                   return FutureBuilder<List<CategoryModel?>>(
-//                     future: Future.wait(categories.map((category) async {
-//                       final brands = await brandController.getBrandsForCategory(category.id);
-//                       if (brands.isNotEmpty) {
-//                         return category;
-//                       }
-//                       return null;
-//                     }).toList()),
-//                     builder: (context, snapshot) {
-//                       if (snapshot.connectionState == ConnectionState.waiting) {
-//                         return Center(child: CircularProgressIndicator());
-//                       } else if (snapshot.hasError) {
-//                         return Center(child: Text('${lang.translate('error')}: ${snapshot.error}'));
-//                       } else {
-//                         final validCategories = snapshot.data?.where((category) => category != null).toList() ?? [];
-//                         return TabBarView(
-//                           children: validCategories.map((category) => TCategoryTab(category: category!)).toList(),
-//                         );
-//                       }
-//                     },
-//                   );
-//                 }),
-//               ),
-//             ),
-//           );
-//         }
-//       },
-//     );
-//   }
-// }
 
 class StoreScreen extends StatelessWidget {
   const StoreScreen({super.key});
@@ -239,6 +81,7 @@ class StoreScreen extends StatelessWidget {
                           eventName: 'view_brand',
                           additionalData: {'brand_name': brand.name},
                         );
+                        await MissionTracker.instance.track(MissionType.viewBrand, context);
                         Get.to(() => AllProductScreen(
                           title: brand.name,
                           filterId: brand.id,
@@ -277,6 +120,7 @@ class StoreScreen extends StatelessWidget {
                           eventName: 'view_shop',
                           additionalData: {'shop_name': shop.name},
                         );
+                        await MissionTracker.instance.track(MissionType.viewShop, context);
                         Get.to(() => AllProductScreen(
                           title: shop.name,
                           filterId: shop.id,

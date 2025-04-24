@@ -336,5 +336,18 @@
   "voucher_count": "Number of vouchers",
   "filter": "Filter",
   "personalized_recommendation": "Personalized Recommend",
-  "suggest_product": "Suggest for you"
+  "suggest_product": "Suggest for you",
+  "have_started_mission": "You have started this mission.",
+  "start_mission": "Start this mission now",
+  "mission_detail": "Mission detail",
+  "daily_mission": "Daily mission \uD83C\uDFAF",
+  "mission_list_screen": "Mission List Screen",
+  "mission_completed_message": "You have completed mission: {0} and successfully received {1} points.",
+  "my_daily_checkin": "My Daily Checkin",
+  "my_mission": "My Missions",
+  "my_daily_checkin_msg": "Check in daily to receive attractive rewards",
+  "my_mission_msg": "Complete challenges and receive lots of attractive rewards",
+  "not_started": "Not started",
+  "exchange_rewards": "Exchange Rewards",
+  "exchange_rewards_msg": "You have successfully exchange_rewards: {0}"
 }

@@ -332,5 +332,22 @@
   "confirm": "Xác nhận",
   "delete_group_message": "Xóa nhóm mua chung của bạn",
   "confirm_delete_group": "Bạn có chắc chắn muốn xóa nhóm này không?",
-  "personalized_recommendation": "Gợi ý cho bạn"
+  "search_voucher": "Tìm kiếm voucher",
+  "voucher_count": "Số lượng vouchers",
+  "filter": "Lọc",
+  "personalized_recommendation": "Gợi ý cho bạn",
+  "suggest_product": "Gợi ý dành riêng cho bạn",
+  "have_started_mission": "Bạn đã bắt đầu nhiệm vụ này",
+  "start_mission": "Bắt đầu nhiệm vụ",
+  "mission_detail": "Chi tiết nhiệm vụ",
+  "daily_mission": "Nhiệm vụ hằng ngày \uD83C\uDFAF",
+  "mission_list_screen": "Danh sách nhiệm vụ",
+  "mission_completed_message": "Bạn đã hoàn thành nhiệm vụ: {0} và nhận được {1} điểm.",
+  "my_daily_checkin": "Điểm danh hằng ngày",
+  "my_mission": "Nhiệm vụ của tôi",
+  "my_daily_checkin_msg": "Điểm danh mỗi ngày để nhận phần thưởng hấp dẫn",
+  "my_mission_msg": "Hoàn thành thử thách và nhận nhiều phần thưởng hấp dẫn",
+  "not_started": "Chưa bắt đầu",
+  "exchange_rewards": "Đổi thưởng lấy voucher",
+  "exchange_rewards_msg": "Bạn đã đổi thưởng thành công: {0}"
 }

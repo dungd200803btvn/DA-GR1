@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:app_my_app/features/bonus_point/handlers/mission_tracker.dart';
+import 'package:app_my_app/utils/enum/enum.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -136,7 +138,7 @@ class WriteReviewScreenController extends GetxController{
   Future<void> submitReview(String productId, BuildContext context) async {
     // Hiển thị loading dialog
     TFullScreenLoader.openLoadingDialog(
-        lang.translate('process_order'), TImages.pencilAnimation);
+        'Handle request now...', TImages.loadingJuggleAnimation);
     try {
       final mediaUrls = await uploadMediaToStorage();
       final imageUrls = mediaUrls['imageUrls'] ?? [];
@@ -161,6 +163,7 @@ class WriteReviewScreenController extends GetxController{
           (videoUrls.length * videoBonusPoints);
       await userRepository.updateUserPoints(
           AuthenticationRepository.instance.authUser!.uid, points);
+      await MissionTracker.instance.track(MissionType.writeReview, context);
       // Xây dựng thông báo đa ngôn ngữ sử dụng placeholder đã được thay thế
       String baseMessage = lang.translate(
         'review_success_message',
