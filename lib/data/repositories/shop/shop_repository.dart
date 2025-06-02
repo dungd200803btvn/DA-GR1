@@ -33,13 +33,13 @@ class ShopRepository extends GetxController{
       Map<String, int> shopCount = {};
       for (var doc in productSnapshot.docs) {
         final data = doc.data() as Map<String, dynamic>;
-        final String? shopId = data['shop_id'];
+        final String? shopId = data['shopId'];
         if (shopId != null) {
           shopCount[shopId] = (shopCount[shopId] ?? 0) + 1;
         }
       }
 
-      // 3. Sắp xếp các shop_id theo số lượng giảm dần và lấy top theo giới hạn
+      // 3. Sắp xếp các shopId theo số lượng giảm dần và lấy top theo giới hạn
       List<String> sortedShopIds = shopCount.keys.toList()
         ..sort((a, b) => shopCount[b]!.compareTo(shopCount[a]!));
       sortedShopIds = sortedShopIds.take(limit).toList();

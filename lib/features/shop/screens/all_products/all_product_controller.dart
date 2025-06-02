@@ -29,6 +29,7 @@ class AllProductController extends GetxController {
     required String filterType,
     required String filterId,
   }) async {
+    final startTime = DateTime.now();
     isLoading.value = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       TFullScreenLoader.openLoadingDialog('Loading products now...', TImages.loaderAnimation);
@@ -43,6 +44,9 @@ class AllProductController extends GetxController {
         shopId: filterType == 'shop' ? filterId : null,
       );
       products.value = result;
+      final endTime = DateTime.now();
+      final duration = endTime.difference(startTime);
+      print("🔥 Thời gian tải sản phẩm: ${duration.inMilliseconds}ms");
     } catch (e) {
       print("Error fetching products: $e");
     } finally {

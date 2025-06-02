@@ -426,8 +426,8 @@ Future<String> uploadImage(String path,XFile image) async{
       final querySnapshot = await _db.collection('User').get();
       for (var doc in querySnapshot.docs) {
         final data = doc.data();
-        if (!data.containsKey('Points')) {
-          await doc.reference.update({'Points': 100000});
+        if (!data.containsKey('points')) {
+          await doc.reference.update({'points': 100000});
         }
       }
     } catch (e) {
@@ -441,9 +441,9 @@ Future<String> uploadImage(String path,XFile image) async{
     try {
       final userDoc =  await _db.collection("User").doc(userId).get();
       if(userDoc.exists){
-        num existingPoints = userDoc.data()?['Points'] ?? 0;
+        num existingPoints = userDoc.data()?['points'] ?? 0;
         num updatedPoints = existingPoints+bonusPoints;
-        await _db.collection("User").doc(userId).update({"Points": updatedPoints});
+        await _db.collection("User").doc(userId).update({"points": updatedPoints});
       }else{
         throw "User not found!";
       }
@@ -474,7 +474,7 @@ Future<String> uploadImage(String path,XFile image) async{
       }
       Map<String, dynamic> data = userDoc.data() as Map<String, dynamic>;
       // Kiểm tra nếu đã có FcmToken và giá trị không rỗng thì không làm gì cả
-      if (data.containsKey('FcmToken') && data['FcmToken'] != null && data['FcmToken'].toString().isNotEmpty) {
+      if (data.containsKey('fcmToken') && data['fcmToken'] != null && data['fcmToken'].toString().isNotEmpty) {
         if (kDebugMode) {
           print("FCM Token đã tồn tại, không cần cập nhật");
         }
@@ -490,7 +490,7 @@ Future<String> uploadImage(String path,XFile image) async{
       }
       // Cập nhật FCM Token
       await userRef.update({
-        'FcmToken': fcmToken,
+        'fcmToken': fcmToken,
       });
       if (kDebugMode) {
         print("Cập nhật thành công FCM Token cho userId: $userId");

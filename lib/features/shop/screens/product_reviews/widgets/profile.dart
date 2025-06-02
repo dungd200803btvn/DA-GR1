@@ -55,8 +55,8 @@ class _UserInfoState extends State<UserInfo> {
         }
 
         final userData = snapshot.data!.data() as Map<String, dynamic>;
-        String avatarUrl = userData['ProfilePicture'] ?? '';
-        String displayName = "${userData['FirstName']} ${userData['LastName']}";
+        String avatarUrl = userData['profilePicture'] ?? '';
+        String displayName = "${userData['firstName']} ${userData['lastName']}";
         return Row(
           children: [
             CircleAvatar(

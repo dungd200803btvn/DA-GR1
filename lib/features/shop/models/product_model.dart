@@ -54,24 +54,24 @@ class ProductModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'Title': title,
-      'Stock': stock,
-      'Price': price,
+      'title': title,
+      'stock': stock,
+      'price': price,
       'createAt': createAt.toIso8601String(),
-      'IsFeatured': isFeatured,
-      'Brand': brand?.toJson(),
-      'Shop': shop.toJson(), // Giả sử ShopModel có phương thức toJson()
-      'Description': description,
+      'isFeatured': isFeatured,
+      'brand': brand?.toJson(),
+      'shop': shop.toJson(), // Giả sử ShopModel có phương thức toJson()
+      'description': description,
       'details': details ?? {},
       'categories': categories != null
           ? categories!.map((e) => e.toJson()).toList()
           : [],
       'images': images ?? [],
-      'ProductType': productType,
-      'ProductAttributes': productAttributes != null
+      'productType': productType,
+      'productAttributes': productAttributes != null
           ? productAttributes!.map((e) => e.toJson()).toList()
           : [],
-      'ProductVariations': productVariations != null
+      'productVariations': productVariations != null
           ? productVariations!.map((e) => e.toJson()).toList()
           : [],
     };
@@ -80,40 +80,14 @@ class ProductModel {
   // Hàm helper bất đồng bộ dùng trong fromSnapshotAsync
   static Future<ProductModel> _fromMapAsync(
       Map<String, dynamic> data, String id) async {
-    // final fieldsToCheck = [
-    //   'Title',
-    //   'Price',
-    //   'created_at',
-    //   'Description',
-    //   'ProductType',
-    //   'images',
-    //   'details',
-    //   'brand_id',
-    //   'shop_id',
-    //   'category_ids'
-    // ];
-    //
-    // for (final field in fieldsToCheck) {
-    //   if (data[field] == null) {
-    //     print('Field "$field" is null.');
-    //   }
-    // }
-    //
-    // if (data['details'] != null && data['details'] is Map) {
-    //   (data['details'] as Map).forEach((key, value) {
-    //     if (value == null) {
-    //       print('details: key "$key" is null.');
-    //     }
-    //   });
-    // }
     double parsedPrice;
-    if (data['Price'] == null) {
+    if (data['price'] == null) {
       parsedPrice = 0.0;
-    } else if (data['Price'] is num) {
-      parsedPrice = (data['Price'] as num).toDouble();
-    } else if (data['Price'] is String) {
+    } else if (data['price'] is num) {
+      parsedPrice = (data['price'] as num).toDouble();
+    } else if (data['price'] is String) {
       String cleanedPrice =
-      data['Price'].replaceAll(RegExp(r'[^\d,\.]'), '');
+      data['price'].replaceAll(RegExp(r'[^\d,\.]'), '');
       if (RegExp(r'^\d{1,3}(\.\d{3})+$').hasMatch(cleanedPrice)) {
         cleanedPrice = cleanedPrice.replaceAll('.', '');
       } else {
@@ -129,10 +103,8 @@ class ProductModel {
     }
 
     DateTime parsedCreatedAt;
-    final createdAtData = data['created_at'];
+    final createdAtData = data['createdAt'];
     if (createdAtData == null) {
-      // Nếu created_at null, gán giá trị mặc định hoặc xử lý theo yêu cầu
-      print("Warning: created_at is null, assigning DateTime.now() as default.");
       parsedCreatedAt = DateTime.now();
     } else if (createdAtData is Map<String, dynamic>) {
       final int seconds = createdAtData['_seconds'] ?? 0;
@@ -157,16 +129,16 @@ class ProductModel {
     final categoryRepository = CategoryRepository.instance;
     final shopRepository = ShopRepository.instance;
 
-    BrandModel? brand = data['brand_id'] != null
-        ? await brandRepository.getBrandById(data['brand_id'])
+    BrandModel? brand = data['brandId'] != null
+        ? await brandRepository.getBrandById(data['brandId'])
         : null;
     ShopModel shop = ShopModel.empty();
-    if (data['shop_id'] != null) {
-      shop = await shopRepository.getShopById(data['shop_id']);
+    if (data['shopId'] != null) {
+      shop = await shopRepository.getShopById(data['shopId']);
     }
-    List<CategoryModel> categories = data['category_ids'] != null
+    List<CategoryModel> categories = data['categoryIds'] != null
         ? await categoryRepository
-        .getCategoriesByIds(List<String>.from(data['category_ids']))
+        .getCategoriesByIds(List<String>.from(data['categoryIds']))
         : [];
 
     // Xử lý details: ép kiểu an toàn tránh null
@@ -182,21 +154,21 @@ class ProductModel {
 
     return ProductModel(
       id: id,
-      title: data['Title'] ?? " ",
-      stock: data['Stock'] ?? 0,
-      isFeatured: data['IsFeatured'] ?? false,
+      title: data['title'] ?? " ",
+      stock: data['stock'] ?? 0,
+      isFeatured: data['isFeatured'] ?? false,
       price: parsedPrice,
       createAt: parsedCreatedAt,
-      description: data['Description'] ?? "",
+      description: data['description'] ?? "",
       details: details,
-      productType: data['ProductType'] ?? "",
+      productType: data['productType'] ?? "",
       images: data['images'] != null
           ? List<String>.from(data['images'])
           : data['Images'] != null
           ? List<String>.from(data['Images'])
           : [],
-      productAttributes: data['ProductAttributes'] != null
-          ? List<ProductAttributeModel>.from((data['ProductAttributes'] as List)
+      productAttributes: data['productAttributes'] != null
+          ? List<ProductAttributeModel>.from((data['productAttributes'] as List)
           .map((e) => ProductAttributeModel.fromJson(e)))
           : [],
       productVariations: data['ProductVariations'] != null

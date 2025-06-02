@@ -5,8 +5,6 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import '../../../../common/widgets/appbar/appbar.dart';
 import '../../../../common/widgets/products/sortable/sortable_product.dart';
-import '../../../../utils/constants/image_strings.dart';
-import '../../../../utils/popups/full_screen_loader.dart';
 import 'all_product_controller.dart';
 
 class AllProductScreen extends StatefulWidget {

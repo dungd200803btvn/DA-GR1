@@ -55,8 +55,8 @@ class ProductRepository extends GetxController {
     try {
       Query query = _db
           .collection('Products')
-          .where('category_ids', arrayContains: categoryId)
-          .orderBy('created_at', descending: true)
+          .where('categoryIds', arrayContains: categoryId)
+          .orderBy('createdAt', descending: true)
           .limit(limit);
 
       if (startAfter != null) {
@@ -74,7 +74,7 @@ class ProductRepository extends GetxController {
 
       String? nextPageToken;
       if (snapshot.docs.isNotEmpty) {
-        Timestamp lastCreatedAt = snapshot.docs.last.get('created_at');
+        Timestamp lastCreatedAt = snapshot.docs.last.get('createdAt');
         nextPageToken = lastCreatedAt.toDate().toIso8601String();
       }
 
@@ -99,26 +99,26 @@ class ProductRepository extends GetxController {
     if (categoryId != null) {
       query = firestore
           .collection('Products')
-          .where('category_ids', arrayContains: categoryId)
-          .orderBy('created_at', descending: true)
+          .where('categoryIds', arrayContains: categoryId)
+          .orderBy('createdAt', descending: true)
           .limit(limit);
     } else if (brandId != null) {
       query = firestore
           .collection('Products')
-          .where('brand_id', isEqualTo: brandId)
-          .orderBy('created_at', descending: true)
+          .where('brandId', isEqualTo: brandId)
+          .orderBy('createdAt', descending: true)
           .limit(limit);
     } else if (shopId != null) {
       query = firestore
           .collection('Products')
-          .where('shop_id', isEqualTo: shopId)
-          .orderBy('created_at', descending: true)
+          .where('shopId', isEqualTo: shopId)
+          .orderBy('createdAt', descending: true)
           .limit(limit);
     } else {
       throw Exception('Phải truyền ít nhất một bộ lọc: categoryId, brandId hoặc shopId');
     }
 
-    // Hỗ trợ phân trang nếu có startAfter (giả sử là ISO string của created_at)
+    // Hỗ trợ phân trang nếu có startAfter (giả sử là ISO string của createdAt)
     if (startAfter != null) {
       DateTime? startAfterDate = DateTime.tryParse(startAfter);
       if (startAfterDate != null) {
@@ -134,10 +134,10 @@ class ProductRepository extends GetxController {
       return {'id': doc.id, ...data};
     }).toList();
 
-    // Tạo nextPageToken dựa trên trường 'created_at' của document cuối
+    // Tạo nextPageToken dựa trên trường 'createdAt' của document cuối
     String? nextPageToken;
     if (snapshot.docs.isNotEmpty) {
-      Timestamp lastTimestamp = snapshot.docs.last.get('created_at');
+      Timestamp lastTimestamp = snapshot.docs.last.get('createdAt');
       nextPageToken = lastTimestamp.toDate().toIso8601String();
     }
 
@@ -154,20 +154,20 @@ class ProductRepository extends GetxController {
       if (categoryId != null) {
         snapshot = await _db
             .collection('Products')
-            .where('category_ids', arrayContains: categoryId)
-            .orderBy('created_at', descending: true)
+            .where('categoryIds', arrayContains: categoryId)
+            .orderBy('createdAt', descending: true)
             .get();
       } else if (brandId != null) {
         snapshot = await _db
             .collection('Products')
-            .where('brand_id', isEqualTo: brandId)
-            .orderBy('created_at', descending: true)
+            .where('brandId', isEqualTo: brandId)
+            .orderBy('createdAt', descending: true)
             .get();
       } else if (shopId != null) {
         snapshot = await _db
             .collection('Products')
-            .where('shop_id', isEqualTo: shopId)
-            .orderBy('created_at', descending: true)
+            .where('shopId', isEqualTo: shopId)
+            .orderBy('createdAt', descending: true)
             .get();
       } else {
         throw Exception(
@@ -279,7 +279,7 @@ class ProductRepository extends GetxController {
     // Nếu không lấy được cache, query từ Firestore
     print(">> Query dữ liệu từ Firestore...");
     Query query = _db.collection("Products")
-        .orderBy("created_at", descending: true)
+        .orderBy("createdAt", descending: true)
         .limit(pageSize);
 
     if (lastDoc != null) {
@@ -330,8 +330,8 @@ class ProductRepository extends GetxController {
       print(">> Lưu cache cho trang đầu tiên");
       final lastDocInfo = {
         'id': newLastDoc.id,
-        'created_at': (newLastDoc.data() as Map<String, dynamic>)['created_at'] != null
-            ? ((newLastDoc.data() as Map<String, dynamic>)['created_at'] as Timestamp)
+        'createdAt': (newLastDoc.data() as Map<String, dynamic>)['createdAt'] != null
+            ? ((newLastDoc.data() as Map<String, dynamic>)['createdAt'] as Timestamp)
             .toDate()
             .toIso8601String()
             : null,

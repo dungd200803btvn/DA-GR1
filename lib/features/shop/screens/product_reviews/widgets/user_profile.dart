@@ -35,8 +35,8 @@ class UserProfileInfo extends StatelessWidget {
           );
         }
         final userData = snapshot.data!.data() as Map<String, dynamic>;
-        String avatarUrl = userData['ProfilePicture'] ?? '';
-        String displayName = userData['FirstName'] +" " +userData['LastName'] ?? lang.translate('anonymous');
+        String avatarUrl = userData['profilePicture'] ?? '';
+        String displayName = userData['firstName'] +" " +userData['lastName'] ?? lang.translate('anonymous');
         if(review.isAnonymous){
          avatarUrl = '';
          displayName = lang.translate('anonymous');

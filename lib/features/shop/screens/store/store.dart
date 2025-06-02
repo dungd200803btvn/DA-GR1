@@ -9,7 +9,6 @@ import 'package:app_my_app/common/widgets/texts/section_heading.dart';
 import 'package:app_my_app/features/shop/controllers/brand_controller.dart';
 import 'package:app_my_app/features/shop/controllers/product/category_controller.dart';
 import 'package:app_my_app/features/shop/screens/brand/all_brands.dart';
-import 'package:app_my_app/features/shop/screens/store/widgets/category_tab.dart';
 import 'package:app_my_app/features/shop/screens/store/widgets/shop_card.dart';
 import 'package:app_my_app/navigation_menu.dart';
 import 'package:app_my_app/utils/constants/colors.dart';

@@ -13,11 +13,13 @@ class UserModel {
   String fcmToken;
   String gender;
   late DateTime dateOfBirth;
+  String role;
 
   UserModel(
        this.id, this.firstName, this.lastName, this.userName, this.email,
       this.phoneNumber, this.profilePicture,{
         this.points = 100,this.fcmToken ="", this.gender = "Male", DateTime? dateOfBirth,
+        this.role = "customer"
       }){
     this.dateOfBirth = dateOfBirth ?? DateTime(2003, 8, 20);
   }
@@ -35,16 +37,17 @@ class UserModel {
   static UserModel empty() => UserModel("", "", "", "", "", "", "");
   Map<String,dynamic> toJSon(){
     return {
-      'FirstName':firstName,
-      'LastName':lastName,
-      'UserName':userName,
-      'Email':email,
-      'PhoneNumber':phoneNumber,
-      'ProfilePicture':profilePicture,
-      'Points': points,
-      'FcmToken': fcmToken,
-      'Gender':gender,
-      'DateOfBirth': Timestamp.fromDate(dateOfBirth),
+      'firstName':firstName,
+      'lastName':lastName,
+      'userName':userName,
+      'email':email,
+      'phoneNumber':phoneNumber,
+      'profilePicture':profilePicture,
+      'points': points,
+      'fcmToken': fcmToken,
+      'gender':gender,
+      'dateOfBirth': Timestamp.fromDate(dateOfBirth),
+      'role':role
     };
   }
 
@@ -52,16 +55,17 @@ class UserModel {
     if(document.data()!=null){
       final data = document.data()!;
       return UserModel(document.id,
-          data['FirstName'] ?? " ",
-          data['LastName'] ?? " ",
-          data['UserName']?? " ",
-          data['Email']?? " ",
-          data['PhoneNumber']?? " ",
-          data['ProfilePicture']?? " ",
-          points: data['Points'] ?? 100,
-          fcmToken: data['FcmToken'] ?? "",
-          gender: data['Gender']?? "Male",
-          dateOfBirth: data['DateOfBirth']!= null? (data['DateOfBirth'] as Timestamp).toDate(): DateTime(2003, 8, 20)
+          data['firstName'] ?? " ",
+          data['lastName'] ?? " ",
+          data['userName']?? " ",
+          data['email']?? " ",
+          data['phoneNumber']?? " ",
+          data['profilePicture']?? " ",
+          points: data['points'] ?? 100,
+          fcmToken: data['fcmToken'] ?? "",
+          gender: data['gender']?? "Male",
+          role: data['role']?? "customer",
+          dateOfBirth: data['dateOfBirth']!= null? (data['dateOfBirth'] as Timestamp).toDate(): DateTime(2003, 8, 20)
       );
     }else{
       return UserModel.empty();

@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import '../../../common/widgets/appbar/appbar.dart';
-import '../../notification/controller/notification_service.dart';
 import '../../shop/screens/product_reviews/widgets/profile.dart';
 import '../model/sale_group_model.dart';
 import 'invite_group_screen.dart';

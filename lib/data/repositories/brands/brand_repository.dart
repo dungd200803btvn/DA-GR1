@@ -46,13 +46,13 @@ final _db = FirebaseFirestore.instance;
       Map<String, int> brandCount = {};
       for (var doc in productSnapshot.docs) {
         final data = doc.data() as Map<String, dynamic>;
-        final String? brandId = data['brand_id'];
+        final String? brandId = data['brandId'];
         if (brandId != null) {
           brandCount[brandId] = (brandCount[brandId] ?? 0) + 1;
         }
       }
 
-      // 3. Sắp xếp các brand_id theo số lượng giảm dần và lấy top theo giới hạn
+      // 3. Sắp xếp các brandId theo số lượng giảm dần và lấy top theo giới hạn
       List<String> sortedBrandIds = brandCount.keys.toList()
         ..sort((a, b) => brandCount[b]!.compareTo(brandCount[a]!));
       sortedBrandIds = sortedBrandIds.take(limit).toList();
@@ -157,27 +157,6 @@ final _db = FirebaseFirestore.instance;
     return [];
   }
 
-  //get brands for category
-  Future<List<BrandModel>> getBrandsForCategory(String categoryId) async{
-    // try{
-      QuerySnapshot brandCategoryQuery = await _db.collection('BrandCategory').where('categoryId',isEqualTo: categoryId).get();
-      List<String> brandIds = brandCategoryQuery.docs.map((doc) => doc['brandId'] as String).toList();
-      if (brandIds.isEmpty) {
-        print('Categories list is empty. Skipping query.');
-        return [];
-      }
-      final brandsQuery = await _db.collection('Brands').where("Id",whereIn: brandIds).limit(10).get();
-      List<BrandModel> brands = brandsQuery.docs.map((doc) => BrandModel.fromSnapshot(doc)).toList();
-      return brands;
-    // }on FirebaseException catch (e) {
-    //   throw TFirebaseException(e.code).message;
-    // } on PlatformException catch (e) {
-    //   throw TPlatformException(e.code).message;
-    // } catch (e) {
-    //   throw 'Something went wrong. Please try again';
-    // }
-  }
-
   Future<List<BrandModel>> getUniqueBrandIdsByCategoryId(String categoryId) async {
     final firestore = FirebaseFirestore.instance;
     final collectionRef = firestore.collection('Products');
@@ -188,15 +167,15 @@ final _db = FirebaseFirestore.instance;
     for (DocumentSnapshot doc in snapshot.docs) {
       var productData = doc.data() as Map<String, dynamic>;
       var brand = productData['Brand'] as Map<String, dynamic>;
-      if (brand != null && brand['Id'] != null) {
-        brandIds.add(brand['Id'] as String);
+      if (brand != null && brand['id'] != null) {
+        brandIds.add(brand['id'] as String);
 
       }
-      print(brand['Id']);
+      print(brand['id']);
     }
 
     final brandsQuery = brandIds.isNotEmpty
-        ? await _db.collection('Brands').where("Id", whereIn: brandIds).get()
+        ? await _db.collection('Brands').where("id", whereIn: brandIds).get()
         : await _db.collection('Brands').get();
     List<BrandModel> brands = brandsQuery.docs.map((doc) => BrandModel.fromSnapshot(doc)).toList();
     return brands;
@@ -212,11 +191,11 @@ final _db = FirebaseFirestore.instance;
     for (DocumentSnapshot doc in snapshot.docs) {
       var productData = doc.data() as Map<String, dynamic>;
       var brand = productData['Brand'] as Map<String, dynamic>;
-      if (brand != null && brand['Id'] != null) {
-        brandIds.add(brand['Id'] as String);
+      if (brand != null && brand['id'] != null) {
+        brandIds.add(brand['id'] as String);
 
       }
-      print(brand['Id']);
+      print(brand['id']);
     }
     return brandIds;
   }
@@ -230,8 +209,8 @@ final _db = FirebaseFirestore.instance;
       var productData = doc.data() as Map<String, dynamic>;
       var brand = productData['Brand'] as Map<String, dynamic>;
 
-      if (brand['Id'] != null && productData['CategoryId'] != null) {
-        int brandId = int.parse(brand['Id'].toString());
+      if (brand['id'] != null && productData['CategoryId'] != null) {
+        int brandId = int.parse(brand['id'].toString());
         int categoryId = int.parse(productData['CategoryId'].toString());
 
         // Check if the brandId already exists in the map

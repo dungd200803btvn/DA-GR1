@@ -20,30 +20,30 @@ class CategoryModel {
   //convert to Json
   Map<String,dynamic> toJson(){
     return{
-      'Name': name,
-      'Image':image,
-      'ParentId':parentId,
-      'IsFeatured':isFeatured,
+      'name': name,
+      'image':image,
+      'parentId':parentId,
+      'isFeatured':isFeatured,
     };
   }
   // Factory constructor từ JSON trả về từ API Node.js
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
       id: json['id'] ?? '',
-      name: json['Name'] ?? '',
+      name: json['name'] ?? '',
       image: json['categoryImage'] ?? '', // Nếu API không trả về Image, có thể gán chuỗi rỗng
-      isFeatured: json['IsFeatured'] ?? false,
-      parentId: json['ParentId'] ?? '',
+      isFeatured: json['isFeatured'] ?? false,
+      parentId: json['parentId'] ?? '',
     );
   }
 
   factory CategoryModel.fromMap(String catId,Map<String, dynamic> json,String? image, int? productCount) {
     return CategoryModel(
       id: catId,
-      name: json['Name'] ?? '',
+      name: json['name'] ?? '',
       image: image ?? '', // Nếu API không trả về Image, có thể gán chuỗi rỗng
-      isFeatured: json['IsFeatured'] ?? false,
-      parentId: json['ParentId'] ?? '',
+      isFeatured: json['isFeatured'] ?? false,
+      parentId: json['parentId'] ?? '',
       productCount: productCount
     );
   }
@@ -56,10 +56,10 @@ class CategoryModel {
       //map json to model
       return CategoryModel(
           id: document.id,
-          name: data['Name'] ?? " ",
-          image: data['Image'] ?? " ",
-          isFeatured: data['IsFeatured'] ?? false,
-          parentId: data['ParentId'] ?? " ");
+          name: data['name'] ?? " ",
+          image: data['image'] ?? " ",
+          isFeatured: data['isFeatured'] ?? false,
+          parentId: data['parentId'] ?? " ");
     }else{
       return CategoryModel.empty();
     }

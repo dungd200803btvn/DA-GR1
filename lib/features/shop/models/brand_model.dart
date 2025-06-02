@@ -22,9 +22,9 @@ class BrandModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'Name': name,
-      'ProductsCount': productsCount,
-      'IsFeatured': isFeatured,
+      'name': name,
+      'productsCount': productsCount,
+      'isFeatured': isFeatured,
     };
   }
 
@@ -42,9 +42,9 @@ class BrandModel {
 
     return BrandModel(
       id: data['id'] ?? '',
-      name: data['Name'] ?? '',
+      name: data['name'] ?? '',
       productsCount: parsedProductsCount ?? 0, // Use default 0 if parsing fails
-      isFeatured: data['IsFeatured'] ?? false,
+      isFeatured: data['isFeatured'] ?? false,
     );
   }
 
@@ -53,7 +53,7 @@ class BrandModel {
       final data = document.data()!;
       int? parsedProductsCount;
       try {
-        parsedProductsCount = data['ProductsCount'] != null ? int.parse(data['ProductsCount'].toString()) : null;
+        parsedProductsCount = data['productsCount'] != null ? int.parse(data['productsCount'].toString()) : null;
       } catch (e) {
         // Handle parsing error (e.g., print a warning)
         print('Lỗi khi chuyển đổi productsCount thành số nguyên (int). Giá trị mặc định 0 sẽ được sử dụng.');
@@ -61,8 +61,8 @@ class BrandModel {
       //map json to model
       return BrandModel(
           id: document.id,
-          name: data['Name'] ?? " ",
-          isFeatured: data['IsFeatured'] ?? false,
+          name: data['name'] ?? " ",
+          isFeatured: data['isFeatured'] ?? false,
           productsCount:  parsedProductsCount ?? 0,);
     }else{
       return BrandModel.empty();

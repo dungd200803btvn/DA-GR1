@@ -42,8 +42,8 @@ class CategoryRepository extends GetxController {
 
       for (var doc in productSnapshot.docs) {
         final data = doc.data() as Map<String, dynamic>;
-        if (data['category_ids'] != null && data['category_ids'] is List) {
-          List<dynamic> catIds = data['category_ids'];
+        if (data['categoryIds'] != null && data['categoryIds'] is List) {
+          List<dynamic> catIds = data['categoryIds'];
           for (var catId in catIds) {
             if (catId != null) {
               categoryCount[catId] = (categoryCount[catId] ?? 0) + 1;
@@ -152,9 +152,9 @@ class CategoryRepository extends GetxController {
       final Map<String, String> categoryImages = {};
       for (var doc in productSnapshot.docs) {
         final data = doc.data() as Map<String, dynamic>;
-        if (data['category_ids'] != null &&
-            data['category_ids'] is List<dynamic>) {
-          List<dynamic> catIds = data['category_ids'];
+        if (data['categoryIds'] != null &&
+            data['categoryIds'] is List<dynamic>) {
+          List<dynamic> catIds = data['categoryIds'];
           for (var catId in catIds) {
             if (catId != null) {
               categoryCount[catId] = (categoryCount[catId] ?? 0) + 1;

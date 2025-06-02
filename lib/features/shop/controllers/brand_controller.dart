@@ -62,18 +62,5 @@ Future<List<ProductModel>> getBrandProducts({required String brandId,int limit=-
     }
 }
 
-//get brands for category
-Future<List<BrandModel>> getBrandsForCategory(String categoryId) async{
-    try{
-      final brands = await brandRepository.getBrandsForCategory(categoryId);
-      return brands;
-    }catch(e){
-      TLoader.errorSnackbar(title: lang.translate('snap'),message: e.toString());
-      if (kDebugMode) {
-        print(e.toString());
-      }
-      return [];
-    }
-}
 
 }

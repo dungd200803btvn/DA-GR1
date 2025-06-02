@@ -12,7 +12,7 @@ class ShopModel{
       //map json to model
       return ShopModel(
           id: document.id,
-          name: data['shop_name'] ?? " ");
+          name: data['name'] ?? " ");
     }else{
       return ShopModel.empty();
     }
@@ -21,7 +21,7 @@ class ShopModel{
   factory ShopModel.fromJson(Map<String, dynamic> json) {
     return ShopModel(
       id: json['id'] ?? '',
-      name: json['shop_name'] ?? '',
+      name: json['name'] ?? '',
       productCount: json['productCount']
     );
   }
@@ -29,7 +29,7 @@ class ShopModel{
   Map<String,dynamic> toJson(){
     return{
       'id': id,
-      'Name':name,
+      'name':name,
     };
   }
 }
