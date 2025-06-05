@@ -71,16 +71,10 @@ dependencies:
   video_thumbnail: ^0.5.3
   flutter_stripe: ^11.4.0
   firebase_analytics: ^10.10.7
-
-
-
-
-
-
-
-
-
-
+  firebase_dynamic_links: ^5.0.0
+  qr_flutter: ^4.0.0
+  share_plus: ^6.0.0
+  screenshot: ^1.2.3
   #--------------- ./ PACKAGES END ------------------#
 
 dev_dependencies:

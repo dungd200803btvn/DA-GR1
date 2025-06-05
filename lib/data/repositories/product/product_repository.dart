@@ -148,36 +148,39 @@ class ProductRepository extends GetxController {
     String? categoryId,
     String? brandId,
     String? shopId,
+    int limit = 20,
+    DocumentSnapshot? startAfterDoc
   }) async {
-    QuerySnapshot snapshot;
+    final totalWatch = Stopwatch()..start();
+
     try {
+      Query query = _db.collection('Products');
       if (categoryId != null) {
-        snapshot = await _db
-            .collection('Products')
-            .where('categoryIds', arrayContains: categoryId)
-            .orderBy('createdAt', descending: true)
-            .get();
+        query = query.where('categoryIds', arrayContains: categoryId);
       } else if (brandId != null) {
-        snapshot = await _db
-            .collection('Products')
-            .where('brandId', isEqualTo: brandId)
-            .orderBy('createdAt', descending: true)
-            .get();
+        query = query.where('brandId', isEqualTo: brandId);
       } else if (shopId != null) {
-        snapshot = await _db
-            .collection('Products')
-            .where('shopId', isEqualTo: shopId)
-            .orderBy('createdAt', descending: true)
-            .get();
+        query = query.where('shopId', isEqualTo: shopId);
       } else {
-        throw Exception(
-            'Phải truyền ít nhất một bộ lọc: categoryId, brandId hoặc shopId');
+        throw Exception('Phải truyền ít nhất một bộ lọc: categoryId, brandId hoặc shopId');
       }
 
+      query = query.orderBy('createdAt', descending: true).limit(limit);
+
+      if (startAfterDoc != null) {
+
+        query = query.startAfterDocument(startAfterDoc);
+      }
+      final snapshot = await query.get();
+      totalWatch.stop();
+      print("⏱ Thời gian query lấy các product: ${totalWatch.elapsedMilliseconds} ms");
       // Sử dụng Future.wait với generic type <ProductModel>
+      final stopwatch = Stopwatch()..start();
       final products = await Future.wait(
           snapshot.docs.map((doc) => ProductModel.fromSnapshotAsync(doc as DocumentSnapshot<Map<String, dynamic>>))
       );
+      stopwatch.stop();
+      print("⏱ Thời gian load thông tin sản phẩm: ${stopwatch.elapsedMilliseconds} ms");
       // Lọc các product có images khác null và không rỗng
       final filteredProducts = products
           .where((product) => product.images != null && product.images!.isNotEmpty)

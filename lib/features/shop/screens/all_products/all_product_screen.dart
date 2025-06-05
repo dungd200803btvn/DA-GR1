@@ -60,15 +60,30 @@ class _AllProductScreenState extends State<AllProductScreen> {
                 ),
                 const SizedBox(height: 16),
                 // Nút "Xem thêm" nếu còn dữ liệu (nextPageToken không null)
-                if (controller.visibleCount.value < controller.products.length)
-                  ElevatedButton(
-                    onPressed: ()  {
+                if (controller.hasMore.value)
+                  controller.isLoadingMore.value
+                      ? const CircularProgressIndicator()
+                      : ElevatedButton(
+                    onPressed: () {
                       controller.loadMoreProducts();
                     },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueAccent,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 4,
+                      shadowColor: Colors.black45,
+                      textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     child: const Text("Xem thêm"),
                   )
                 else if (controller.products.isNotEmpty)
-                  // Nếu không còn sản phẩm để load
                   const Text("Đã xem hết sản phẩm"),
               ],
             ),

@@ -349,5 +349,7 @@
   "my_mission_msg": "Complete challenges and receive lots of attractive rewards",
   "not_started": "Not started",
   "exchange_rewards": "Exchange Rewards",
-  "exchange_rewards_msg": "You have successfully exchange_rewards: {0}"
+  "exchange_rewards_msg": "You have successfully exchange_rewards: {0}",
+  "view_shop": "View shop",
+  "share_social": "Share on social media"
 }

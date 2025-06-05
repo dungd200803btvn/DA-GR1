@@ -349,5 +349,7 @@
   "my_mission_msg": "Hoàn thành thử thách và nhận nhiều phần thưởng hấp dẫn",
   "not_started": "Chưa bắt đầu",
   "exchange_rewards": "Đổi thưởng lấy voucher",
-  "exchange_rewards_msg": "Bạn đã đổi thưởng thành công: {0}"
+  "exchange_rewards_msg": "Bạn đã đổi thưởng thành công: {0}",
+  "view_shop": "Xem cửa hàng",
+  "share_social": "Chia sẻ qua mạng xã hội"
 }

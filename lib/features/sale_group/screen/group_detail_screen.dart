@@ -91,6 +91,9 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
               } else if (value == 'delete') {
                 InviteGroupController.instance
                     .showDeleteConfirmation(context, widget.group);
+              } else if (value == 'share_social') {
+                InviteGroupController.instance
+                    .showShareOptions(context, widget.group);
               }
             },
             itemBuilder: (context) => [
@@ -101,6 +104,10 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
               PopupMenuItem(
                 value: 'delete',
                 child: Text(lang.translate('delete_group')),
+              ),
+              PopupMenuItem(
+                value: 'share_social',
+                child: Text(lang.translate('share_social')),
               ),
             ],
             icon: const Icon(Icons.more_vert),

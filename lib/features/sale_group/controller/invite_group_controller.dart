@@ -1,11 +1,18 @@
+import 'dart:io';
+
 import 'package:app_my_app/data/repositories/user/user_repository.dart';
 import 'package:app_my_app/features/sale_group/controller/sale_group_controller.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../data/repositories/sale_group/sale_group_repository.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/image_strings.dart';
@@ -29,6 +36,85 @@ class InviteGroupController extends GetxController {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       lang = AppLocalizations.of(Get.context!);
     });
+  }
+  Future<Uri> createGroupDynamicLink(SaleGroupModel group) async {
+    final DynamicLinkParameters parameters = DynamicLinkParameters(
+      uriPrefix: 'https://ecommerce200803.page.link',
+      link: Uri.parse('https://ecommerce200803.page.link/group/${group.id}'),
+      androidParameters: AndroidParameters(
+        packageName: 'com.example.ecommerce_app',
+        fallbackUrl: Uri.parse('https://appdistribution.firebase.dev/i/e8414077a97b5ef7'),
+      ),
+    );
+
+    final ShortDynamicLink shortLink = await FirebaseDynamicLinks.instance.buildShortLink(parameters);
+    return shortLink.shortUrl;
+  }
+  void showQrCodeDialog(BuildContext context, String data) {
+    final screenshotController = ScreenshotController();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Mã QR nhóm'),
+          content: Screenshot(
+            controller: screenshotController,
+            child: QrImageView(
+              data: data,
+              size: 200,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                final image = await screenshotController.capture();
+                if (image != null) {
+                  final tempDir = await getTemporaryDirectory();
+                  final file = await File('${tempDir.path}/qr.png').create();
+                  await file.writeAsBytes(image);
+                  Share.shareFiles([file.path], text: 'Tham gia nhóm săn sale!');
+                }
+                Navigator.pop(context);
+              },
+              child: Text('Chia sẻ'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Đóng'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showShareOptions(BuildContext context, SaleGroupModel group) async {
+    final Uri dynamicLink = await createGroupDynamicLink(group);
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Wrap(
+          children: [
+            ListTile(
+              leading: Icon(Icons.link),
+              title: Text('Chia sẻ liên kết'),
+              onTap: () {
+                Share.share('Tham gia nhóm săn sale "${group.name}": $dynamicLink');
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.qr_code),
+              title: Text('Chia sẻ mã QR'),
+              onTap: () {
+                Navigator.pop(context);
+                showQrCodeDialog(context, dynamicLink.toString());
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> showDeleteConfirmation(BuildContext context, SaleGroupModel group) async {

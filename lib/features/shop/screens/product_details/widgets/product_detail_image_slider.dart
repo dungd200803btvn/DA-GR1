@@ -12,33 +12,48 @@ import '../../../../../utils/constants/sizes.dart';
 import '../../../../../utils/helper/helper_function.dart';
 import '../../../models/product_model.dart';
 
-class TProductImageSlider extends StatelessWidget {
-  const TProductImageSlider({
-    super.key,
-    required this.product,
-  });
+class TProductImageSlider extends StatefulWidget {
+  const TProductImageSlider({super.key, required this.product});
   final ProductModel product;
+
+  @override
+  State<TProductImageSlider> createState() => _TProductImageSliderState();
+}
+
+class _TProductImageSliderState extends State<TProductImageSlider> {
+  late final ImagesController controller;
+  late final bool dark;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.put(ImagesController(), permanent: false);
+    controller.initialize(widget.product);
+  }
+
+  @override
+  void dispose() {
+    Get.delete<ImagesController>(); // Cleanup controller nếu cần
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final dark = DHelperFunctions.isDarkMode(context);
-    final controller = Get.put(ImagesController());
-    controller.initialize(product);
+    dark = DHelperFunctions.isDarkMode(context);
 
     return TCurvedEdgeWidget(
       child: Container(
         color: dark ? DColor.darkerGrey : DColor.light,
         child: Stack(
           children: [
-            //1.1 Main Larger Image
+            // 1.1 Main Larger Image
             LayoutBuilder(
               builder: (context, constraints) {
-                // Lấy chiều rộng của widget cha
                 final maxWidth = constraints.maxWidth;
-                // Tùy chọn: sử dụng AspectRatio nếu bạn muốn giữ tỷ lệ (ví dụ 16:9)
                 return Container(
                   height: 350,
                   width: maxWidth,
-                  padding: EdgeInsets.all(DSize.productImageRadius/2),
+                  padding: EdgeInsets.all(DSize.productImageRadius / 2),
                   child: Center(
                     child: Obx(() {
                       final image = controller.selectedProductImage.value;
@@ -46,19 +61,24 @@ class TProductImageSlider extends StatelessWidget {
                         onTap: () async {
                           await EventLogger().logEvent(
                             eventName: 'showEnlargedImage',
-                            additionalData: {'product_id': product.id},
+                            additionalData: {'product_id': widget.product.id},
                           );
-                          controller.showEnlargedImage(image,context);
+                          controller.showEnlargedImage(image, context);
                         },
                         child: CachedNetworkImage(
                           imageUrl: image,
                           fit: BoxFit.cover,
-                          width: maxWidth, // đảm bảo chiếm hết chiều rộng của cha
+                          width: maxWidth,
                           progressIndicatorBuilder: (_, __, downloadProgress) =>
                               CircularProgressIndicator(
                                 value: downloadProgress.progress,
                                 color: DColor.primary,
                               ),
+                          errorWidget: (_, __, ___) => const Icon(
+                            Icons.broken_image,
+                            color: Colors.redAccent,
+                            size: 48,
+                          ),
                         ),
                       );
                     }),
@@ -67,7 +87,7 @@ class TProductImageSlider extends StatelessWidget {
               },
             ),
 
-            //1.2 Image Slider
+            // 1.2 Image Slider
             Positioned(
               right: 0,
               bottom: 40,
@@ -76,39 +96,43 @@ class TProductImageSlider extends StatelessWidget {
                 height: 60,
                 child: ListView.separated(
                   itemBuilder: (_, index) {
-                    if (index < 0 || index >=  controller.images.length) {
+                    if (index < 0 || index >= controller.images.length) {
                       return const SizedBox.shrink();
                     }
-                    return Obx(()=>
-                       TRoundedImage(
-                        isNetWorkImage: true,
-                        onPressed: () {
-                          controller.selectedProductImage.value = controller.images[index];
-                        },
-                        imageUrl: controller.images[index],
-                        width: 60,
-                        backgroundColor: dark ? DColor.dark : DColor.white,
-                        border: Border.all(
-                          color: controller.selectedProductImage.value == controller.images[index] ? DColor.primary : Colors.transparent,
-                        ),
-                        padding: const EdgeInsets.all(DSize.sm),
+                    return Obx(() => TRoundedImage(
+                      isNetWorkImage: true,
+                      onPressed: () {
+                        controller.selectedProductImage.value =
+                        controller.images[index];
+                      },
+                      imageUrl: controller.images[index],
+                      width: 60,
+                      backgroundColor:
+                      dark ? DColor.dark : DColor.white,
+                      border: Border.all(
+                        color: controller.selectedProductImage.value ==
+                            controller.images[index]
+                            ? DColor.primary
+                            : Colors.transparent,
                       ),
-                    );
+                      padding: const EdgeInsets.all(DSize.sm),
+                    ));
                   },
-                  separatorBuilder: (_, __) => const SizedBox(width: DSize.spaceBtwItem),
+                  separatorBuilder: (_, __) =>
+                  const SizedBox(width: DSize.spaceBtwItem),
                   itemCount: controller.images.length,
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
                   physics: const AlwaysScrollableScrollPhysics(),
                 ),
-              ))
-              ,
+              )),
             ),
-            //1.3 Appbar Icon
+
+            // 1.3 Appbar Icon
             TAppBar(
               showBackArrow: true,
               actions: [
-                TFavouriteIcon(productId: product.id,)
+                TFavouriteIcon(productId: widget.product.id),
               ],
             )
           ],
