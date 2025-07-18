@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:t_store/utils/formatter/formatter.dart';
+import 'package:app_my_app/utils/formatter/formatter.dart';
 
 class UserModel {
   final String id;
@@ -9,10 +9,22 @@ class UserModel {
   final String email;
   String phoneNumber;
   String profilePicture;
+  int points;
+  String fcmToken;
+  String gender;
+  late DateTime dateOfBirth;
+  String role;
+  String status;
 
   UserModel(
        this.id, this.firstName, this.lastName, this.userName, this.email,
-      this.phoneNumber, this.profilePicture);
+      this.phoneNumber, this.profilePicture,{
+        this.points = 100,this.fcmToken ="", this.gender = "Male", DateTime? dateOfBirth,
+        this.role = "customer",
+        this.status = "Active"
+      }){
+    this.dateOfBirth = dateOfBirth ?? DateTime(2003, 8, 20);
+  }
   String get fullname => '$firstName $lastName';
   String get formattedPhoneNo => DFormatter.formatPhoneNumber(phoneNumber);
   static List<String> nameParts(fullname) => fullname.split(" ");
@@ -27,12 +39,18 @@ class UserModel {
   static UserModel empty() => UserModel("", "", "", "", "", "", "");
   Map<String,dynamic> toJSon(){
     return {
-      'FirstName':firstName,
-      'LastName':lastName,
-      'UserName':userName,
-      'Email':email,
-      'PhoneNumber':phoneNumber,
-      'ProfilePicture':profilePicture
+      'firstName':firstName,
+      'lastName':lastName,
+      'userName':userName,
+      'email':email,
+      'phoneNumber':phoneNumber,
+      'profilePicture':profilePicture,
+      'points': points,
+      'fcmToken': fcmToken,
+      'gender':gender,
+      'dateOfBirth': Timestamp.fromDate(dateOfBirth),
+      'role':role,
+      'status':status
     };
   }
 
@@ -40,15 +58,21 @@ class UserModel {
     if(document.data()!=null){
       final data = document.data()!;
       return UserModel(document.id,
-          data['FirstName'] ?? " ",
-          data['LastName'] ?? " ",
-          data['UserName']?? " ",
-          data['Email']?? " ",
-          data['PhoneNumber']?? " ",
-          data['ProfilePicture']?? " ",);
+          data['firstName'] ?? " ",
+          data['lastName'] ?? " ",
+          data['userName']?? " ",
+          data['email']?? " ",
+          data['phoneNumber']?? " ",
+          data['profilePicture']?? " ",
+          points: data['points'] ?? 100,
+          fcmToken: data['fcmToken'] ?? "",
+          gender: data['gender']?? "Male",
+          role: data['role']?? "customer",
+          status: data['status']?? "Active",
+          dateOfBirth: data['dateOfBirth']!= null? (data['dateOfBirth'] as Timestamp).toDate(): DateTime(2003, 8, 20)
+      );
     }else{
       return UserModel.empty();
     }
   }
-
 }

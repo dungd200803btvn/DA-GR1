@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:t_store/common/widgets/layouts/grid_layout.dart';
-import 'package:t_store/common/widgets/shimmer/shimmer.dart';
-import 'package:t_store/utils/constants/sizes.dart';
+import 'package:app_my_app/common/widgets/layouts/grid_layout.dart';
+import 'package:app_my_app/common/widgets/shimmer/shimmer.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
 
 
 
@@ -11,7 +11,7 @@ class TVerticalProductShimmer extends StatelessWidget {
   final int itemCount;
   @override
   Widget build(BuildContext context) {
-    return TGridLayout(itemCount: itemCount, itemBuilder: (_,__)=> SizedBox(
+    return TGridLayout(itemCount: itemCount, itemBuilder: (_,__)=> const SizedBox(
       width: 180,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

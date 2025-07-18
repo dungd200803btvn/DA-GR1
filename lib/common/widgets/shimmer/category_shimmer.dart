@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:t_store/common/widgets/shimmer/shimmer.dart';
-import 'package:t_store/utils/constants/sizes.dart';
+import 'package:app_my_app/common/widgets/shimmer/shimmer.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
 class TCategoryShimmer extends StatelessWidget {
   const TCategoryShimmer({super.key,
      this.itemCount =6});
@@ -11,7 +11,7 @@ final int itemCount;
       height: 80,
       child: ListView.separated(
           itemBuilder: (_,__){
-            return Column(
+            return const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 //Image
@@ -22,7 +22,7 @@ final int itemCount;
               ],
             );
           },
-          separatorBuilder: (_,__)=> SizedBox(width: DSize.spaceBtwItem,),
+          separatorBuilder: (_,__)=> const SizedBox(width: DSize.spaceBtwItem,),
           itemCount: itemCount,
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,),

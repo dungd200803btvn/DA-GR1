@@ -1,13 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:t_store/common/widgets/appbar/appbar.dart';
-import 'package:t_store/common/widgets/brands/t_brand_cart.dart';
-import 'package:t_store/common/widgets/products/sortable/sortable_product.dart';
-import 'package:t_store/common/widgets/shimmer/vertical_product_shimmer.dart';
-import 'package:t_store/features/shop/controllers/brand_controller.dart';
-import 'package:t_store/utils/constants/sizes.dart';
-import 'package:t_store/utils/helper/cloud_helper_functions.dart';
+import 'package:app_my_app/common/widgets/appbar/appbar.dart';
+import 'package:app_my_app/common/widgets/brands/t_brand_cart.dart';
+import 'package:app_my_app/common/widgets/products/sortable/sortable_product.dart';
+import 'package:app_my_app/common/widgets/shimmer/vertical_product_shimmer.dart';
+import 'package:app_my_app/features/shop/controllers/brand_controller.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
+import 'package:app_my_app/utils/helper/cloud_helper_functions.dart';
 
+import '../../../../common/widgets/products/cart/cart_menu_icon.dart';
+import '../../../../utils/helper/helper_function.dart';
 import '../../models/brand_model.dart';
 
 class BrandProducts extends StatelessWidget {
@@ -18,13 +19,18 @@ class BrandProducts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = BrandController.instance;
+    final dark = DHelperFunctions.isDarkMode(context);
     return Scaffold(
       appBar: TAppBar(
-        title: Text(brand.name),
+        title: Text(brand.name,style: TextStyle(color: dark ? Colors.white : Colors.black),),
+        showBackArrow: true,
+        actions: const [
+          TCartCounterIcon(),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(DSize.defaultspace),
+          padding: const EdgeInsets.all(DSize.defaultspace),
           child: Column(
             children: [
               //Brand Detail
@@ -32,7 +38,7 @@ class BrandProducts extends StatelessWidget {
                 showBorder: true,
                 brand: brand,
               ),
-              SizedBox(
+              const SizedBox(
                 height: DSize.spaceBtwSection,
               ),
               FutureBuilder(

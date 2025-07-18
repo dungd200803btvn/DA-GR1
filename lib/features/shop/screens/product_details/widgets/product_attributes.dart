@@ -1,27 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:t_store/common/widgets/custom_shapes/containers/rounded_container.dart';
-import 'package:t_store/common/widgets/texts/product_price_text.dart';
-import 'package:t_store/common/widgets/texts/product_title_text.dart';
-import 'package:t_store/common/widgets/texts/section_heading.dart';
-import 'package:t_store/features/shop/controllers/product/variation_controller.dart';
-import 'package:t_store/utils/constants/colors.dart';
-import 'package:t_store/utils/constants/sizes.dart';
-import 'package:t_store/utils/helper/helper_function.dart';
+import 'package:app_my_app/common/widgets/custom_shapes/containers/rounded_container.dart';
+import 'package:app_my_app/common/widgets/texts/product_price_text.dart';
+import 'package:app_my_app/common/widgets/texts/product_title_text.dart';
+import 'package:app_my_app/common/widgets/texts/section_heading.dart';
+import 'package:app_my_app/features/shop/controllers/product/variation_controller.dart';
+import 'package:app_my_app/l10n/app_localizations.dart';
+import 'package:app_my_app/utils/constants/colors.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
+import 'package:app_my_app/utils/formatter/formatter.dart';
+import 'package:app_my_app/utils/helper/helper_function.dart';
+import 'package:app_my_app/utils/popups/loader.dart';
 
 import '../../../../../common/widgets/chips/choice_chip.dart';
 import '../../../models/product_model.dart';
 
 class ProductAttributes extends StatelessWidget {
-  const ProductAttributes({super.key, required this.product});
+  const ProductAttributes({super.key, required this.product,this.salePercentage});
 
   final ProductModel product;
-
+  final double? salePercentage;
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(VariationController());
     final dark = DHelperFunctions.isDarkMode(context);
+    final lang = AppLocalizations.of(context);
     return Obx(
         ()=> Column(
         children: [
@@ -37,8 +40,10 @@ class ProductAttributes extends StatelessWidget {
                   Row(
                     children: [
                       //Title
-                      const TSectionHeading(
-                          title: 'Variation', showActionButton: false),
+                      Expanded(
+                        child: TSectionHeading(
+                            title: lang.translate('variation'), showActionButton: false),
+                      ),
                       const SizedBox(width: DSize.spaceBtwItem),
                       //Price
                       Column(
@@ -47,11 +52,11 @@ class ProductAttributes extends StatelessWidget {
                           //Price
                           Row(
                             children: [
-                              const TProductTitleText(
-                                  title: 'Price', smallSize: true),
+                               TProductTitleText(
+                                  title: lang.translate('price'), smallSize: true),
                               //Actual price
-                              if(controller.selectedVariation.value.salePrice>0)
-                              Text('\$${controller.selectedVariation.value.price}',
+                              if(salePercentage!=null)
+                              Text(DFormatter.formattedAmount(controller.selectedVariation.value.price),
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleSmall!
@@ -59,18 +64,17 @@ class ProductAttributes extends StatelessWidget {
                                           decoration:
                                               TextDecoration.lineThrough)),
                               //Sale price
-      
                               const SizedBox(width: DSize.spaceBtwItem / 2),
-                               TProductPriceText(price: controller.getVariationPrice())
+                               TProductPriceText(price: controller.getVariationPrice(salePercentage))
                             ],
                           ),
                           //Stock
                           Row(
                             children: [
-                              const TProductTitleText(
-                                  title: 'Stock:', smallSize: true),
+                               TProductTitleText(
+                                  title: lang.translate('stock'), smallSize: true),
                               const SizedBox(width: DSize.spaceBtwItem / 2),
-                              Text(controller.variationStockStatus.value,
+                              Text(controller.selectedVariation.value.stock.toString(),
                                   style: Theme.of(context).textTheme.titleMedium),
                             ],
                           )
@@ -82,7 +86,7 @@ class ProductAttributes extends StatelessWidget {
                   //Variation Description
                    TProductTitleText(
                       title:
-                        controller.selectedVariation.value.description ?? " " ,
+                        controller.selectedVariation.value.description ?? lang.translate('variation_mes') ,
                       smallSize: true,
                       maxLines: 4),
                 ],
@@ -114,14 +118,13 @@ class ProductAttributes extends StatelessWidget {
                                 return TChoiceChip(
                                   text: val,
                                   selected: isSelected,
-                                  onSelected: available
-                                      ? (selected) {
-                                          if (selected && available) {
-                                            controller.onAttributeSelected(
-                                                product, e.name ?? " ", val);
-                                          }
-                                        }
-                                      : null,
+                                  onSelected: available? (selected) async{
+                                    if( available && selected){
+                                   await   controller.onAttributeSelected(
+                                          product, e.name ?? " ", val);
+                                    }
+                                  }:null,
+
                                 );
                               }).toList()),
                         )

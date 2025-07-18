@@ -1,28 +1,33 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:t_store/data/repositories/authentication/authentication_repository.dart';
-import 'package:t_store/features/authentication/screens/password_configuration/reset_password.dart';
-import 'package:t_store/utils/constants/image_strings.dart';
-import 'package:t_store/utils/popups/full_screen_loader.dart';
-import 'package:t_store/utils/popups/loader.dart';
+import 'package:app_my_app/data/repositories/authentication/authentication_repository.dart';
+import 'package:app_my_app/features/authentication/screens/password_configuration/reset_password.dart';
+import 'package:app_my_app/utils/constants/image_strings.dart';
+import 'package:app_my_app/utils/popups/full_screen_loader.dart';
+import 'package:app_my_app/utils/popups/loader.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/helper/network_manager.dart';
 
 class ForgetPasswordController  extends GetxController{
   static ForgetPasswordController get instance => Get.find();
   //variables
   final email = TextEditingController();
+  var lang = AppLocalizations.of(Get.context!);
+  void init() async{
+    //start loading
+    TFullScreenLoader.openLoadingDialog(lang.translate('process_request'), TImages.docerAnimation);
+    //Check internet connect
+    final isConnected = await NetworkManager.instance.isConnected();
+    if (!isConnected) {
+      TFullScreenLoader.stopLoading();
+      return;
+    }
+  }
   GlobalKey<FormState> forgetPasswordFormKey = GlobalKey<FormState>();
    sendPasswordResentEmail() async{
     try{
-    //start loading
-      TFullScreenLoader.openLoadingDialog("Processing your request...", TImages.docerAnimation);
-      //Check internet connect
-      final isConnected = await NetworkManager.instance.isConnected();
-      if (!isConnected) {
-        TFullScreenLoader.stopLoading();
-        return;
-      }
+      init();
       //form validation
       if(!forgetPasswordFormKey.currentState!.validate()){
         TFullScreenLoader.stopLoading();
@@ -33,36 +38,28 @@ class ForgetPasswordController  extends GetxController{
       //remove loader
       TFullScreenLoader.stopLoading();
       //show success screen
-      TLoader.successSnackbar(title: 'Email sent',message: 'Email link sent to reset your password'.tr);//dich sang ngon ngu hien tai dang dung trong app
+      TLoader.successSnackbar(title: lang.translate('send_email'),message: lang.translate('send_email_msg'));//dich sang ngon ngu hien tai dang dung trong app
       //redirect screen
       Get.to(()=> ResetPassword(email:  email.text.trim(),));
     }catch(e){
       TFullScreenLoader.stopLoading();
-      TLoader.errorSnackbar(title: 'Oh Snap',message: e.toString());
+      TLoader.errorSnackbar(title: lang.translate('snap'),message: e.toString());
     }
   }
     resendPasswordResentEmail(String email) async{
     try{
-//start loading
-      TFullScreenLoader.openLoadingDialog("Processing your request...", TImages.docerAnimation);
-      //Check internet connect
-      final isConnected = await NetworkManager.instance.isConnected();
-      if (!isConnected) {
-        TFullScreenLoader.stopLoading();
-        return;
-      }
-
+        init();
       //call api
       await AuthenticationRepository.instance.sendPasswordResetEmail(email);
       //remove loader
       TFullScreenLoader.stopLoading();
       //show success screen
-      TLoader.successSnackbar(title: 'Email sent',message: 'Email link sent to reset your password'.tr);//dich sang ngon ngu hien tai dang dung trong app
+        TLoader.successSnackbar(title: lang.translate('send_email'),message: lang.translate('send_email_msg'));//dich sang ngon ngu hien tai dang dung trong app
       //redirect screen
 
     }catch(e){
       TFullScreenLoader.stopLoading();
-      TLoader.errorSnackbar(title: 'Oh Snap',message: e.toString());
+      TLoader.errorSnackbar(title: lang.translate('snap'),message: e.toString());
     }
   }
 }

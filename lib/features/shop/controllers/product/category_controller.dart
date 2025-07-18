@@ -1,8 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:t_store/data/repositories/categories/category_repository.dart';
-import 'package:t_store/utils/popups/loader.dart';
-
+import 'package:app_my_app/data/repositories/categories/category_repository.dart';
+import 'package:app_my_app/utils/popups/loader.dart';
 import '../../../../data/repositories/product/product_repository.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../models/category_model.dart';
 import '../../models/product_model.dart';
 
@@ -12,7 +13,7 @@ class CategoryController extends GetxController {
   final _categoryRepository = Get.put(CategoryRepository());
   RxList<CategoryModel> allCategories = <CategoryModel>[].obs;
   RxList<CategoryModel> featuredCategories = <CategoryModel>[].obs;
-
+  late AppLocalizations lang;
   @override
   void onInit() {
     // TODO: implement onInit
@@ -20,23 +21,29 @@ class CategoryController extends GetxController {
     // _categoryRepository.uploadDummyData(TDummyData.categories);
     fetchCategories();
   }
+  @override
+  void onReady() {
+    super.onReady();
+    // Bây giờ Get.context đã có giá trị hợp lệ, ta mới khởi tạo lang
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      lang = AppLocalizations.of(Get.context!);
+    });
+  }
 
   /// Load category data
   Future<void> fetchCategories() async {
     try {
       isLoading.value = true;
-      final categories = await _categoryRepository.getAllCategories();
+      final categories = await _categoryRepository.fetchTopCategories();
       //update new data
       allCategories.assignAll(categories);
       //filter
       featuredCategories.assignAll(allCategories
-          .where((category) => category.isFeatured && category.parentId.isEmpty)
-          .take(8)
           .toList());
-    // } catch (e) {
-    //   TLoader.errorSnackbar(title: 'Oh Snap', message: e.toString());
-    //   print(e.toString());
-     } finally {
+      } catch (e) {
+        print('Loi o: fetchCategories() in controller: $e ');
+        TLoader.errorSnackbar(title: lang.translate('snap'), message: e.toString());
+    } finally {
       isLoading.value = false;
     }
   }
@@ -44,15 +51,26 @@ class CategoryController extends GetxController {
   /// Load selected category data
 
   /// Get category products
-  Future<List<ProductModel>> getCategoryProducts({required String categoryId,int limit=10}) async{
-
-      final products = await ProductRepository.instance.getProductsForCategory(categoryId: categoryId,limit: limit) ;
+  Future<List<ProductModel>> getCategoryProducts({required String categoryId}) async {
+    try {
+      final products = await ProductRepository.instance
+          .getProductsForCategory1(categoryId: categoryId);
       return products;
+    } catch (e) {
+     TLoader.errorSnackbar(title: lang.translate('snap'), message: e.toString());
+      return [];
+    }
+  }
 
-    // catch(e){
-    //   TLoader.errorSnackbar(title: 'Oh Snap!',message: e.toString());
-    //   print(e.toString());
-    //   return [];
-    // }
+  Future<List<CategoryModel>> getSubCategories(String categoryId) async{
+    try{
+      final subCategories = await _categoryRepository.getSubCategories(categoryId);
+      subCategories.forEach((element) {
+      });
+      return  subCategories;
+    }catch (e) {
+      TLoader.errorSnackbar(title: lang.translate('snap'), message: e.toString());
+      return [];
+    }
   }
 }

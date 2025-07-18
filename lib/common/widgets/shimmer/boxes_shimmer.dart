@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:t_store/common/widgets/shimmer/shimmer.dart';
-import 'package:t_store/utils/constants/sizes.dart';
+import 'package:app_my_app/common/widgets/shimmer/shimmer.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
 class TBoxesShimmer extends StatelessWidget {
   const TBoxesShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Expanded(

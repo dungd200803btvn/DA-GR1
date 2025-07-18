@@ -1,134 +1,124 @@
+import 'dart:core';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
-import 'package:t_store/common/widgets/custom_shapes/containers/rounded_container.dart';
-import 'package:t_store/utils/constants/colors.dart';
-import 'package:t_store/utils/constants/sizes.dart';
-
+import 'package:get/get.dart';
+import 'package:app_my_app/common/widgets/loaders/animation_loader.dart';
+import 'package:app_my_app/features/shop/controllers/product/order_controller.dart';
+import 'package:app_my_app/l10n/app_localizations.dart';
+import 'package:app_my_app/navigation_menu.dart';
+import 'package:app_my_app/utils/constants/image_strings.dart';
+import 'package:app_my_app/utils/formatter/formatter.dart';
+import 'package:app_my_app/utils/helper/cloud_helper_functions.dart';
 import '../../../../../utils/helper/helper_function.dart';
+import '../../../models/cart_item_model.dart';
+import '../../../models/order_model.dart';
+import 'order_item_card.dart';
 
+// Đây là ví dụ widget TOrderListItems
 class TOrderListItems extends StatelessWidget {
   const TOrderListItems({super.key});
 
   @override
   Widget build(BuildContext context) {
     final dark = DHelperFunctions.isDarkMode(context);
-    return ListView.separated(
+    final controller = Get.put(OrderController());
+    final lang = AppLocalizations.of(context);
 
-      itemBuilder: (_, int index) =>TRoundedContainer(
-        showBorder: true,
-        padding: const EdgeInsets.all(DSize.md),
-        backgroundColor: dark ? DColor.dark : DColor.light,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            /// Row 1
-            Row(
-              children: [
-                /// 1 Icon
-                const Icon(Iconsax.ship),
-                const SizedBox(
-                  width: DSize.spaceBtwItem / 2,
-                ),
+    return FutureBuilder<List<OrderModel>>(
+      future: controller.fetchUserOrders(),
+      builder: (_, snapshot) {
+        // Xử lý widget nếu không có đơn hàng hoặc bị lỗi
+        final emptyWidget = TAnimationLoaderWidget(
+          text: lang.translate('no_order'),
+          animation: TImages.orderCompletedAnimation,
+          showAction: true,
+          actionText: lang.translate('let_fill_it'),
+          onActionPressed: () => Get.off(() => const NavigationMenu()),
+        );
 
-                /// 2  Status and Date
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Processing',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge!
-                            .apply(color: DColor.primary, fontWeightDelta: 1),
+        // Kiểm tra trạng thái fetch
+        final response = TCloudHelperFunctions.checkMultiRecordState(
+          snapshot: snapshot,
+          nothingFound: emptyWidget,
+        );
+        if (response != null) return response;
+
+        // Lấy danh sách orders
+        final orders = snapshot.data!;
+
+        // ListView.separated cho các đơn hàng
+        return ListView.separated(
+          itemCount: orders.length,
+          separatorBuilder: (_, __) => Container(
+            height: 8,
+            color: dark ? Colors.grey[850] : Colors.grey[200],
+          ),
+          shrinkWrap: true,
+          itemBuilder: (_, index) {
+            final order = orders[index];
+            // Mỗi đơn hàng, ta gói các sản phẩm trong một Container/Card
+            return Container(
+              // Hoặc dùng Card() tùy ý
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              decoration: BoxDecoration(
+                color: dark ? Colors.grey[900] : Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: dark ? Colors.black12 : Colors.grey.shade300,
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  )
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text(
+                      "${lang.translate('order')} #${order.id?? ''}",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: dark ? Colors.white : Colors.black,
                       ),
-                      Text(
-                        '15 May 2024',
-                        style: Theme.of(context).textTheme.headlineSmall,
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-                //  3 Mui ten den man hinh chi tiet
-                IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Iconsax.arrow_right_34,
-                      size: DSize.iconSm,
-                    )),
-              ],
-            ),
-            const SizedBox(
-              height: DSize.spaceBtwItem,
-            ),
-
-            /// Row 2
-            Row(
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      /// 1 Icon
-                      const Icon(Iconsax.tag),
-                      const SizedBox(
-                        width: DSize.spaceBtwItem / 2,
-                      ),
-
-                      /// 2  Status and Date
-                      Expanded(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Order',
-                                style: Theme.of(context).textTheme.labelMedium),
-                            Text(
-                              '[#256f2]',
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                  // Danh sách các sản phẩm trong đơn hàng
+                  ListView.separated(
+                    itemCount: order.items.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    separatorBuilder: (_, __) => Divider(
+                      color: dark ? Colors.grey : Colors.grey[300],
+                      thickness: 1,
+                      height: 1,
+                    ),
+                    itemBuilder: (_, itemIndex) {
+                      final CartItemModel cartItem = order.items[itemIndex];
+                      return OrderItemCard(
+                         item: cartItem, deliveryDate: order.deliveryDate!,
+                      );
+                    },
                   ),
-                ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      /// 1 Icon
-                      const Icon(Iconsax.calendar),
-                      const SizedBox(
-                        width: DSize.spaceBtwItem / 2,
-                      ),
 
-                      /// 2  Status and Date
-                      Expanded(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Shipping Date',
-                                style: Theme.of(context).textTheme.labelMedium),
-                            Text(
-                              '03 Feb 2025',
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                          ],
-                        ),
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text(
+                      "${lang.translate('total_order_value')}:${DFormatter.formattedAmount(order.totalAmount)}VND",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: dark ? Colors.white : Colors.black,
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-
-      separatorBuilder: (_, __) => const SizedBox(height: DSize.spaceBtwItem,),
-      itemCount: 10,
-      shrinkWrap: true,
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

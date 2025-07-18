@@ -1,64 +1,84 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:t_store/features/shop/models/product_model.dart';
-import 'package:t_store/utils/constants/sizes.dart';
+import 'package:app_my_app/features/shop/models/product_model.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
+
+import '../../../../l10n/app_localizations.dart';
+import '../../../../utils/constants/colors.dart';
+import '../../../../utils/helper/helper_function.dart';
 
 class ImagesController extends GetxController {
   static ImagesController get instance => Get.find();
-
   //variables
   RxString selectedProductImage = ''.obs;
-
-  //get all images from product and variations
-  List<String> getAllProductImages(ProductModel productModel) {
-    Set<String> images = {};
-
-    // Tải hình ảnh thu nhỏ (không có bản sao ở đây)
-    // images.add(productModel.thumbnail);
-     selectedProductImage.value = productModel.thumbnail;
-
-    // Thêm hình ảnh duy nhất từ productModel.images
-    if (productModel.images != null) {
-      images.addAll(productModel.images!.where((image) => !images.contains(image)));
-
-    }
-
-    // Thêm hình ảnh duy nhất từ product variations
-    // if (productModel.productVariations != null &&
-    //     productModel.productVariations!.isNotEmpty) {
-    //   images.addAll(productModel.productVariations!.map((e) => e.image).where((image) => !images.contains(image)));
-    // }
-
-    return images.toList();
+// List of all product images
+  late RxList<String> images = <String>[].obs;
+  late AppLocalizations lang;
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
   }
-
+  @override
+  void onReady() {
+    super.onReady();
+    // Bây giờ Get.context đã có giá trị hợp lệ, ta mới khởi tạo lang
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      lang = AppLocalizations.of(Get.context!);
+    });
+  }
+  // Initialize the controller with product data
+  void initialize(ProductModel productModel) {
+    // Reset the selected image and image list
+    selectedProductImage.value = productModel.images![0];
+    images.clear();
+    // Add thumbnail and other unique images
+    Set<String> uniqueImages = {productModel.images![0]};
+    if (productModel.images != null) {
+      uniqueImages.addAll(productModel.images!);
+    }
+    images.addAll(uniqueImages);
+  }
 
 //show image popup
-  void showEnlargedImage(String image) {
+  void showEnlargedImage(String image, BuildContext context) {
+    final dark = DHelperFunctions.isDarkMode(context);
+   final  color =  dark ? DColor.white : DColor.white;
     Get.to(
       fullscreenDialog: true,
-        () => Dialog.fullscreen(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(padding: EdgeInsets.symmetric(vertical: DSize.defaultspace*2,horizontal: DSize.defaultspace),
-                child: CachedNetworkImage(imageUrl: image,),),
-                SizedBox(height: DSize.spaceBtwSection,),
-                Align(
-                  alignment: Alignment.bottomCenter,
+          () => Dialog.fullscreen(
+        child: Scaffold(
+          backgroundColor: color,
+          body: Stack(
+            children: [
+              Center(
+                child: CachedNetworkImage(
+                  imageUrl: image,
+                  fit: BoxFit.contain, // hoặc BoxFit.cover nếu bạn muốn crop hình
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
+              ),
+              Positioned(
+                bottom: 40,
+                left: 0,
+                right: 0,
+                child: Center(
                   child: SizedBox(
                     width: 150,
-                    child: OutlinedButton(onPressed: ()=> Get.back(),child: Text("Close"),),
+                    child: OutlinedButton(
+                      onPressed: () => Get.back(),
+                      child: Text(lang.translate('close')),
+                    ),
                   ),
-                )
-              ],
-            ),
+                ),
+              ),
+            ],
           ),
-        )
+        ),
+      ),
     );
   }
+
 }

@@ -1,9 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:t_store/common/widgets/loaders/animation_loader.dart';
-import 'package:t_store/utils/constants/colors.dart';
-import 'package:t_store/utils/helper/helper_function.dart';
+import 'package:app_my_app/common/widgets/loaders/animation_loader.dart';
+import 'package:app_my_app/utils/constants/colors.dart';
+import 'package:app_my_app/utils/helper/helper_function.dart';
 class TFullScreenLoader{
 
   static void openLoadingDialog(String text,String animation){
@@ -18,7 +17,7 @@ class TFullScreenLoader{
               height: double.infinity,
               child: Column(
                 children: [
-                  SizedBox(height: 250,),
+                  const SizedBox(height: 250,),
 
                   Expanded(child: TAnimationLoaderWidget(text: text, animation: animation))
                 ],

@@ -1,19 +1,38 @@
+import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:t_store/data/repositories/product/product_repository.dart';
-import 'package:t_store/features/shop/models/product_model.dart';
-import 'package:t_store/utils/enum/enum.dart';
+import 'package:app_my_app/data/repositories/product/product_repository.dart';
+import 'package:app_my_app/features/shop/models/product_model.dart';
+import 'package:app_my_app/utils/enum/enum.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../utils/formatter/formatter.dart';
 import '../../../utils/popups/loader.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import '../../suggestion/suggestion_repository.dart';
 
 class ProductController extends GetxController {
   static ProductController get instance => Get.find();
   final isLoading = false.obs;
+  final isLoadingMore = false.obs;
   RxList<ProductModel> featuredProducts = <ProductModel>[].obs;
-  final productRepository = Get.put(ProductRepository());
-
+  DocumentSnapshot? lastFeaturedDoc;
+  final productRepository = ProductRepository.instance;
+  final suggestionRepository = ProductSuggestionRepository.instance;
   @override
   void onInit() {
     fetchFeaturedProducts();
     super.onInit();
+  }
+  late AppLocalizations lang;
+  @override
+  void onReady() {
+    super.onReady();
+    // Bây giờ Get.context đã có giá trị hợp lệ, ta mới khởi tạo lang
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      lang = AppLocalizations.of(Get.context!);
+    });
   }
 
   void fetchFeaturedProducts() async {
@@ -21,38 +40,58 @@ class ProductController extends GetxController {
       isLoading.value = true;
       //fetch products
       final products = await productRepository.getFeaturedProducts();
-      print("Products fetched: ${products.length}");
       //assign products
       featuredProducts.assignAll(products);
     } catch (e) {
-      TLoader.errorSnackbar(title: 'Oh Snap', message: e.toString());
-      print("error: " + e.toString());
+      TLoader.errorSnackbar(title: lang.translate('snap'), message: e.toString());
+      if (kDebugMode) {
+        print("error in fetchFeaturedProducts() : $e");
+      }
     } finally {
       isLoading.value = false;
     }
   }
 
   Future<List<ProductModel>> getAllFeaturedProducts() async{
-    try{
-      return await productRepository.getAllProducts();
+     try{
+      return featuredProducts;
     }catch(e){
-      TLoader.errorSnackbar(title: 'Oh Snap!',message: e.toString());
+     TLoader.errorSnackbar(title: lang.translate('snap'),message: e.toString());
       return [];
     }
   }
 
-  String getProductPrice(ProductModel product) {
+  Future<List<ProductModel>> getSuggestedProductsById(String productId) async{
+    try{
+      final sortedSuggestions = await suggestionRepository.getSortedSuggestions(productId);
+      final productIds = sortedSuggestions.map((e) => e.productId).toList();
+      final products = await productRepository.getProductsByIds(productIds);
+      return products;
+    }catch(e){
+      TLoader.errorSnackbar(title: lang.translate('snap'),message: e.toString());
+      return [];
+    }
+  }
+
+  String getProductPrice(ProductModel product, [double? saleParcentage]) {
     double smallestPrice = double.infinity;
     double largestPrice = 0.0;
     //if no variations exist, return simple price or sale price
-    if (product.productType == ProductType.single.toString()) {
-      return (product.salePrice > 0 ? product.salePrice : product.price)
-          .toString();
+    if(saleParcentage==null && product.productType == ProductType.single.toString()){
+      return DFormatter.formattedAmount(product.price);
+    }
+    else if (product.productType == ProductType.single.toString() && saleParcentage!=null ) {
+      final discountedPrice = product.price * (1 - saleParcentage);
+      return DFormatter.formattedAmount(discountedPrice);
     } else {
       //calculate max and min price
       for (var variation in product.productVariations!) {
-        double priceToConsider =
-            variation.salePrice > 0.0 ? variation.salePrice : variation.price;
+        double priceToConsider;
+        if(saleParcentage!=null){
+          priceToConsider  =  variation.price * (1 - saleParcentage);
+        }else{
+          priceToConsider  = variation.price;
+        }
         //update min max
         if (priceToConsider < smallestPrice) {
           smallestPrice = priceToConsider;
@@ -62,23 +101,39 @@ class ProductController extends GetxController {
         }
       }
       if (smallestPrice.isEqual(largestPrice)) {
-        return largestPrice.toString();
+        // return largestPrice.toStringAsFixed(1);
+        return DFormatter.formattedAmount(largestPrice);
       } else {
-        return '$smallestPrice - \$$largestPrice';
+        return '${DFormatter.formattedAmount(smallestPrice)}  - ${DFormatter.formattedAmount(largestPrice)}';
       }
     }
   }
 
-  String? calculateSalePercentage(double originalPrice, double? salePrice) {
-    if (salePrice == null || salePrice <= 0.0) {
+  String? calculateSalePercentage([double? salePercentage]) {
+    if (salePercentage == null ) {
       return null;
     }
-    if (originalPrice <= 0.0) return null;
-    double percentage = ((originalPrice - salePrice) / originalPrice) * 100;
+    double percentage = salePercentage * 100;
     return percentage.toStringAsFixed(0);
   }
 
   String getProductStockStatus(int stock) {
-    return stock > 0 ? 'In Stock' : 'Out Stock';
+    return stock > 0 ? lang.translate('in_stock') : lang.translate('out_stock');
+  }
+
+  Future<String> getFileData(String path) async {
+    return await rootBundle.loadString(path);
+  }
+  int generateRandomId() {
+    final random = Random();
+    return 100 + random.nextInt(901); // Từ 100 đến 1000
+  }
+  double generatePrice(){
+    return 10+ Random().nextDouble()*1000;
+  }
+  T getRandomElement<T>(List<T> list) {
+    final random = Random();
+    return list[random.nextInt(list.length)];
   }
 }
+

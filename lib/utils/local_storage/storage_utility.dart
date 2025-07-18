@@ -1,4 +1,5 @@
 import 'package:get_storage/get_storage.dart';
+
 class DLocalStorage{
  // static final DLocalStorage _instance  =DLocalStorage._internal();
   //late: Biến _storage sẽ được khởi tạo muộn, tức là sau khi đối tượng DLocalStorage được tạo ra, chứ không phải ngay lập tức khi đối tượng được khởi tạo.
@@ -19,7 +20,7 @@ class DLocalStorage{
     _instance = DLocalStorage._internal();
     _instance!._storage = GetStorage(bucketName);
   }
-  Future<void> saveData<T>(String key, T value) async{
+  Future<void> writeData<T>(String key, T value) async{
     await _storage.write(key,value);
   }
   T? readData<T>(String key){

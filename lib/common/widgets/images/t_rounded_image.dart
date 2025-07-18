@@ -10,7 +10,7 @@ class TRoundedImage extends StatelessWidget {
       this.applyImageRadius = true,
       this.border,
       this.backgroundColor ,
-      this.fit = BoxFit.contain,
+      this.fit = BoxFit.cover,
       this.padding,
       this.isNetWorkImage = false,
       this.onPressed,
@@ -45,13 +45,14 @@ class TRoundedImage extends StatelessWidget {
             borderRadius: applyImageRadius
                 ? BorderRadius.circular(borderRadius)
                 : BorderRadius.zero,
-            child: Image(
-              fit: fit,
-              image:
-              isNetWorkImage
-                  ? NetworkImage(imageUrl)
-                  :  AssetImage(imageUrl) as ImageProvider,
-            )),
+          child: Image(
+            width: double.infinity, // Mở rộng toàn bộ chiều rộng container
+            height: double.infinity, // Mở rộng toàn bộ chiều cao container
+            fit: fit,
+            image: isNetWorkImage
+                ? NetworkImage(imageUrl)
+                : AssetImage(imageUrl) as ImageProvider,
+          ),),
       ),
     );
   }

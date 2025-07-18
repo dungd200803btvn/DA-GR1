@@ -1,9 +1,6 @@
 import 'package:intl/intl.dart';
 class DFormatter{
-  static String formatDate(DateTime? date){
-    date??=DateTime.now();
-    return DateFormat('dd-MMM-yyyy').format(date);
-  }
+
   static String formatCurrency(double amount){
     return NumberFormat.currency(locale: "en_US",symbol: '\$').format(amount);
   }
@@ -36,4 +33,24 @@ class DFormatter{
     return formattedNumber.toString();
   }
 
+  static String formattedAmount(num amount){
+    return NumberFormat("#,###","en_US").format(amount);
+  }
+  static String FormattedDate(DateTime day){
+    return DateFormat("dd/MM/yyyy HH:mm").format(day);
+  }
+  static String FormattedDate1(DateTime day){
+    return DateFormat("dd/MM/yyyy").format(day);
+  }
+  static String calculateAmountForStripe(double amount){
+    final calculatedAmount = amount*100;
+    return calculatedAmount.round().toString();
+  }
+
+  static String formatVoucherType(String input) {
+    return input
+        .split('_') // tách theo dấu _
+        .map((word) => word[0].toUpperCase() + word.substring(1)) // viết hoa chữ đầu
+        .join(' '); // ghép lại bằng khoảng trắng
+  }
 }

@@ -17,4 +17,20 @@ class BrandCategoryModel {
       categoryId: data['categoryId'] as String,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is BrandCategoryModel &&
+              runtimeType == other.runtimeType &&
+              brandId == other.brandId &&
+              categoryId == other.categoryId;
+
+  @override
+  int get hashCode => brandId.hashCode ^ categoryId.hashCode;
+
+  @override
+  String toString() {
+    return 'BrandCategoryModel{brandId: $brandId, categoryId: $categoryId}';
+  }
 }

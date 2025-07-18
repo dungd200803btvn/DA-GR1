@@ -1,48 +1,64 @@
+import 'dart:async';
+
+import 'package:app_my_app/data/repositories/bonus_point/mission_repository.dart';
+import 'package:app_my_app/features/notification/controller/notification_service.dart';
+import 'package:app_my_app/features/shop/controllers/recommendation_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:t_store/data/repositories/authentication/authentication_repository.dart';
-import 'package:t_store/data/repositories/user/user_repository.dart';
-import 'package:t_store/features/authentication/models/user_model.dart';
-import 'package:t_store/features/personalization/controllers/user_controller.dart';
-import 'package:t_store/navigation_menu.dart';
-import 'package:t_store/utils/constants/image_strings.dart';
-import 'package:t_store/utils/popups/full_screen_loader.dart';
-import 'package:t_store/utils/popups/loader.dart';
-
+import 'package:app_my_app/bindings/general_bindings.dart';
+import 'package:app_my_app/data/repositories/authentication/authentication_repository.dart';
+import 'package:app_my_app/data/repositories/user/user_repository.dart';
+import 'package:app_my_app/features/authentication/models/user_model.dart';
+import 'package:app_my_app/features/personalization/controllers/user_controller.dart';
+import 'package:app_my_app/navigation_menu.dart';
+import 'package:app_my_app/utils/constants/image_strings.dart';
+import 'package:app_my_app/utils/popups/full_screen_loader.dart';
+import 'package:app_my_app/utils/popups/loader.dart';
+import 'package:uuid/uuid.dart';
+import '../../../../bindings/auth_bindings.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/exceptions/firebase_auth_exceptions.dart';
 import '../../../../utils/exceptions/firebase_exceptions.dart';
 import '../../../../utils/exceptions/format_exceptions.dart';
 import '../../../../utils/exceptions/platform_exceptions.dart';
+import '../../../../utils/helper/event_logger.dart';
 import '../../../../utils/helper/network_manager.dart';
+import '../../../../utils/singleton/user_singleton.dart';
 
 class LoginController extends GetxController {
+  static LoginController get instance => Get.find();
   //Variables
   final rememberMe = false.obs;
   final hidePassword = true.obs;
   final localStorage = GetStorage();
   final email = TextEditingController();
   final password = TextEditingController();
-  GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
-  final userController = UserController.instance;
+  final userController = Get.put(UserController());
+  final userRepository =  Get.put(UserRepository());
+  AppLocalizations get lang => AppLocalizations.of(Get.context!);
+
 //Email and password login
+  Future<void> init() async {
+    AuthBindings().dependencies();
+    //Start loading
+    TFullScreenLoader.openLoadingDialog(
+        lang.translate('login_process'), TImages.docerAnimation);
+    //Check internet connect
+    final isConnected = await NetworkManager.instance.isConnected();
+    if (!isConnected) {
+      TFullScreenLoader.stopLoading();
+      return;
+    }
+  }
   Future<void> emailAndPasswordLogin() async {
+    TFullScreenLoader.openLoadingDialog(
+        'Login now...', TImages.loaderAnimation);
+    final startTime = DateTime.now();
     try {
-      //Start loading
-      TFullScreenLoader.openLoadingDialog(
-          "Logging you in...", TImages.docerAnimation);
-      //Check internet connect
-      final isConnected = await NetworkManager.instance.isConnected();
-      if (!isConnected) {
-        TFullScreenLoader.stopLoading();
-        return;
-      }
-      if (!loginFormKey.currentState!.validate()) {
-        TFullScreenLoader.stopLoading();
-        return;
-      }
+      init();
       //Save data if remember me is selected
       if (rememberMe.value) {
         localStorage.write("REMEMBER_ME_EMAIL", email.text.trim());
@@ -51,99 +67,107 @@ class LoginController extends GetxController {
         localStorage.write("REMEMBER_ME_EMAIL", "");
         localStorage.write("REMEMBER_ME_PASSWORD", "");
       }
-      //login
-      final userCredentials = await AuthenticationRepository.instance
-          .loginWithEmailAndPassword(email.text.trim(), password.text.trim());
-      //remove loader
-      TFullScreenLoader.stopLoading();
-      UserController.instance.fetchUserRecord();
-      //Redirect
-      Get.to(() => NavigationMenu());
-    } on FirebaseAuthException catch (e) {
-      TFullScreenLoader.stopLoading();
-      TLoader.errorSnackbar(
-          title: "Oh snap", message: TFirebaseAuthException(e.code).message);
-    } on FirebaseException catch (e) {
-      TFullScreenLoader.stopLoading();
-      TLoader.errorSnackbar(
-          title: "Oh snap", message: TFirebaseException(e.code).message);
-    } on FormatException catch (_) {
-      TFullScreenLoader.stopLoading();
-      TLoader.errorSnackbar(title: "Oh snap", message: TFormatException());
-    } on PlatformException catch (e) {
-      TFullScreenLoader.stopLoading();
-      TLoader.errorSnackbar(
-          title: "Oh snap", message: TPlatformException(e.code).message);
-    } catch (e) {
-      TFullScreenLoader.stopLoading();
-      TLoader.errorSnackbar(title: "Oh snap", message: "Wrong email or password");
-    }
-  }
-//Google sign in
-  Future<void> googleSignIn1() async{
-    try{
-    //start loading
-      TFullScreenLoader.openLoadingDialog("Logging you in...", TImages.docerAnimation);
-      //Check internet connect
-      final isConnected = await NetworkManager.instance.isConnected();
-      if (!isConnected) {
-        TFullScreenLoader.stopLoading();
-        return;
-      }
-      //google authentication
-      final userCredentials = await AuthenticationRepository.instance.signInWithGoole();
-      // save user record
-      await userController.saveUserRecord(userCredentials);
-      // remove loader
-        TFullScreenLoader.stopLoading();
-        UserController.instance.fetchUserRecord();
-        Get.to(()=> const NavigationMenu());
-
-    }catch(e){
-      // remove loader
-      TFullScreenLoader.stopLoading();
-      TLoader.errorSnackbar(title: 'Oh snap',message: e.toString());
-    }
-  }
-  Future<void> googleSignIn() async {
-    try {
-      // Start loading indicator
-      TFullScreenLoader.openLoadingDialog("Logging you in...", TImages.docerAnimation);
-
-      // Check internet connection
-      final isConnected = await NetworkManager.instance.isConnected();
-      if (!isConnected) {
-        TFullScreenLoader.stopLoading();
-        return;
-      }
-
-      // Google authentication
-      final userCredentials = await AuthenticationRepository.instance.signInWithGoole();
-
+      final userCredentials = await AuthenticationRepository.instance.loginWithEmailAndPassword(email.text.trim(), password.text.trim());
       // Check existing user record
-      final existingUser = await UserRepository.instance.fetchUserDetails();
-
-      if (existingUser ==  UserModel.empty() || existingUser.id != userCredentials?.user!.uid) {
+      final existingUser = await userRepository.fetchUserDetails();
+      print("Trang thai cua user: ${existingUser.status.toLowerCase()}");
+      // 👉 Check bị block
+      if (existingUser.status.toLowerCase() == "blocked") {
+        TFullScreenLoader.stopLoading();
+        TLoader.warningSnackbar(
+          title: lang.translate('snap'),
+          message: lang.translate('account_blocked'), // tự thêm vào strings
+        );
+        return;
+      }
+      if (existingUser == UserModel.empty() || existingUser.id != userCredentials.user!.uid) {
         // New user or different account: Save user record
         await userController.saveUserRecord(userCredentials);
       } else {
         // Existing account: Fetch updated user data (optional)
-        // You can uncomment the following line if you want to
-        // ensure the local user reflects any changes made on the server
-        // await UserController.instance.fetchUserRecord();
+        unawaited(UserController.instance.fetchUserRecord());
       }
-      UserController.instance.fetchUserRecord();
-      // Remove loader
-      TFullScreenLoader.stopLoading();
-
+      await  UserController.instance.fetchUserRecord();
+      // GeneralBindings().dependencies();
+      EventLogger().initialize(
+        userId: AuthenticationRepository.instance.authUser!.uid,
+        sessionId: const Uuid().v4(), // hoặc tạo từ Uuid().v4()
+      );
+      UserSession.instance.initialize(AuthenticationRepository.instance.authUser!.uid,UserController.instance.user.value.fullname);
+      NotificationService.instance.initialize(AuthenticationRepository.instance.authUser!.uid);
+      unawaited(UserRepository.instance.updateUserPointsAndFcmToken(AuthenticationRepository.instance.authUser!.uid)) ;
       // Navigate to NavigationMenu
-      Get.to(() => const NavigationMenu());
-    } catch (e) {
-      // Remove loader
+      await RecommendationController.instance.fetchRecommendations(AuthenticationRepository.instance.authUser!.uid);
       TFullScreenLoader.stopLoading();
-      TLoader.errorSnackbar(title: 'Oh snap', message: e.toString());
+      Get.to(() => const NavigationMenu());
+      final endTime = DateTime.now();
+      final duration = endTime.difference(startTime);
+      print("🔥 Thời gian đăng nhập : ${duration.inMilliseconds}ms");
+    } on FirebaseAuthException catch (e) {
+      TFullScreenLoader.stopLoading();
+      TLoader.errorSnackbar(
+          title: lang.translate('snap'), message: TFirebaseAuthException(e.code).message);
+    } on FirebaseException catch (e) {
+      TFullScreenLoader.stopLoading();
+      TLoader.errorSnackbar(
+          title: lang.translate('snap'), message: TFirebaseException(e.code).message);
+    } on FormatException catch (_) {
+      TFullScreenLoader.stopLoading();
+      TLoader.errorSnackbar(title: lang.translate('snap'), message: const TFormatException());
+    } on PlatformException catch (e) {
+      TFullScreenLoader.stopLoading();
+      TLoader.errorSnackbar(
+          title: lang.translate('snap'), message: TPlatformException(e.code).message);
+    } catch (e) {
+      TFullScreenLoader.stopLoading();
+      TLoader.errorSnackbar(title:lang.translate('snap'), message: lang.translate('login_wrong'));
     }
   }
 
-
+  Future<void> googleSignIn() async {
+    final startTime = DateTime.now();
+    try {
+     init();
+      // Google authentication
+      final userCredentials = await AuthenticationRepository.instance.signInWithGoole();
+      // Check existing user record
+      final existingUser = await UserRepository.instance.fetchUserDetails();
+     // 👉 Check bị block
+     print("Trang thai cua user: ${existingUser.status.toLowerCase()}");
+     if (existingUser.status.toLowerCase() == "blocked") {
+       TFullScreenLoader.stopLoading();
+       TLoader.warningSnackbar(
+         title: lang.translate('snap'),
+         message: lang.translate('account_blocked'), // tự thêm vào strings
+       );
+       return;
+     }
+     if (existingUser == UserModel.empty() || existingUser.id != userCredentials?.user!.uid) {
+       // New user or different account: Save user record
+       await userController.saveUserRecord(userCredentials);
+     } else {
+       // Existing account: Fetch updated user data (optional)
+       unawaited(userController.fetchUserRecord());
+     }
+     await  UserController.instance.fetchUserRecord();
+      // GeneralBindings().dependencies();
+      EventLogger().initialize(
+       userId: AuthenticationRepository.instance.authUser!.uid,
+       sessionId: const Uuid().v4(), // hoặc tạo từ Uuid().v4()
+     );
+     UserSession.instance.initialize(AuthenticationRepository.instance.authUser!.uid,UserController.instance.user.value.fullname);
+     NotificationService.instance.initialize(AuthenticationRepository.instance.authUser!.uid);
+     unawaited(UserRepository.instance.updateUserPointsAndFcmToken(AuthenticationRepository.instance.authUser!.uid)) ;
+      // Navigate to NavigationMenu
+     await RecommendationController.instance.fetchRecommendations(AuthenticationRepository.instance.authUser!.uid);
+     TFullScreenLoader.stopLoading();
+      Get.to(() => const NavigationMenu());
+     final endTime = DateTime.now();
+     final duration = endTime.difference(startTime);
+     print("🔥 Thời gian đăng nhập bang Google : ${duration.inMilliseconds}ms");
+    } catch (e) {
+      TFullScreenLoader.stopLoading();
+      TLoader.errorSnackbar(title: lang.translate('snap'), message: e.toString());
+    }
+  }
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../features/bonus_point/model/mission_model.dart';
+import '../enum/enum.dart';
+
 class DHelperFunctions{
   static Color? getColor(String value){
     if(value=="Green"){
@@ -12,6 +15,9 @@ class DHelperFunctions{
     }else if(value=="Pink"){
       return Colors.pink;
     }else if(value=="Grey"){
+      return Colors.blueGrey;
+    }
+    else if(value=="Gray"){
       return Colors.grey;
     }else if(value=="Purple"){
       return Colors.purple;
@@ -30,7 +36,7 @@ class DHelperFunctions{
     }else if(value=="Orange"){
       return Colors.deepOrange;
     }else if(value=="Silver"){
-      return const Color(0xffc0c0c0);;
+      return const Color(0xffc0c0c0);
     }else{
       return null;
     }
@@ -87,4 +93,28 @@ static List<Widget> wrapWidgets(List<Widget> widgets,int rowsize){
     }
     return wrapperList;
   }
+
+  static DateTime? calculateExpiredAt(MissionModel mission, DateTime startTime) {
+    switch (mission.durationType) {
+      case MissionDurationType.none:
+        return null;
+
+      case MissionDurationType.daily:
+        return startTime.add(const Duration(days: 1));
+
+      case MissionDurationType.weekly:
+        return startTime.add(const Duration(days: 7));
+
+      case MissionDurationType.customRange:
+        if (mission.startTime != null && mission.durationInHours != null) {
+          return mission.startTime!.add(Duration(hours: mission.durationInHours!));
+        } else if (mission.endTime != null) {
+          return mission.endTime;
+        } else {
+          // fallback: giả định 24h nếu thiếu dữ liệu
+          return startTime.add(const Duration(hours: 24));
+        }
+    }
+  }
+
 }

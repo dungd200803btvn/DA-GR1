@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:t_store/features/authentication/controller/signup/signup_controller.dart';
-import 'package:t_store/features/authentication/screens/signup/verify_email.dart';
-import 'package:t_store/features/authentication/screens/signup/widgets/term_condition_checkbox.dart';
-import 'package:t_store/utils/validators/validation.dart';
+import 'package:app_my_app/features/authentication/controller/signup/signup_controller.dart';
+import 'package:app_my_app/features/authentication/screens/signup/widgets/term_condition_checkbox.dart';
+import 'package:app_my_app/utils/validators/validation.dart';
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../../utils/constants/sizes.dart';
 import '../../../../../utils/constants/text_string.dart';
 
@@ -17,6 +16,7 @@ class TSignupForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(SignupController());
+    var lang = AppLocalizations.of(context);
     return Form(
         key: controller.signupFormKey,
         child: Column(
@@ -29,8 +29,8 @@ class TSignupForm extends StatelessWidget {
                     controller: controller.firstName,
                     validator: (value) =>
                         DValidator.validateEmptyText('First Name', value),
-                    decoration: const InputDecoration(
-                        labelText: DText.firstName,
+                    decoration:  InputDecoration(
+                        labelText: lang.translate('firstName'),
                         prefixIcon: Icon(Iconsax.user)),
                     expands: false,
                   ),
@@ -43,8 +43,8 @@ class TSignupForm extends StatelessWidget {
                     controller: controller.lastName,
                     validator: (value) =>
                         DValidator.validateEmptyText('lastName', value),
-                    decoration: const InputDecoration(
-                        labelText: DText.lastName,
+                    decoration:  InputDecoration(
+                        labelText: lang.translate('lastName'),
                         prefixIcon: Icon(Iconsax.user)),
                     expands: false,
                   ),
@@ -58,8 +58,8 @@ class TSignupForm extends StatelessWidget {
               controller: controller.userName,
               validator: (value) =>
                   DValidator.validateEmptyText('userName', value),
-              decoration: const InputDecoration(
-                  labelText: DText.username,
+              decoration:  InputDecoration(
+                  labelText: lang.translate('username'),
                   prefixIcon: Icon(Iconsax.user_edit)),
               expands: false,
             ),
@@ -71,8 +71,9 @@ class TSignupForm extends StatelessWidget {
             TextFormField(
               controller: controller.email,
               validator: (value) => DValidator.validateEmail(value),
-              decoration: const InputDecoration(
-                  labelText: DText.email, prefixIcon: Icon(Iconsax.direct)),
+              decoration:  InputDecoration(
+                  labelText: lang.translate('email'),
+                  prefixIcon: Icon(Iconsax.direct)),
             ),
             const SizedBox(
               height: DSize.spaceBtwInputFielRadius,
@@ -81,8 +82,9 @@ class TSignupForm extends StatelessWidget {
             TextFormField(
               controller: controller.phoneNumber,
               validator: (value) => DValidator.validatePhoneNumber(value),
-              decoration: const InputDecoration(
-                  labelText: DText.phoneNo, prefixIcon: Icon(Iconsax.call)),
+              decoration:  InputDecoration(
+                  labelText: lang.translate('phoneNo'),
+                  prefixIcon: Icon(Iconsax.call)),
             ),
             const SizedBox(
               height: DSize.spaceBtwInputFielRadius,
@@ -94,8 +96,8 @@ class TSignupForm extends StatelessWidget {
                 validator: (value) => DValidator.validatePassword(value),
                 obscureText: controller.hidePassword.value,
                 decoration: InputDecoration(
-                  labelText: DText.password,
-                  prefixIcon: Icon(Iconsax.password_check),
+                  labelText: lang.translate('password'),
+                  prefixIcon: const Icon(Iconsax.password_check),
                   suffixIcon: IconButton(
                     onPressed: () => controller.hidePassword.value =
                         !controller.hidePassword.value,
@@ -118,7 +120,7 @@ class TSignupForm extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () => controller.signup(),
-                child: const Text(DText.createAccount),
+                child:  Text(lang.translate('createAccount')),
               ),
             ),
           ],

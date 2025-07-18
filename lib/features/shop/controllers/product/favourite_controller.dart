@@ -1,13 +1,16 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:t_store/data/repositories/product/product_repository.dart';
-import 'package:t_store/features/shop/models/product_model.dart';
-import 'package:t_store/utils/local_storage/storage_utility.dart';
-import 'package:t_store/utils/popups/loader.dart';
+import 'package:app_my_app/data/repositories/product/product_repository.dart';
+import 'package:app_my_app/features/shop/models/product_model.dart';
+import 'package:app_my_app/utils/local_storage/storage_utility.dart';
+import 'package:app_my_app/utils/popups/loader.dart';
+
+import '../../../../l10n/app_localizations.dart';
 
 class FavouritesController extends GetxController {
   static FavouritesController get instance => Get.find();
-
+  late AppLocalizations lang;
   //variables
   final favourites = <String, bool>{}.obs;
 
@@ -15,6 +18,14 @@ class FavouritesController extends GetxController {
   void onInit() {
     initFavourites();
     super.onInit();
+  }
+  @override
+  void onReady() {
+    super.onReady();
+    // Bây giờ Get.context đã có giá trị hợp lệ, ta mới khởi tạo lang
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      lang = AppLocalizations.of(Get.context!);
+    });
   }
 
   Future<void> initFavourites() async {
@@ -34,19 +45,19 @@ class FavouritesController extends GetxController {
     if (!favourites.containsKey(productId)) {
       favourites[productId] = true;
       saveFavouritesToStorage();
-      TLoader.customToast(message: 'Product has been added to the Wishlist');
+      TLoader.successSnackbar(title:lang.translate('add_wishlist'),message:lang.translate('add_wishlist') );
     } else {
       DLocalStorage.instance().removeData(productId);
       favourites.remove(productId);
       saveFavouritesToStorage();
       favourites.refresh();
-      TLoader.customToast(message: 'Product has been removed to the Wishlist');
+      TLoader.successSnackbar(title: lang.translate('remove_wishlist'),message:lang.translate('remove_wishlist') );
     }
   }
 
   void saveFavouritesToStorage() {
     final encodedFavourites = json.encode(favourites);
-    DLocalStorage.instance().saveData('favourites', encodedFavourites);
+    DLocalStorage.instance().writeData('favourites', encodedFavourites);
   }
 
   Future<List<ProductModel>> favouriteProducts() async{

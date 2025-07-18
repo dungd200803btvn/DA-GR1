@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:lottie/lottie.dart';
-import 'package:t_store/utils/constants/colors.dart';
-import 'package:t_store/utils/constants/sizes.dart';
-import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
-import 'package:t_store/utils/constants/colors.dart';
-import 'package:t_store/utils/constants/sizes.dart';
+import 'package:app_my_app/utils/constants/colors.dart';
+import 'package:app_my_app/utils/constants/sizes.dart';
 
 import '../../../navigation_menu.dart';
 
@@ -39,13 +34,13 @@ class TAnimationLoaderWidget extends StatelessWidget {
               animation,
               width: MediaQuery.of(context).size.width * 0.8,
             ),
-            SizedBox(height: DSize.defaultspace),
+            const SizedBox(height: DSize.defaultspace),
             Text(
               text,
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: DSize.defaultspace),
+            const SizedBox(height: DSize.defaultspace),
             if (showAction)
               SizedBox(
                 width: 250,

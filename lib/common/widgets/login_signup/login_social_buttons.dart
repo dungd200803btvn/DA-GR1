@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:t_store/features/authentication/controller/login/login_controller.dart';
+import 'package:app_my_app/features/authentication/controller/login/login_controller.dart';
 
 import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/image_strings.dart';
@@ -12,7 +12,7 @@ class TSocialButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(LoginController());
+    final controller = LoginController.instance;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -32,19 +32,6 @@ class TSocialButtons extends StatelessWidget {
         ),
         const SizedBox(width: DSize.spaceBtwItem,),
 
-        //FaceBook
-        Container(
-          decoration: BoxDecoration(border: Border.all(color: DColor.grey),
-              borderRadius: BorderRadius.circular(100)),
-          child: IconButton(
-            onPressed: (){},
-            icon: const Image(
-                width: DSize.iconMd,
-                height: DSize.iconMd,
-                image: AssetImage(TImages.facebook)
-            ),
-          ),
-        ),
       ],
     );
   }
