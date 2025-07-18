@@ -1,7 +1,7 @@
-# ecommerce_app
+# Giới thiệu
 
 Hệ thống thương mại điện tử trên Mobile-Đồ án tốt nghiệp 2025
 
-## Getting Started
+## Hướng dẫn
 
-Chi tiết thông tin về dự án xem trong thư mục report của nhánh develop
+Chi tiết thông tin về dự án xem trong thư mục Report
