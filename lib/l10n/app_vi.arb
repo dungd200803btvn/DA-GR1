@@ -351,5 +351,8 @@
   "exchange_rewards": "Đổi thưởng lấy voucher",
   "exchange_rewards_msg": "Bạn đã đổi thưởng thành công: {0}",
   "view_shop": "Xem cửa hàng",
-  "share_social": "Chia sẻ qua mạng xã hội"
+  "share_social": "Chia sẻ qua mạng xã hội",
+  "my_chat_bot": "Chatbot của tôi",
+  "my_chat_bot_msg": "Trải nghiệm cảm giác nhắn tin trò chuyện và mua sắm tự động với chatbot",
+  "account_blocked": "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên."
 }

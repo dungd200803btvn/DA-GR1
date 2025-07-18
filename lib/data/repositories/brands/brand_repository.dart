@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:app_my_app/data/repositories/product/product_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -12,11 +12,12 @@ import '../../../utils/exceptions/firebase_exceptions.dart';
 import '../../../utils/exceptions/platform_exceptions.dart';
 import '../../../utils/local_storage/storage_utility.dart';
 
-
 class BrandRepository extends GetxController{
   static BrandRepository get instance => Get.find();
   //variables
 final _db = FirebaseFirestore.instance;
+final ProductRepository productRepository = ProductRepository.instance;
+  List<BrandModel>? _cachedTopBrands;
 //get all brands
   Future<List<BrandModel>> getAllBrands() async {
     try {
@@ -36,15 +37,14 @@ final _db = FirebaseFirestore.instance;
 
   /// Lấy top brands theo giới hạn truyền vào (mặc định 20)
   Future<List<BrandModel>> fetchTopBrands( {int limit = 20}) async {
+    final startTime = DateTime.now();
     try {
+      if (_cachedTopBrands != null&& limit ==20) return _cachedTopBrands!;
       // 1. Lấy toàn bộ products
-      QuerySnapshot productSnapshot =
-      await _db.collection('Products').get();
-      print("Retrieved ${productSnapshot.docs.length} products");
-
+      final productsDoc = await productRepository.getAllProductsDoc();
       // 2. Đếm số lượng sản phẩm cho mỗi brand
       Map<String, int> brandCount = {};
-      for (var doc in productSnapshot.docs) {
+      for (var doc in productsDoc) {
         final data = doc.data() as Map<String, dynamic>;
         final String? brandId = data['brandId'];
         if (brandId != null) {
@@ -75,7 +75,6 @@ final _db = FirebaseFirestore.instance;
           brands.add(data);
         }
       }
-
       // 5. Sắp xếp lại các brand theo số lượng sản phẩm giảm dần
       brands.sort((a, b) =>
           (b['productCount'] as int).compareTo(a['productCount'] as int));
@@ -83,6 +82,10 @@ final _db = FirebaseFirestore.instance;
       final List<BrandModel> brandsModel = brands
           .map((jsonItem) => BrandModel.fromJson(jsonItem))
           .toList();
+      _cachedTopBrands = brandsModel;
+      final endTime = DateTime.now();
+      final duration = endTime.difference(startTime);
+      print("🔥 Thời gian load top brands : ${duration.inMilliseconds}ms");
       return brandsModel;
     } catch (error) {
       print("Error retrieving top brands: $error");

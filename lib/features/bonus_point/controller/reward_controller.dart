@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app_my_app/data/repositories/vouchers/VoucherRepository.dart';
 import 'package:app_my_app/features/voucher/models/VoucherModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/image_strings.dart';
 import '../../../utils/helper/cloud_helper_functions.dart';
@@ -47,12 +48,13 @@ class RewardController extends GetxController {
     final requiredPoints = voucher.pointsToRedeem;
     final userDocRef = firestore.collection('User').doc(userId);
     final claimedVouchersRef = userDocRef.collection('claimed_vouchers');
+    final startTime =  DateTime.now();
     TFullScreenLoader.openLoadingDialog(
         'Exchange reward now...', TImages.loaderAnimation);
     try {
       final userSnapshot = await userDocRef.get();
       final userData = userSnapshot.data() as Map<String, dynamic>;
-      final currentPoints = userData['Points'] ?? 0;
+      final currentPoints = userData['points'] ?? 0;
 
       if (currentPoints < requiredPoints) {
         TLoader.warningSnackbar(title: 'Bạn không đủ điểm để đổi voucher này.');
@@ -61,7 +63,7 @@ class RewardController extends GetxController {
       // Trừ điểm và lưu voucher vào bảng claimed_vouchers
       await firestore.runTransaction((transaction) async {
         transaction.update(userDocRef, {
-          'Points': currentPoints - requiredPoints,
+          'points': currentPoints - requiredPoints,
         });
 
         transaction.set(claimedVouchersRef.doc(), {
@@ -70,7 +72,6 @@ class RewardController extends GetxController {
           'is_used': false,
           'used_at': null,
         });
-
         // Ghi log vào bảng reward_items
         final rewardLogRef = userDocRef.collection('reward_items').doc();
         transaction.set(rewardLogRef, {
@@ -79,24 +80,36 @@ class RewardController extends GetxController {
           'redeemed_at': FieldValue.serverTimestamp(),
         });
       });
+
+      TLoader.successSnackbar(title: 'Đổi thưởng thành công!');
+      // 🔄 Gửi thông báo sau khi giao dịch thành công (async)
+      unawaited(_sendExchangeNotification(voucher));
+      final endTime = DateTime.now();
+      final duration = endTime.difference(startTime);
+      print("🔥 Thời gian doi thuong: ${duration.inMilliseconds}ms");
+    } catch (e) {
+      print("Error during redeem: $e");
+      TLoader.errorSnackbar(title: 'Có lỗi xảy ra, vui lòng thử lại.');
+    }finally {
+      TFullScreenLoader.stopLoading();
+    }
+  }
+
+  Future<void> _sendExchangeNotification(VoucherModel voucher) async {
+    try {
       String baseMessage = lang.translate(
-        'exchange_rewards_msg',
-        args: [voucher.description],
-      );
+          'exchange_rewards_msg', args: [voucher.description]);
       String finalMessage = baseMessage.replaceAll(RegExp(r'[{}]'), '');
-      String url = await  TCloudHelperFunctions.uploadAssetImage("assets/images/content/exchange_reward.jpg", "exchange_reward");
+      String url = await TCloudHelperFunctions.uploadAssetImage(
+          "assets/images/content/exchange_reward.jpg", "exchange_reward");
       await NotificationService.instance.createAndSendNotification(
         title: lang.translate('exchange_rewards'),
         message: finalMessage,
         type: "exchange rewards",
         imageUrl: url,
       );
-      TLoader.successSnackbar(title: 'Đổi thưởng thành công!');
     } catch (e) {
-      print("Error during redeem: $e");
-      TLoader.errorSnackbar(title: 'Có lỗi xảy ra, vui lòng thử lại.');
-    }finally {
-      TFullScreenLoader.stopLoading();
+      print("🔴 Gửi thông báo thất bại: $e");
     }
   }
 }

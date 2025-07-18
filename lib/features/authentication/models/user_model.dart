@@ -14,12 +14,14 @@ class UserModel {
   String gender;
   late DateTime dateOfBirth;
   String role;
+  String status;
 
   UserModel(
        this.id, this.firstName, this.lastName, this.userName, this.email,
       this.phoneNumber, this.profilePicture,{
         this.points = 100,this.fcmToken ="", this.gender = "Male", DateTime? dateOfBirth,
-        this.role = "customer"
+        this.role = "customer",
+        this.status = "Active"
       }){
     this.dateOfBirth = dateOfBirth ?? DateTime(2003, 8, 20);
   }
@@ -47,7 +49,8 @@ class UserModel {
       'fcmToken': fcmToken,
       'gender':gender,
       'dateOfBirth': Timestamp.fromDate(dateOfBirth),
-      'role':role
+      'role':role,
+      'status':status
     };
   }
 
@@ -65,11 +68,11 @@ class UserModel {
           fcmToken: data['fcmToken'] ?? "",
           gender: data['gender']?? "Male",
           role: data['role']?? "customer",
+          status: data['status']?? "Active",
           dateOfBirth: data['dateOfBirth']!= null? (data['dateOfBirth'] as Timestamp).toDate(): DateTime(2003, 8, 20)
       );
     }else{
       return UserModel.empty();
     }
   }
-
 }

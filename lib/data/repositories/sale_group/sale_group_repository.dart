@@ -5,22 +5,24 @@ import '../../../features/sale_group/model/sale_group_model.dart';
 import '../../../utils/exceptions/firebase_exceptions.dart';
 import '../../../utils/exceptions/format_exceptions.dart';
 import '../../../utils/exceptions/platform_exceptions.dart';
+import '../../../utils/singleton/user_singleton.dart';
 import '../authentication/authentication_repository.dart';
 
-class SaleGroupRepository{
-  static SaleGroupRepository get instance=> SaleGroupRepository();
+class SaleGroupRepository {
+  static SaleGroupRepository get instance => SaleGroupRepository();
   final _db = FirebaseFirestore.instance;
+
   // Tạo nhóm săn sale
   Future<void> createSaleGroup(SaleGroupModel group) async {
-    DocumentReference documentReference =  await _db
+    DocumentReference documentReference = await _db
         .collection('sale_groups')
         .add(group.toMap());
     await documentReference.update({
-      'id':documentReference.id
+      'id': documentReference.id
     });
   }
 
-  Future<void> deleteSaleGroup(SaleGroupModel group) async{
+  Future<void> deleteSaleGroup(SaleGroupModel group) async {
     try {
       await _db.collection('sale_groups').doc(group.id).delete();
       print('Group ${group.id} deleted successfully.');
@@ -32,10 +34,10 @@ class SaleGroupRepository{
 
   // Lấy thông tin nhóm theo id
   Future<SaleGroupModel> getSaleGroupById(String id) async {
-    try{
+    try {
       final snapshot = await _db.collection('sale_groups').doc(id).get();
       return SaleGroupModel.fromMap(snapshot);
-    }on FirebaseException catch (e) {
+    } on FirebaseException catch (e) {
       throw TFirebaseException(e.code).message;
     } on FormatException catch (_) {
       throw const TFormatException();
@@ -82,7 +84,7 @@ class SaleGroupRepository{
 
   Future<void> updateGroupStatus(String groupId, String newStatus) async {
     try {
-      await FirebaseFirestore.instance
+      await _db
           .collection('sale_groups')
           .doc(groupId)
           .update({'status': newStatus});
@@ -91,4 +93,41 @@ class SaleGroupRepository{
     }
   }
 
+  Future<bool> addUserToGroup(String groupId, String userId) async {
+    final groupRef = _db.collection('sale_groups').doc(groupId);
+    final groupSnap = await groupRef.get();
+    if (groupSnap.exists) {
+      final groupData = groupSnap.data()!;
+      print("Thong tin group name: ${groupData['name']}");
+      print("Thong tin group participants: ${groupData['participants']}");
+      // Lấy currentParticipants và targetParticipants
+      int currentParticipants = groupData['currentParticipants'] is int
+          ? groupData['currentParticipants'] as int
+          : 0;
+      final int targetParticipants = groupData['targetParticipants'] is int
+          ? groupData['targetParticipants'] as int
+          : 0;
+      // Tăng currentParticipants thêm 1
+      final int updatedParticipantsCount = currentParticipants + 1;
+      // Nếu số thành viên đạt targetParticipants và thời hạn của group chưa hết
+      bool markCompleted = false;
+      if (updatedParticipantsCount >= targetParticipants) {
+        markCompleted = true;
+      }
+      // Chuẩn bị dữ liệu cập nhật:
+      Map<String, dynamic> updateData = {
+        'participants': FieldValue.arrayUnion([userId]),
+        'currentParticipants': updatedParticipantsCount,
+      };
+      if (markCompleted) {
+        updateData['status'] = 'completed';
+        await groupRef.update(updateData);
+        return true;
+      }else{
+        await groupRef.update(updateData);
+        return false;
+      }
+    }
+    return false;
+  }
 }

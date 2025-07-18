@@ -28,7 +28,7 @@ class CheckoutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = DHelperFunctions.isDarkMode(context);
     final cartController = CartController.instance;
-    final orderController = OrderController.instance;
+    final orderController = Get.put(OrderController());
     final subTotal = cartController.totalCartPrice.value;
     final lang = AppLocalizations.of(context);
     // Gọi hàm processOrder ngay khi màn hình được build

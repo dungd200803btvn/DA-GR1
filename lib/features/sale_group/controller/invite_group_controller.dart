@@ -38,6 +38,7 @@ class InviteGroupController extends GetxController {
     });
   }
   Future<Uri> createGroupDynamicLink(SaleGroupModel group) async {
+
     final DynamicLinkParameters parameters = DynamicLinkParameters(
       uriPrefix: 'https://ecommerce200803.page.link',
       link: Uri.parse('https://ecommerce200803.page.link/group/${group.id}'),
@@ -46,41 +47,54 @@ class InviteGroupController extends GetxController {
         fallbackUrl: Uri.parse('https://appdistribution.firebase.dev/i/e8414077a97b5ef7'),
       ),
     );
-
+    // ✅ Tạo link dài thay vì short link
+    final Uri longDynamicLink = await FirebaseDynamicLinks.instance.buildLink(parameters);
     final ShortDynamicLink shortLink = await FirebaseDynamicLinks.instance.buildShortLink(parameters);
     return shortLink.shortUrl;
   }
   void showQrCodeDialog(BuildContext context, String data) {
     final screenshotController = ScreenshotController();
+
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Mã QR nhóm'),
+          title: const Text('Mã QR nhóm'),
           content: Screenshot(
             controller: screenshotController,
-            child: QrImageView(
-              data: data,
-              size: 200,
+            child: Container(
+              color: Colors.white, // Đảm bảo nền trắng khi chụp
+              alignment: Alignment.center,
+              child: SizedBox(
+                width: 200,
+                height: 200,
+                child: QrImageView(
+                  data: data,
+                  backgroundColor: Colors.white, // QR có nền trắng
+                ),
+              ),
             ),
           ),
           actions: [
             TextButton(
-              onPressed: () async {
-                final image = await screenshotController.capture();
-                if (image != null) {
-                  final tempDir = await getTemporaryDirectory();
-                  final file = await File('${tempDir.path}/qr.png').create();
-                  await file.writeAsBytes(image);
-                  Share.shareFiles([file.path], text: 'Tham gia nhóm săn sale!');
-                }
-                Navigator.pop(context);
+              onPressed: () {
+                // Gọi callback sau khi frame đã build xong
+                WidgetsBinding.instance.addPostFrameCallback((_) async {
+                  final image = await screenshotController.capture();
+                  if (image != null) {
+                    final tempDir = await getTemporaryDirectory();
+                    final file = await File('${tempDir.path}/qr.png').create();
+                    await file.writeAsBytes(image);
+                    await Share.shareFiles([file.path], text: 'Tham gia nhóm săn sale!');
+                  }
+                  Navigator.pop(context);
+                });
               },
-              child: Text('Chia sẻ'),
+              child: const Text('Chia sẻ'),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Đóng'),
+              child: const Text('Đóng'),
             ),
           ],
         );
@@ -107,8 +121,8 @@ class InviteGroupController extends GetxController {
               leading: Icon(Icons.qr_code),
               title: Text('Chia sẻ mã QR'),
               onTap: () {
-                Navigator.pop(context);
                 showQrCodeDialog(context, dynamicLink.toString());
+                // Navigator.pop(context);
               },
             ),
           ],

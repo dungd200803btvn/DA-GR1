@@ -351,5 +351,8 @@
   "exchange_rewards": "Exchange Rewards",
   "exchange_rewards_msg": "You have successfully exchange_rewards: {0}",
   "view_shop": "View shop",
-  "share_social": "Share on social media"
+  "share_social": "Share on social media",
+  "my_chat_bot": "My Chatbot",
+  "my_chat_bot_msg": "Experience the feeling of chatting and shopping automatically with chatbots",
+  "account_blocked": "Your account has been locked. Please contact the administrator."
 }

@@ -11,6 +11,7 @@ import '../../../utils/constants/sizes.dart';
 import '../../../utils/helper/cloud_helper_functions.dart';
 import '../../../utils/popups/loader.dart';
 import '../models/VoucherModel.dart';
+import '../widgets/voucher_tab_list_screen.dart';
 
 class VoucherScreen extends StatefulWidget {
   final String userId;
@@ -66,15 +67,21 @@ class _VoucherScreenState extends State<VoucherScreen> {
           ),
         ],
       ),
-      body: DVoucherTab(
-        voucherFuture: controller.getAllVouchers(), // Hiển thị tất cả voucher
-        showAllVouchers: showAllVouchers,
-        onToggleShowAll: () {
-          setState(() {
-            showAllVouchers = !showAllVouchers;
-          });
-        },
-      ),
+      body: Obx(() {
+        final vouchers = controller.allVouchers
+            .where((voucher) => !controller.allClaimedVoucherModel.any((claimed) => claimed.id == voucher.id))
+            .toList();
+        return DVoucherTab2(
+          vouchers: vouchers,
+          showAllVouchers: showAllVouchers,
+          onToggleShowAll: () {
+            setState(() {
+              showAllVouchers = !showAllVouchers;
+            });
+          },
+        );
+      })
+
     );
   }
 }

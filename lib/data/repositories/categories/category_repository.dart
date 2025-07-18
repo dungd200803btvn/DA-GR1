@@ -1,20 +1,18 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:app_my_app/features/shop/models/category_model.dart';
-import 'package:http/http.dart' as http;
-import 'package:app_my_app/utils/constants/api_constants.dart';
 import '../../../utils/exceptions/firebase_exceptions.dart';
 import '../../../utils/exceptions/platform_exceptions.dart';
-import '../../../utils/local_storage/storage_utility.dart';
 import '../../services/cloud_storage/firebase_storage_service.dart';
+import '../product/product_repository.dart';
 
 class CategoryRepository extends GetxController {
   static CategoryRepository get instance => Get.find();
   //variables
   final _db = FirebaseFirestore.instance;
+  final ProductRepository productRepository = ProductRepository.instance;
+  List<CategoryModel>? _cachedTopCategories;
 //get all categories
   Future<List<CategoryModel>> getAllCategories() async {
     try {
@@ -34,13 +32,14 @@ class CategoryRepository extends GetxController {
 
   Future<List<CategoryModel>> fetchTopCategories({int limit = 20}) async {
     try {
+      if (_cachedTopCategories != null&& limit ==20) return _cachedTopCategories!;
       // 1. Lấy toàn bộ Products
-      QuerySnapshot productSnapshot = await _db.collection('Products').get();
+      final productsDoc = await productRepository.getAllProductsDoc();
       // 2. Đếm số lượng sản phẩm cho mỗi category và lưu hình ảnh đại diện (nếu có)
       final Map<String, int> categoryCount = {};
       final Map<String, String> categoryImages = {};
 
-      for (var doc in productSnapshot.docs) {
+      for (var doc in productsDoc) {
         final data = doc.data() as Map<String, dynamic>;
         if (data['categoryIds'] != null && data['categoryIds'] is List) {
           List<dynamic> catIds = data['categoryIds'];
@@ -58,7 +57,6 @@ class CategoryRepository extends GetxController {
           }
         }
       }
-
       // 3. Sắp xếp các category theo số lượng sản phẩm giảm dần và lấy top limit
       List<String> sortedCategoryIds = categoryCount.keys.toList();
       sortedCategoryIds.sort((a, b) => categoryCount[b]!.compareTo(categoryCount[a]!));
@@ -88,6 +86,7 @@ class CategoryRepository extends GetxController {
 
       // 5. Sắp xếp lại danh sách theo số lượng sản phẩm giảm dần (nếu cần)
       categories.sort((a, b) => b.productCount!.compareTo(a.productCount!));
+      _cachedTopCategories = categories;
       return categories;
     } catch (error) {
       print("Error retrieving top categories: $error");

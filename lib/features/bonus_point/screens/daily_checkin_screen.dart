@@ -11,7 +11,6 @@ import 'package:app_my_app/utils/formatter/formatter.dart';
 import 'package:app_my_app/utils/helper/cloud_helper_functions.dart';
 import 'package:app_my_app/utils/popups/loader.dart';
 import '../../../common/widgets/appbar/appbar.dart';
-import '../../../data/repositories/authentication/authentication_repository.dart';
 import '../../authentication/models/user_model.dart';
 import '../../notification/controller/notification_service.dart';
 import '../../personalization/screens/setting/setting.dart';
@@ -169,11 +168,11 @@ class _DailyCheckInScreenState extends State<DailyCheckInScreen> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Container(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.grey[100],
                   borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(
                       color: Colors.black12,
                       blurRadius: 4,
@@ -213,7 +212,7 @@ class _DailyCheckInScreenState extends State<DailyCheckInScreen> {
 
                         // Cập nhật điểm thưởng từ dữ liệu Firestore
                         final userData = snapshot.data!.data() as Map<String, dynamic>;
-                        final points = userData['Points'] ?? 0;
+                        final points = userData['points'] ?? 0;
 
                         return Text(
                           "${lang.translate('current_bonus_points')}: $points",

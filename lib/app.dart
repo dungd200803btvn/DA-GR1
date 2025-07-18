@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       themeMode: Get.isDarkMode ? ThemeMode.dark : ThemeMode.light,
       darkTheme: DAppTheme.dark_theme,
       theme: DAppTheme.light_theme,
-      getPages: AppRoutes.pages,
+      // getPages: AppRoutes.pages,
       initialBinding: AuthBindings(),
       navigatorKey: navigatorKey,
       locale: languageController.locale.value,// Mặc định là tiếng Anh

@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:app_my_app/data/repositories/bonus_point/mission_repository.dart';
 import 'package:app_my_app/features/notification/controller/notification_service.dart';
+import 'package:app_my_app/features/shop/controllers/recommendation_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -51,6 +54,9 @@ class LoginController extends GetxController {
     }
   }
   Future<void> emailAndPasswordLogin() async {
+    TFullScreenLoader.openLoadingDialog(
+        'Login now...', TImages.loaderAnimation);
+    final startTime = DateTime.now();
     try {
       init();
       //Save data if remember me is selected
@@ -64,29 +70,39 @@ class LoginController extends GetxController {
       final userCredentials = await AuthenticationRepository.instance.loginWithEmailAndPassword(email.text.trim(), password.text.trim());
       // Check existing user record
       final existingUser = await userRepository.fetchUserDetails();
+      print("Trang thai cua user: ${existingUser.status.toLowerCase()}");
+      // 👉 Check bị block
+      if (existingUser.status.toLowerCase() == "blocked") {
+        TFullScreenLoader.stopLoading();
+        TLoader.warningSnackbar(
+          title: lang.translate('snap'),
+          message: lang.translate('account_blocked'), // tự thêm vào strings
+        );
+        return;
+      }
       if (existingUser == UserModel.empty() || existingUser.id != userCredentials.user!.uid) {
         // New user or different account: Save user record
         await userController.saveUserRecord(userCredentials);
       } else {
         // Existing account: Fetch updated user data (optional)
-        await  userController.fetchUserRecord();
+        unawaited(UserController.instance.fetchUserRecord());
       }
-      await UserController.instance.fetchUserRecord();
-      // Fetch updated user record after sign-i
-      // await UserController.instance.fetchUserRecord();
-      // Remove loader
-      TFullScreenLoader.stopLoading();
-      GeneralBindings().dependencies();
+      await  UserController.instance.fetchUserRecord();
+      // GeneralBindings().dependencies();
       EventLogger().initialize(
         userId: AuthenticationRepository.instance.authUser!.uid,
         sessionId: const Uuid().v4(), // hoặc tạo từ Uuid().v4()
       );
       UserSession.instance.initialize(AuthenticationRepository.instance.authUser!.uid,UserController.instance.user.value.fullname);
       NotificationService.instance.initialize(AuthenticationRepository.instance.authUser!.uid);
-      UserRepository.instance.updateUserPointsAndFcmToken(AuthenticationRepository.instance.authUser!.uid);
-      await MissionRepository.instance.createMissionsBulk();
+      unawaited(UserRepository.instance.updateUserPointsAndFcmToken(AuthenticationRepository.instance.authUser!.uid)) ;
       // Navigate to NavigationMenu
+      await RecommendationController.instance.fetchRecommendations(AuthenticationRepository.instance.authUser!.uid);
+      TFullScreenLoader.stopLoading();
       Get.to(() => const NavigationMenu());
+      final endTime = DateTime.now();
+      final duration = endTime.difference(startTime);
+      print("🔥 Thời gian đăng nhập : ${duration.inMilliseconds}ms");
     } on FirebaseAuthException catch (e) {
       TFullScreenLoader.stopLoading();
       TLoader.errorSnackbar(
@@ -109,32 +125,46 @@ class LoginController extends GetxController {
   }
 
   Future<void> googleSignIn() async {
+    final startTime = DateTime.now();
     try {
      init();
       // Google authentication
       final userCredentials = await AuthenticationRepository.instance.signInWithGoole();
       // Check existing user record
       final existingUser = await UserRepository.instance.fetchUserDetails();
-      if (existingUser == UserModel.empty() || existingUser.id != userCredentials?.user!.uid) {
-        // New user or different account: Save user record
-        await userController.saveUserRecord(userCredentials);
-      } else {
-        // Existing account: Fetch updated user data (optional)
-        UserController.instance.fetchUserRecord();
-      }
-      // Fetch updated user record after sign-i
-      await UserController.instance.fetchUserRecord();
-      // Remove loader
-      TFullScreenLoader.stopLoading();
-      GeneralBindings().dependencies();
+     // 👉 Check bị block
+     print("Trang thai cua user: ${existingUser.status.toLowerCase()}");
+     if (existingUser.status.toLowerCase() == "blocked") {
+       TFullScreenLoader.stopLoading();
+       TLoader.warningSnackbar(
+         title: lang.translate('snap'),
+         message: lang.translate('account_blocked'), // tự thêm vào strings
+       );
+       return;
+     }
+     if (existingUser == UserModel.empty() || existingUser.id != userCredentials?.user!.uid) {
+       // New user or different account: Save user record
+       await userController.saveUserRecord(userCredentials);
+     } else {
+       // Existing account: Fetch updated user data (optional)
+       unawaited(userController.fetchUserRecord());
+     }
+     await  UserController.instance.fetchUserRecord();
+      // GeneralBindings().dependencies();
       EventLogger().initialize(
        userId: AuthenticationRepository.instance.authUser!.uid,
        sessionId: const Uuid().v4(), // hoặc tạo từ Uuid().v4()
      );
      UserSession.instance.initialize(AuthenticationRepository.instance.authUser!.uid,UserController.instance.user.value.fullname);
      NotificationService.instance.initialize(AuthenticationRepository.instance.authUser!.uid);
+     unawaited(UserRepository.instance.updateUserPointsAndFcmToken(AuthenticationRepository.instance.authUser!.uid)) ;
       // Navigate to NavigationMenu
+     await RecommendationController.instance.fetchRecommendations(AuthenticationRepository.instance.authUser!.uid);
+     TFullScreenLoader.stopLoading();
       Get.to(() => const NavigationMenu());
+     final endTime = DateTime.now();
+     final duration = endTime.difference(startTime);
+     print("🔥 Thời gian đăng nhập bang Google : ${duration.inMilliseconds}ms");
     } catch (e) {
       TFullScreenLoader.stopLoading();
       TLoader.errorSnackbar(title: lang.translate('snap'), message: e.toString());

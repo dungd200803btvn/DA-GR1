@@ -80,7 +80,7 @@ class ProductModel {
   }
 
   // Hàm helper bất đồng bộ dùng trong fromSnapshotAsync
-  static Future<ProductModel> _fromMapAsync(
+  static Future<ProductModel> fromMapAsync(
       Map<String, dynamic> data,
       String id,
       DocumentSnapshot<Map<String, dynamic>>? doc) async {
@@ -200,6 +200,6 @@ class ProductModel {
   static Future<ProductModel> fromSnapshotAsync(
       DocumentSnapshot<Map<String, dynamic>> documentSnapshot) async {
     final data = documentSnapshot.data()!;
-    return await ProductModel._fromMapAsync(data, documentSnapshot.id,documentSnapshot);
+    return await ProductModel.fromMapAsync(data, documentSnapshot.id,documentSnapshot);
   }
 }

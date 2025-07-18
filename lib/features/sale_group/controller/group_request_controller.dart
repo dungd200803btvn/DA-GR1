@@ -1,4 +1,6 @@
+import 'package:app_my_app/data/repositories/vouchers/ClaimedVoucherRepository.dart';
 import 'package:app_my_app/features/sale_group/controller/sale_group_controller.dart';
+import 'package:app_my_app/features/voucher/models/UserClaimedVoucher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -23,6 +25,8 @@ class GroupRequestController extends GetxController {
   final RxBool isLoading = false.obs;
   final UserRepository userRepository = UserRepository.instance;
   final SaleGroupRepository saleGroupRepository = SaleGroupRepository.instance;
+  final ClaimedVoucherRepository claimedVoucherRepository =
+      ClaimedVoucherRepository.instance;
 
   String get currentUserId => UserSession.instance.userId!;
   late AppLocalizations lang;
@@ -107,15 +111,14 @@ class GroupRequestController extends GetxController {
           for (final userId in group.participants) {
             try {
               final user = await userRepository.getUserById(userId);
-                await NotificationService.instance
-                    .sendNotificationToDeviceToken(
-                  deviceToken: user.fcmToken,
-                  title: "Nhóm đã hoàn tất!",
-                  message: completeMessage,
-                  type: 'group_completed',
-                  imageUrl: completedImageUrl,
-                  friendId: userId,
-                );
+              await NotificationService.instance.sendNotificationToDeviceToken(
+                deviceToken: user.fcmToken,
+                title: "Nhóm đã hoàn tất!",
+                message: completeMessage,
+                type: 'group_completed',
+                imageUrl: completedImageUrl,
+                friendId: userId,
+              );
             } catch (e) {
               print("Lỗi gửi thông báo đến user $userId: $e");
             }
@@ -136,51 +139,52 @@ class GroupRequestController extends GetxController {
             type = 'category';
           }
           final voucher = VoucherModel(
-            id: voucherId,
-            title: "Voucher nhóm ${group.name}",
-            description:
-            "Giảm ngay ${group.discount}% cho đơn hàng thuộc danh mục $type ${group.selectedObjectName} dành riêng cho thành viên nhóm ${group.name}",
-            type: "group_voucher",
-            discountValue: group.discount,
-            maxDiscount: null,
-            minimumOrder: null,
-            requiredPoints: null,
-            applicableUsers: group.participants,
-            applicableProducts: null,
-            applicableCategories: null,
-            shopId: group.shopId,
-            brandId: group.brandId,
-            categoryId: group.categoryId,
-            startDate: now,
-            endDate: endDate,
-            quantity: group.participants.length,
-            remainingQuantity: group.participants.length,
-            claimedUsers: [],
-            isActive: true,
-            createdAt: now,
-            updatedAt: now,
-            isRedeemableByPoint: false
-          );
+              id: voucherId,
+              title: "Voucher nhóm ${group.name}",
+              description:
+                  "Giảm ngay ${group.discount}% cho đơn hàng thuộc danh mục $type ${group.selectedObjectName} dành riêng cho thành viên nhóm ${group.name}",
+              type: "group_voucher",
+              discountValue: group.discount,
+              maxDiscount: null,
+              minimumOrder: null,
+              requiredPoints: null,
+              applicableUsers: group.participants,
+              applicableProducts: null,
+              applicableCategories: null,
+              shopId: group.shopId,
+              brandId: group.brandId,
+              categoryId: group.categoryId,
+              startDate: now,
+              endDate: endDate,
+              quantity: group.participants.length,
+              remainingQuantity: group.participants.length,
+              claimedUsers: [],
+              isActive: true,
+              createdAt: now,
+              updatedAt: now,
+              isRedeemableByPoint: false);
           await FirebaseFirestore.instance
               .collection('voucher')
               .doc(voucherId)
               .set(voucher.toJson());
-          print(
-              "🎉 Voucher đã được tạo cho nhóm ${group.name} với ID: $voucherId");
 
-        for(final userId in group.participants ){
-          final user = await userRepository.getUserById(userId);
-          await NotificationService.instance.sendNotificationToDeviceToken(
-            deviceToken: user.fcmToken,
-            title: "Voucher đã được tạo cho nhóm ${group.name}",
-            message:
-            "Giảm ngay ${group.discount}% cho đơn hàng thuộc danh mục $type ${group.selectedObjectName} dành riêng cho thành viên nhóm ${group.name} ",
-            type: 'group_completed',
-            imageUrl: groupVoucherImageUrl,
-            friendId: userId,
-          );
-        }
-        
+          final claimedVoucher = ClaimedVoucherModel(
+              voucherId: voucherId, claimedAt: Timestamp.now(), isUsed: false);
+
+          for (final userId in group.participants) {
+            await claimedVoucherRepository.claimVoucher(userId, claimedVoucher);
+            final user = await userRepository.getUserById(userId);
+            await NotificationService.instance.sendNotificationToDeviceToken(
+              deviceToken: user.fcmToken,
+              title: "Voucher đã được tạo cho nhóm ${group.name}",
+              message:
+                  "Giảm ngay ${group.discount}% cho đơn hàng thuộc danh mục $type ${group.selectedObjectName} dành riêng cho thành viên nhóm ${group.name} ",
+              type: 'group_completed',
+              imageUrl: groupVoucherImageUrl,
+              friendId: userId,
+            );
+          }
+
           break;
       }
       if (newStatus == 'accepted') {

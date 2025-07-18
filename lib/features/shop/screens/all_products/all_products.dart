@@ -1,3 +1,5 @@
+import 'package:app_my_app/features/shop/controllers/recommendation_controller.dart';
+import 'package:app_my_app/utils/singleton/user_singleton.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,6 +30,7 @@ class AllProducts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(AllProductsController());
+    final recommendationController = RecommendationController.instance;
     final dark = DHelperFunctions.isDarkMode(context);
     return Scaffold(
       appBar: TAppBar(
@@ -40,30 +43,61 @@ class AllProducts extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(DSize.defaultspace),
-          child: FutureBuilder(
-            future: futureMethod ?? controller.fetchProductsByQuery(query),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  TFullScreenLoader.openLoadingDialog(
-                    'Loading products now...',
-                    TImages.loaderAnimation,
-                  );
-                });
-                return const SizedBox(); // Không hiển thị gì khi đang loading
-              } else {
-                // Khi dữ liệu có sẵn, đóng dialog loading
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  TFullScreenLoader.stopLoading();
-                });
-              }
-              final products = snapshot.data!;
-              return TSortableProducts(
-                products: products,
+          child: Column(
+            children: [
+              products!=null? TSortableProducts(
+                products: products!,
                 applyDiscount: applyDiscount,
-              );
-            },
-          ),
+              ):
+              FutureBuilder(
+                future: futureMethod ?? controller.fetchProductsByQuery(query),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      TFullScreenLoader.openLoadingDialog(
+                        'Loading products now...',
+                        TImages.loaderAnimation,
+                      );
+                    });
+                    return const SizedBox(); // Không hiển thị gì khi đang loading
+                  } else {
+                    // Khi dữ liệu có sẵn, đóng dialog loading
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      TFullScreenLoader.stopLoading();
+                    });
+                  }
+                  final products = snapshot.data!;
+                  return TSortableProducts(
+                    products: products,
+                    applyDiscount: applyDiscount,
+                  );
+                },
+              ),
+
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  recommendationController.isLoaded.value = false;
+                  recommendationController.fetchRecommendations(UserSession.instance.userId!);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueAccent,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 4,
+                  shadowColor: Colors.black45,
+                  textStyle: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                child: const Text("Refresh lại danh sách"),
+              )
+            ],
+          )
         ),
       ),
     );

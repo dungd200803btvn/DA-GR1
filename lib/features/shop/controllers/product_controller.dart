@@ -7,9 +7,7 @@ import 'package:app_my_app/data/repositories/product/product_repository.dart';
 import 'package:app_my_app/features/shop/models/product_model.dart';
 import 'package:app_my_app/utils/enum/enum.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../../utils/constants/image_strings.dart';
 import '../../../utils/formatter/formatter.dart';
-import '../../../utils/popups/full_screen_loader.dart';
 import '../../../utils/popups/loader.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import '../../suggestion/suggestion_repository.dart';
@@ -19,7 +17,6 @@ class ProductController extends GetxController {
   final isLoading = false.obs;
   final isLoadingMore = false.obs;
   RxList<ProductModel> featuredProducts = <ProductModel>[].obs;
-  RxList<ProductModel> allProducts = <ProductModel>[].obs;
   DocumentSnapshot? lastFeaturedDoc;
   final productRepository = ProductRepository.instance;
   final suggestionRepository = ProductSuggestionRepository.instance;
@@ -41,18 +38,10 @@ class ProductController extends GetxController {
   void fetchFeaturedProducts() async {
     try {
       isLoading.value = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        TFullScreenLoader.openLoadingDialog(
-          'Loading products now...',
-          TImages.loaderAnimation,
-        );
-      });
       //fetch products
       final products = await productRepository.getFeaturedProducts();
-      final products1 = await productRepository.getAllProducts();
       //assign products
       featuredProducts.assignAll(products);
-      allProducts.assignAll(products1);
     } catch (e) {
       TLoader.errorSnackbar(title: lang.translate('snap'), message: e.toString());
       if (kDebugMode) {
@@ -60,15 +49,12 @@ class ProductController extends GetxController {
       }
     } finally {
       isLoading.value = false;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        TFullScreenLoader.stopLoading();
-      });
     }
   }
 
   Future<List<ProductModel>> getAllFeaturedProducts() async{
      try{
-      return await productRepository.getAllProducts();
+      return featuredProducts;
     }catch(e){
      TLoader.errorSnackbar(title: lang.translate('snap'),message: e.toString());
       return [];

@@ -32,7 +32,7 @@ import '../../models/order_model.dart';
 
 class OrderController extends GetxController {
   static OrderController get instance => Get.find();
-  var fee = 0.0.obs; // Biến quan sát được để lưu giá trị totalFee
+  var fee = 0.0.obs; // Biến quan sát được để lưu giá trị Fee
   var totalAmount = 0.0.obs; // Biến quan sát được để lưu giá trị totalFee
   var netAmount = 0.0.obs;
   var totalDiscount = 0.0.obs;
@@ -50,6 +50,17 @@ class OrderController extends GetxController {
     // Bây giờ Get.context đã có giá trị hợp lệ, ta mới khởi tạo lang
     WidgetsBinding.instance.addPostFrameCallback((_) {
       lang = AppLocalizations.of(Get.context!);
+    });
+  }
+  @override
+  void onInit() {
+    super.onInit();
+    // Lắng nghe thay đổi địa chỉ để tự động tính lại phí
+    ever(addressController.selectedAddress, (_) {
+      final subTotal = CartController.instance.totalCartPrice.value;
+      if (subTotal > 0) {
+        calculateFeeAndTotal(subTotal);
+      }
     });
   }
 

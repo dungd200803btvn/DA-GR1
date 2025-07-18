@@ -32,19 +32,6 @@ class TSocialButtons extends StatelessWidget {
         ),
         const SizedBox(width: DSize.spaceBtwItem,),
 
-        //FaceBook
-        Container(
-          decoration: BoxDecoration(border: Border.all(color: DColor.grey),
-              borderRadius: BorderRadius.circular(100)),
-          child: IconButton(
-            onPressed: (){},
-            icon: const Image(
-                width: DSize.iconMd,
-                height: DSize.iconMd,
-                image: AssetImage(TImages.facebook)
-            ),
-          ),
-        ),
       ],
     );
   }

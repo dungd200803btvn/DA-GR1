@@ -18,12 +18,17 @@ class RecommendationService {
     required String userId,
     String? productId,
   }) async {
-    final url = Uri.parse(recommendUrl);
+    final url = Uri.parse(recommenderUrl);
     final body = {
       "user_id": userId,
       "top_k": top_recommend,
       if (productId != null) "product_id": productId,
     };
+
+    print("📤 Đang gửi request đến API:");
+    print("- URL: $url");
+    print("- Body: ${jsonEncode(body)}");
+
     try {
       final response = await http.post(
         url,
@@ -31,20 +36,50 @@ class RecommendationService {
         body: jsonEncode(body),
       );
 
+      print("✅ Nhận được phản hồi từ server:");
+      print("- Status code: ${response.statusCode}");
+      print("- Body: ${response.body}");
+
       if (response.statusCode != 200) {
         throw "Lỗi server: ${response.statusCode} - ${response.reasonPhrase}";
       }
 
       final List<dynamic> data = jsonDecode(response.body);
-      final List<String> productIds = data
+// Lọc dữ liệu hợp lệ
+      final filteredData = data.where((item) {
+        final hasId = item['product_id'] != null && (item['product_id'] as String).isNotEmpty;
+        if (!hasId) print("⚠️ Bỏ qua item vì thiếu product_id: $item");
+        return hasId;
+      }).toList();
+
+
+      final List<String> productIds = filteredData
           .map<String>((item) => item['product_id'] as String)
           .toList();
-      final productFutures = productIds.map((id) => productRepository.getProductById(id));
+
+      // print("📦 Danh sách product_id nhận được: $productIds");
+
+      final productFutures = productIds.map((id) async {
+        try {
+          final product = await productRepository.getProductById(id);
+          if (product == null) {
+            print("⚠️ Không tìm thấy sản phẩm với id: $id");
+          }
+          return product;
+        } catch (e) {
+          print("❌ Lỗi khi lấy sản phẩm $id: $e");
+          return null;
+        }
+      });
+
       final productModels = await Future.wait(productFutures, eagerError: false);
-      return productModels.whereType<ProductModel>().toList();
+      final validProducts = productModels.where((p) => p != null).cast<ProductModel>().toList();
+
+      return validProducts;
     } catch (e) {
-      print("Lỗi khi gọi API hoặc xử lý dữ liệu: $e");
+      print("❌ Lỗi khi gọi API hoặc xử lý dữ liệu: $e");
       rethrow;
     }
   }
+
 }

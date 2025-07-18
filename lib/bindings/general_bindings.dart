@@ -1,5 +1,8 @@
+import 'package:app_my_app/data/repositories/chatbot/chatbot_repository.dart';
 import 'package:app_my_app/data/repositories/sale_group/sale_group_repository.dart';
+import 'package:app_my_app/features/chatbot/controller/chatbot_controller.dart';
 import 'package:app_my_app/features/sale_group/controller/sale_group_controller.dart';
+import 'package:app_my_app/features/shop/controllers/recommendation_controller.dart';
 import 'package:get/get.dart';
 import 'package:app_my_app/data/repositories/bonus_point/daily_checkin_repository.dart';
 import 'package:app_my_app/data/repositories/brands/brand_repository.dart';
@@ -82,6 +85,9 @@ class GeneralBindings extends Bindings{
     Get.put(MissionRepository());
     Get.put(MissionController());
     Get.put(RewardController());
+    Get.put(ChatbotRepository());
+    Get.put(ChatbotController());
+    Get.put(RecommendationController());
   }
  static void deleteAllControllers() {
     // Các controller
@@ -120,6 +126,9 @@ class GeneralBindings extends Bindings{
     Get.delete<GroupRequestController>();
     Get.delete<MissionController>();
     Get.delete<RewardController>();
+    Get.delete<ChatbotRepository>();
+    Get.delete<ChatbotController>();
+    Get.delete<RecommendationController>();
   }
 
 }

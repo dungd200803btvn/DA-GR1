@@ -77,11 +77,11 @@ class RewardsScreen extends StatelessWidget {
 
                           // Cập nhật điểm thưởng từ dữ liệu Firestore
                           final userData = snapshot.data!.data() as Map<String, dynamic>;
-                          final points = userData['Points'] ?? 0;
+                          final points = userData['points'] ?? 0;
 
                           return Text(
                             "${lang.translate('current_bonus_points')}: $points",
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 20,
                               color: Colors.black87,
                             ),

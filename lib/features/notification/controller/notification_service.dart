@@ -71,14 +71,13 @@ class NotificationService {
     final payload = {
       "message": {
         "token": deviceToken,
-        "notification": {
+        "data": {
           "title": notification.title,
           "body": notification.message,
-        },
-        "data": {
           "id": notification.id,
           "type": notification.type,
           "orderId": notification.orderId ?? "",
+          "imageUrl": notification.imageUrl ?? "",
         }
       }
     };

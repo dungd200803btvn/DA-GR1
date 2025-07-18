@@ -1,3 +1,4 @@
+import 'package:app_my_app/features/chatbot/screen/chat_app.dart';
 import 'package:app_my_app/features/sale_group/screen/all_groups_screen.dart';
 import 'package:app_my_app/features/sale_group/screen/create_group_screen.dart';
 import 'package:app_my_app/features/setting/screen/friend_requests_screen.dart';
@@ -119,6 +120,11 @@ class SettingScreen extends StatelessWidget {
                   title: lang.translate('my_friends'),
                   subTitle: lang.translate('my_friends_msg'),
                   onTap: ()=> Get.to(()=> const FriendListScreen()) ,),
+                TSettingMenuTile(
+                  icon: Icons.wechat_sharp,
+                  title: lang.translate('my_chat_bot'),
+                  subTitle: lang.translate('my_chat_bot_msg'),
+                  onTap: ()=> Get.to(()=> const ChatApp()) ,),
                 //App Settings
                 const SizedBox(height: DSize.spaceBtwSection),
                 TSectionHeading(

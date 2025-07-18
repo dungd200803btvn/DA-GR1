@@ -18,6 +18,7 @@ import '../../../utils/popups/full_screen_loader.dart';
 import '../../../utils/popups/loader.dart';
 import '../../personalization/controllers/user_controller.dart';
 import '../../shop/controllers/product/cart_controller.dart';
+import '../../shop/models/product_model.dart';
 import '../models/UserClaimedVoucher.dart';
 import '../models/VoucherAppliedInfo.dart';
 
@@ -26,11 +27,13 @@ class VoucherController extends GetxController{
   final voucherRepository = VoucherRepository.instance;
   final claimedVoucherRepository = ClaimedVoucherRepository.instance;
   final productRepository = ProductRepository.instance;
-  var allClaimedVouchers = <String>[].obs; // toan bo nhung voucher da nhan(ca dung va chua dung)
+  var allClaimedVouchers = <String>[].obs;
+  var allClaimedVoucherModel = <VoucherModel>[].obs;// toan bo nhung voucher da nhan(ca dung va chua dung)
   var claimedVouchers = <String>[].obs; // nhan ma chua dung
   var appliedVouchers = <String>[].obs;
   var appliedVouchersInfo = <VoucherAppliedInfo>[].obs;
   var expandedVouchers = <VoucherAppliedInfo>[].obs;
+  var allVouchers = <VoucherModel>[].obs;
   late AppLocalizations lang;
   @override
   void onReady() {
@@ -122,12 +125,27 @@ class VoucherController extends GetxController{
   }
 
   Future<List<VoucherModel>> getApplicableVouchers() async {
+    final startTime = DateTime.now();
     try {
       final userId = AuthenticationRepository.instance.authUser!.uid;
       // Danh sách voucher thỏa mãn
       List<VoucherModel> applicableVouchers = [];
       List<VoucherModel> vouchers = await getUserClaimedVoucher(userId);
+      // Lấy tất cả productId từ cart 1 lần
+      final cartItems = CartController.instance.cartItems;
+      final cartProductIds = cartItems.map((item) => item.productId).toList();
+
+// Lấy toàn bộ productModels trong 1 lần gọi song song
+      final productModels = await Future.wait(cartProductIds.map((id) => productRepository.getProductById(id)));
+
+// Ghép lại với cart item để truy cập nhanh
+      final cartProducts = <String, ProductModel>{};
+      for (int i = 0; i < cartItems.length; i++) {
+        cartProducts[cartItems[i].productId] = productModels[i]!;
+      }
+
       for (var voucher in vouchers) {
+        print("Tên voucher gợi ý áp dụng: ${voucher.title} -type: ${voucher.type} \n");
         // Kiểm tra từng loại voucher
         switch (voucher.type) {
           case 'free_shipping':
@@ -245,7 +263,8 @@ class VoucherController extends GetxController{
             break;
 
           case 'group_voucher':
-           final isAvailable = await isGroupVoucherAvailable(voucher);
+           final isAvailable = await isGroupVoucherAvailable(voucher,cartProducts);
+           print("Group voucher co avai k: $isAvailable");
            if(isAvailable){
              applicableVouchers.add(voucher);
            }
@@ -261,7 +280,10 @@ class VoucherController extends GetxController{
             break;
         }
       }
-      return vouchers;
+      final endTime = DateTime.now();
+      final duration = endTime.difference(startTime);
+      print("🔥 Thời gian suggest cac voucher goi y: ${duration.inMilliseconds}ms");
+      return applicableVouchers;
     } catch (e) {
       throw 'Error checking applicable vouchers: $e';
     }
@@ -289,11 +311,9 @@ class VoucherController extends GetxController{
       final allIds = allVouchers.map((voucher)=> voucher.voucherId).toList();
       claimedVouchers.assignAll(ids);
       allClaimedVouchers.assignAll(allIds);
+      allClaimedVoucherModel.assignAll(allVouchers as Iterable<VoucherModel>);
     }catch (e){
-      TLoader.errorSnackbar(
-        title: 'Error',
-        message: 'Failed to initialize claimed vouchers: $e',
-      );
+      print("Loi initializeClaimedVouchers: $e ");
     }
   }
 
@@ -310,13 +330,16 @@ class VoucherController extends GetxController{
     }
   }
 
+
+
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
     // Gọi hàm khởi tạo giá trị claimedVouchers
-    final userId = AuthenticationRepository.instance.authUser!.uid; // Cập nhật giá trị userId phù hợp
-    initializeClaimedVouchers(userId);
-    initializeUsedVouchers(userId);
+    final userId = AuthenticationRepository.instance.authUser!.uid;
+    allVouchers.value  = await voucherRepository.fetchAllVouchers();// Cập nhật giá trị userId phù hợp
+    await initializeClaimedVouchers(userId);
+    await  initializeUsedVouchers(userId);
   }
 
   // Hàm để nhận voucher
@@ -326,13 +349,17 @@ class VoucherController extends GetxController{
       claimedAt: Timestamp.now(),
       isUsed: false,
     );
+    final voucher = await voucherRepository.getVoucherById(voucherId);
+    allClaimedVoucherModel.add(voucher!);
     try {
-      if(await claimedVoucherRepository.isClaimed(userId, voucherId)){
+      final isAlreadyClaimed = await claimedVoucherRepository.isClaimed(userId, voucherId);
+      if(isAlreadyClaimed){
         if(!claimedVouchers.contains(voucherId)){
           claimedVouchers.add(voucherId);
         }
       }else{
         claimedVouchers.add(voucherId);
+
         TLoader.successSnackbar(title: lang.translate('voucher_claimed_success'));
         await claimedVoucherRepository.claimVoucher(userId, claimedVoucher);
         final voucher = await voucherRepository.getVoucherById(voucherId);
@@ -352,6 +379,7 @@ class VoucherController extends GetxController{
   }
   //Ham xu ly ap dung 1 voucher
   Future<num> applyVoucher(String voucherId, String userId) async {
+    final startTime = DateTime.now();
     try {
       if (kDebugMode) {
         print("=== Bắt đầu áp dụng voucher ===");
@@ -388,6 +416,9 @@ class VoucherController extends GetxController{
           }
         }
       }
+      final endTime = DateTime.now();
+      final duration = endTime.difference(startTime);
+      print("🔥 Thời gian apply voucher: ${duration.inMilliseconds}ms");
     } catch (e) {
      if (kDebugMode) {
        print("Loi: ${e.toString()}");
@@ -646,55 +677,59 @@ class VoucherController extends GetxController{
   Future<double> calculateGroupVoucherDiscount(VoucherModel voucher) async {
     double discount = 0;
     List<String> details = [];
+
     for (var item in CartController.instance.cartItems) {
-      final product = await productRepository.getProductById(item.productId);
       bool isApplicable = false;
-      if (voucher.brandId != null && product.brand?.id == voucher.brandId) {
+      final product = await productRepository.getProductById(item.productId);
+      if (voucher.brandId != null && product?.brand?.id == voucher.brandId) {
         isApplicable = true;
-      } else if (voucher.shopId != null && product.shop.id == voucher.shopId) {
+      } else if (voucher.shopId != null && product?.shop.id == voucher.shopId) {
         isApplicable = true;
-      } else if (voucher.categoryId != null
-          && product.categories!=null
-          && product.categories!.any((category)=>category.id == voucher.categoryId)) {
+      } else if (voucher.categoryId != null &&
+          product?.categories != null &&
+          product!.categories!.any((category) => category.id == voucher.categoryId)) {
         isApplicable = true;
       }
+
       if (isApplicable) {
         final double productDiscount = item.price * (voucher.discountValue / 100) * item.quantity;
         discount += productDiscount;
-        final info = '${product.title} - ${product.price} x ${item.quantity} = Giảm: ${DFormatter.formattedAmount(productDiscount)} VND';
+        final info = '${product?.title} - ${product?.price} x ${item.quantity} = Giảm: ${DFormatter.formattedAmount(productDiscount)} VND';
         details.add(info);
-        print('✅ Áp dụng: ${product.title} - Giá: ${item.price} - Số lượng: ${item.quantity} - Giảm: ${productDiscount.toStringAsFixed(2)}');
+        print('✅ Áp dụng: ${product?.title} - Giá: ${item.price} - Số lượng: ${item.quantity} - Giảm: ${productDiscount.toStringAsFixed(2)}');
       } else {
-        print('❌ Không áp dụng: ${product.title} - Brand: ${product.brand?.id}, Shop: ${product.shop.id}, Categories: ${product.categories?.map((c) => c.id).join(',')}');
+        print('❌ Không áp dụng: ${product?.title} - Brand: ${product?.brand?.id}, Shop: ${product?.shop.id}, Categories: ${product?.categories?.map((c) => c.id).join(',')}');
       }
     }
-    appliedVouchersInfo.add(VoucherAppliedInfo(
-        type: voucher.type,
-        discountValue: discount,
-        appliedDetails: details.isNotEmpty? details :null
-    ));
+    if(details.isNotEmpty && discount>0){
+      appliedVouchersInfo.add(VoucherAppliedInfo(
+          type: voucher.type,
+          discountValue: discount,
+          appliedDetails: details.isNotEmpty? details :null
+      ));
+    }else{
+      TLoader.warningSnackbar(title: "Không có sản phẩm nào trong giỏ hàng đủ điều kiện áp dụng group voucher.Hãy chọn sản phẩm thuộc phạm vi voucher group đc giảm giá");
+    }
+
     return discount;
   }
 
-  Future<bool> isGroupVoucherAvailable(VoucherModel voucher) async {
-    bool isApplicable = false;
-    for (var item in CartController.instance.cartItems) {
-      final product = await productRepository.getProductById(item.productId);
-      if (voucher.brandId != null && product.brand?.id == voucher.brandId) {
-        isApplicable = true;
-        break;
-      } else if (voucher.shopId != null && product.shop.id == voucher.shopId) {
-        isApplicable = true;
-        break;
-      } else if (voucher.categoryId != null
-          && product.categories!=null
-          && product.categories!.any((category)=>category.id == voucher.categoryId)) {
-        isApplicable = true;
-        break;
+  Future<bool> isGroupVoucherAvailable(VoucherModel voucher, Map<String, ProductModel> cartProducts) async {
+    for (var entry in cartProducts.entries) {
+      final product = entry.value;
+
+      if ((voucher.brandId != null && product.brand?.id == voucher.brandId) ||
+          (voucher.shopId != null && product.shop.id == voucher.shopId) ||
+          (voucher.categoryId != null &&
+              product.categories != null &&
+              product.categories!.any((category) => category.id == voucher.categoryId))) {
+        return true;
       }
     }
-    return isApplicable;
+    return false;
   }
+
+
 
   double calculateFlatPriceDiscount(VoucherModel voucher) {
     double applicableTotal = 0.0;

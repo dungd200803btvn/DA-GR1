@@ -3,10 +3,13 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import '../../../features/shop/models/shop_model.dart';
+import '../product/product_repository.dart';
 
 class ShopRepository extends GetxController{
   static ShopRepository get instance => Get.find();
   final _db = FirebaseFirestore.instance;
+  List<ShopModel>? _cachedTopShops;
+  final ProductRepository productRepository = ProductRepository.instance;
   Future<ShopModel> getShopById(String shopId) async{
     try{
       DocumentSnapshot<Map<String,dynamic>> snapshot =  await _db.collection('Shops').doc(shopId).get();
@@ -24,26 +27,22 @@ class ShopRepository extends GetxController{
   /// Lấy top shops theo giới hạn truyền vào (mặc định 20)
   Future<List<ShopModel>> fetchTopShops({int limit = 20}) async {
     try {
+      if (_cachedTopShops != null&& limit ==20) return _cachedTopShops!;
       // 1. Lấy toàn bộ products
-      QuerySnapshot productSnapshot =
-      await _db.collection('Products').get();
-      print("Retrieved ${productSnapshot.docs.length} products");
-
+      final productsDoc = await productRepository.getAllProductsDoc();
       // 2. Đếm số lượng sản phẩm cho mỗi shop
       Map<String, int> shopCount = {};
-      for (var doc in productSnapshot.docs) {
+      for (var doc in productsDoc) {
         final data = doc.data() as Map<String, dynamic>;
         final String? shopId = data['shopId'];
         if (shopId != null) {
           shopCount[shopId] = (shopCount[shopId] ?? 0) + 1;
         }
       }
-
       // 3. Sắp xếp các shopId theo số lượng giảm dần và lấy top theo giới hạn
       List<String> sortedShopIds = shopCount.keys.toList()
         ..sort((a, b) => shopCount[b]!.compareTo(shopCount[a]!));
       sortedShopIds = sortedShopIds.take(limit).toList();
-
       // 4. Truy vấn bảng Shops theo sortedShopIds với batch
       List<Map<String, dynamic>> shops = [];
       const int batchSize = 10;
@@ -69,6 +68,7 @@ class ShopRepository extends GetxController{
       final List<ShopModel> shopsModel = shops
           .map((jsonItem) => ShopModel.fromJson(jsonItem))
           .toList();
+      _cachedTopShops = shopsModel;
       return shopsModel;
     } catch (error) {
       print("Error retrieving top shops: $error");

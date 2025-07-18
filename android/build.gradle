@@ -1,5 +1,20 @@
 buildscript {
-    ext.kotlin_version = '1.9.10'
+    ext {
+        compileSdkVersion = 34
+        minSdkVersion = 21
+        targetSdkVersion = 34
+        kotlin_version = '1.9.22'
+    }
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.2.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.gms:google-services:4.4.1'
+    }
     // Thêm dòng này để chỉ định phiên bản Kotlin
 }
 
@@ -21,4 +36,10 @@ subprojects {
 
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 }

@@ -20,7 +20,7 @@ dependencies:
 
   # Utility Packages
   http: ^1.3.0
-  intl: ^0.19.0
+  intl: 0.20.2
   logger: ^2.0.1
   pretty_dio_logger: ^1.1.1
   url_launcher: ^6.1.12
@@ -71,10 +71,11 @@ dependencies:
   video_thumbnail: ^0.5.3
   flutter_stripe: ^11.4.0
   firebase_analytics: ^10.10.7
-  firebase_dynamic_links: ^5.0.0
-  qr_flutter: ^4.0.0
-  share_plus: ^6.0.0
-  screenshot: ^1.2.3
+  screenshot: ^3.0.0
+  share_plus: ^7.0.0
+  qr_flutter: ^4.1.0
+  firebase_dynamic_links: ^5.5.7
+  # Ví dụ một commit hợp lệ
   #--------------- ./ PACKAGES END ------------------#
 
 dev_dependencies:

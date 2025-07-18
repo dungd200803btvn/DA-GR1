@@ -11,6 +11,39 @@ import '../../../utils/local_storage/storage_utility.dart';
 class ProductRepository extends GetxController {
   static ProductRepository get instance => Get.find();
   final _db = FirebaseFirestore.instance;
+  List<DocumentSnapshot>? _cachedProducts;
+  bool _isFetchingProducts = false;
+  @override
+  void onInit() {
+    super.onInit();
+    // Prefetch ngay khi repo được gọi
+    getAllProductsDoc();
+  }
+  Future<List<DocumentSnapshot>> getAllProductsDoc() async {
+    if (_cachedProducts != null) return _cachedProducts!;
+
+    if (_isFetchingProducts) {
+      // Nếu đang fetch, đợi hoàn tất
+      while (_isFetchingProducts) {
+        await Future.delayed(Duration(milliseconds: 100));
+      }
+      return _cachedProducts!;
+    }
+
+    _isFetchingProducts = true;
+    try {
+      final snapshot = await _db.collection("Products").get();
+      _cachedProducts = snapshot.docs;
+      print("✅ Prefetched ${_cachedProducts!.length} products and cached.");
+      return _cachedProducts!;
+    } catch (e) {
+      print("❌ Error while prefetching products: $e");
+      rethrow;
+    } finally {
+      _isFetchingProducts = false;
+    }
+  }
+
   //get limited featured products
   Future<List<ProductModel>> getFeaturedProducts() async {
     try {
@@ -356,8 +389,6 @@ class ProductRepository extends GetxController {
     return {'products': filteredProducts, 'lastDoc': newLastDoc};
   }
 
-
-
   Future<List<ProductModel>> getAllProducts() async {
     try {
       final snapshot = await _db.collection("Products").limit(500).get();
@@ -524,18 +555,28 @@ class ProductRepository extends GetxController {
     }
   }
 
-  Future<ProductModel> getProductById(String productId) async {
+  Future<ProductModel?> getProductById(String productId) async {
     try {
       final snapshot = await _db.collection("Products").doc(productId).get();
+
+      if (!snapshot.exists) {
+        print("⚠️ Product với id [$productId] không tồn tại.");
+        return null;
+      }
+
       return ProductModel.fromSnapshotAsync(snapshot);
     } on FirebaseException catch (e) {
-      throw e.message!;
+      print("❌ FirebaseException trong getProductById: $e");
+      return null;
     } on PlatformException catch (e) {
-      throw e.message!;
+      print("❌ PlatformException trong getProductById: $e");
+      return null;
     } catch (e) {
-      throw "message: $e";
+      print("❌ Lỗi không xác định trong getProductById: $e");
+      return null;
     }
   }
+
 
   Future<List<ProductModel>> getProductsForBrand(
       {required String brandId, int limit = -1}) async {
